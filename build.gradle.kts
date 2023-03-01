@@ -51,6 +51,7 @@ dependencies {
     compileOnly(kotlin("stdlib", kotlinVersion))
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
     implementation(shadow("com.sedmelluq:lavaplayer:1.3.77")!!)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     compileOnly("su.plo.voice.api:server:2.0.0+ALPHA")
     compileOnly("su.plo.config:config:1.0.0")
@@ -75,7 +76,7 @@ tasks {
 
     runServer {
         minecraftVersion("1.19.2")
-        systemProperty("-Dplasmovoice.alpha.disableversioncheck", "true")
+        systemProperty("plasmovoice.alpha.disableversioncheck", "true")
     }
 
     build {

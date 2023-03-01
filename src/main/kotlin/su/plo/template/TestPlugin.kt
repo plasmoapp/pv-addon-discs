@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.world.ServerPos3d
+import su.plo.template.event.JukeboxEventLister
 import su.plo.voice.api.addon.AddonManager
 import su.plo.voice.api.addon.AddonScope
 import su.plo.voice.api.addon.annotation.Addon
@@ -21,6 +22,7 @@ import su.plo.voice.api.server.event.config.VoiceServerConfigLoadedEvent
 import su.plo.voice.api.server.event.connection.UdpClientConnectedEvent
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
+import java.lang.Long.min
 import java.util.concurrent.TimeUnit
 
 
@@ -29,16 +31,17 @@ class TestPlugin : JavaPlugin() {
 
     private val addonName = "audio_player"
 
-    private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
+//    private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
 
     @Inject
-    private lateinit var voiceServer: PlasmoVoiceServer
+    lateinit var voiceServer: PlasmoVoiceServer
 
-    private lateinit var sourceLine: ServerSourceLine
+    lateinit var sourceLine: ServerSourceLine
+
+    lateinit var audioPlayerManager: PlasmoAudioPlayerManager
 
     override fun onLoad() {
         AddonManager.getInstance().load(this)
-        AudioSourceManagers.registerRemoteSources(lavaPlayerManager)
     }
 
     val testIdentifier = "https://www.youtube.com/watch?v=9HBRXbU9Y5I"
@@ -52,103 +55,11 @@ class TestPlugin : JavaPlugin() {
             "plasmovoice:textures/icons/speaker_group.png",
             10
         )
-
-
-
+        audioPlayerManager = PlasmoAudioPlayerManager(voiceServer)
     }
 
-    @EventSubscribe
-    fun pepega(event: UdpClientConnectedEvent) {
-
-        val player = lavaPlayerManager.createPlayer()
-
-//        player.addListener {
-//            it.
-//        }
-
-//        player.
-
-        val world = voiceServer.minecraftServer.worlds.toList()[0]
-
-        val source = voiceServer.sourceManager.createStaticSource(
-            this,
-            ServerPos3d(world, 0.0, 60.0, 0.0),
-            sourceLine,
-            "opus",
-            true
-        )
-
-        val encrypter = voiceServer.defaultEncryption
-
-        lavaPlayerManager.loadItem(testIdentifier, object : AudioLoadResultHandler {
-
-            override fun trackLoaded(track: AudioTrack) {
-                println("Loaded: ${track.info.title}")
-                player.playTrack(track)
-
-                var i: Long = 0
-
-                Thread {
-                    var start = 0L
-
-                    while(true) {
-                        if (track.state == AudioTrackState.FINISHED) {
-                            println("stop")
-                            source.sendPacket(SourceAudioEndPacket(
-                                source.id,
-                                i++
-                            ), 100)
-                            break
-                        }
-
-                        val frame = player.provide(5L, TimeUnit.MILLISECONDS) ?: continue
-
-                        val packet = SourceAudioPacket(
-                            i++,
-                            source.state.toByte(),
-                            encrypter.encrypt(frame.data),
-                            source.id,
-                            0
-                        )
-                        source.sendAudioPacket(packet, 100)
-
-                        if (start == 0L) start = System.currentTimeMillis()
-
-                        val wait = (start + frame.timecode) - System.currentTimeMillis()
-
-                        try {
-                            Thread.sleep(wait)
-                        } catch (e: InterruptedException) {
-                            break
-                        }
-                    }
-                }.start()
-            }
-
-            override fun playlistLoaded(playlist: AudioPlaylist) {
-                println("Playlist loaded")
-            }
-
-            override fun loadFailed(exception: FriendlyException) {
-                println("Load failed")
-            }
-
-            override fun noMatches() {
-                println("No matches")
-            }
-
-        })
-    }
-
-    override fun onEnable() {
-
-//        sourceLine = voiceServer.sourceLineManager.register(
-//            this,
-//            addonName,
-//            "pv.activation.$addonName",
-//            "plasmovoice:textures/icons/speaker_group.png",
-//            10
-//        )
+//    @EventSubscribe
+//    fun pepega(event: UdpClientConnectedEvent) {
 //
 //        val player = lavaPlayerManager.createPlayer()
 //
@@ -161,40 +72,9 @@ class TestPlugin : JavaPlugin() {
 //            "opus",
 //            true
 //        )
-//
-//        lavaPlayerManager.loadItem(testIdentifier, object : AudioLoadResultHandler {
-//
-//            override fun trackLoaded(track: AudioTrack) {
-//                println("Loaded: ${track.info.title}")
-//                player.playTrack(track)
-//
-//                for (i in 0..Long.MAX_VALUE) {
-//                    val frame = player.provide() ?: continue
-//                    val packet = SourceAudioPacket(
-//                        i,
-//                        source.state.toByte(),
-//                        frame.data,
-//                        source.id,
-//                        0
-//                    )
-//                    source.sendAudioPacket(packet, 100)
-//                }
-//            }
-//
-//            override fun playlistLoaded(playlist: AudioPlaylist) {
-////                TODO("Not yet implemented")
-//            }
-//
-//            override fun loadFailed(exception: FriendlyException) {
-////                TODO("Not yet implemented")
-//            }
-//
-//            override fun noMatches() {
-////                TODO("Not yet implemented")
-//            }
-//
-//        })
-//
-//        println("Я еблан")
+//    }
+
+    override fun onEnable() {
+        server.pluginManager.registerEvents(JukeboxEventLister(this), this)
     }
 }
