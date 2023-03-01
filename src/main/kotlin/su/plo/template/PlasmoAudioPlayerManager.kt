@@ -22,9 +22,9 @@ class PlasmoAudioPlayerManager(
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
 
-    val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(Dispatchers.Default)
 
-    val encrypter = voiceServer.defaultEncryption
+    private val encrypter = voiceServer.defaultEncryption
 
     val testIdentifier = "https://www.youtube.com/watch?v=9HBRXbU9Y5I"
 
@@ -48,13 +48,16 @@ class PlasmoAudioPlayerManager(
         var i = 0L
         var start = 0L
 
-        try { while(true) {
-
-            yield()
+        try { while(isActive) {
 
             if (track.state == AudioTrackState.FINISHED) break
 
-            val frame = player.provide(5L, TimeUnit.MILLISECONDS) ?: continue
+            val frame = player.provide(5L, TimeUnit.MILLISECONDS)
+
+            if (frame == null) {
+                println("frame is null")
+                continue
+            }
 
             val packet = SourceAudioPacket(
                 i++,
@@ -65,13 +68,17 @@ class PlasmoAudioPlayerManager(
             )
             source.sendAudioPacket(packet, distance)
 
+            println("packet send")
+
             if (start == 0L) start = System.currentTimeMillis()
 
             val wait = (start + frame.timecode) - System.currentTimeMillis()
 
-            delay(min(wait, 0))
+            if (wait <= 0) continue else delay(wait)
 
         } } finally { withContext(NonCancellable) {
+
+            println("end")
 
             player.destroy()
 
