@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "PlasmoTemplate"
+rootProject.name = "pv-addon-audio-player"

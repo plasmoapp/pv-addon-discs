@@ -102,5 +102,5 @@ bukkit {
     apiVersion = "1.19"
     authors = listOf("Author")
 
-    depend = listOf("kotlin-stdlib", "PlasmoVoice")
+    depend = listOf("PlasmoVoice")
 }

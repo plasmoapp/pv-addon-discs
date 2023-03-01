@@ -4,12 +4,11 @@ import com.google.inject.Inject
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
-import org.bukkit.Bukkit
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.world.ServerPos3d
 import su.plo.voice.api.addon.AddonManager
@@ -18,9 +17,11 @@ import su.plo.voice.api.addon.annotation.Addon
 import su.plo.voice.api.event.EventSubscribe
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
-import su.plo.voice.api.server.audio.source.ServerStaticSource
 import su.plo.voice.api.server.event.config.VoiceServerConfigLoadedEvent
+import su.plo.voice.api.server.event.connection.UdpClientConnectedEvent
+import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
+import java.util.concurrent.TimeUnit
 
 
 @Addon(id = "audio-player", scope = AddonScope.SERVER, version = "1.0.0", authors = ["KPidS"])
@@ -52,6 +53,13 @@ class TestPlugin : JavaPlugin() {
             10
         )
 
+
+
+    }
+
+    @EventSubscribe
+    fun pepega(event: UdpClientConnectedEvent) {
+
         val player = lavaPlayerManager.createPlayer()
 
 //        player.addListener {
@@ -70,7 +78,7 @@ class TestPlugin : JavaPlugin() {
             true
         )
 
-        val encrypter = voiceServer.encryptionManager.default
+        val encrypter = voiceServer.defaultEncryption
 
         lavaPlayerManager.loadItem(testIdentifier, object : AudioLoadResultHandler {
 
@@ -80,17 +88,41 @@ class TestPlugin : JavaPlugin() {
 
                 var i: Long = 0
 
-                while(true) {
-                    val frame = player.provide() ?: continue
-                    val packet = SourceAudioPacket(
-                        i++,
-                        source.state.toByte(),
-                        encrypter.encrypt(frame.data),
-                        source.id,
-                        0
-                    )
-                    source.sendAudioPacket(packet, 100)
-                }
+                Thread {
+                    var start = 0L
+
+                    while(true) {
+                        if (track.state == AudioTrackState.FINISHED) {
+                            println("stop")
+                            source.sendPacket(SourceAudioEndPacket(
+                                source.id,
+                                i++
+                            ), 100)
+                            break
+                        }
+
+                        val frame = player.provide(5L, TimeUnit.MILLISECONDS) ?: continue
+
+                        val packet = SourceAudioPacket(
+                            i++,
+                            source.state.toByte(),
+                            encrypter.encrypt(frame.data),
+                            source.id,
+                            0
+                        )
+                        source.sendAudioPacket(packet, 100)
+
+                        if (start == 0L) start = System.currentTimeMillis()
+
+                        val wait = (start + frame.timecode) - System.currentTimeMillis()
+
+                        try {
+                            Thread.sleep(wait)
+                        } catch (e: InterruptedException) {
+                            break
+                        }
+                    }
+                }.start()
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
@@ -106,7 +138,6 @@ class TestPlugin : JavaPlugin() {
             }
 
         })
-
     }
 
     override fun onEnable() {
