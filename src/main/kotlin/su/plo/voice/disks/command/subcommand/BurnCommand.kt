@@ -9,6 +9,7 @@ import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.disks.command.CommandHandler
 import su.plo.voice.disks.utils.extend.asPlayer
+import su.plo.voice.disks.utils.extend.asVoicePlayer
 import su.plo.voice.disks.utils.extend.sendTranslatable
 import su.plo.voice.groups.command.SubCommand
 
@@ -28,13 +29,15 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
     override fun execute(source: CommandSender, arguments: Array<out String>) {
 
+        val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
+
         val identifier = arguments.getOrNull(1) ?: run {
-            source.sendTranslatable("pv.addon.disks.usage.burn")
+            voicePlayer.instance.sendTranslatable("pv.addon.disks.usage.burn")
             return
         }
 
         val track = handler.plugin.audioPlayerManager.getTrack(identifier) ?: run {
-            source.sendTranslatable("pv.addon.disks.error.get_track_fail")
+            voicePlayer.instance.sendTranslatable("pv.addon.disks.error.get_track_fail")
             return
         }
 
@@ -43,13 +46,13 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             .ifEmpty { track.info.title }
 
         val player = source.asPlayer() ?: run {
-            source.sendTranslatable("pv.error.player_only_command")
+            voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
             return
         }
 
         val meta = player.inventory.itemInMainHand
             .also { if (!it.type.isRecord) {
-                source.sendTranslatable("pv.addon.disks.error.not_a_record")
+                voicePlayer.instance.sendTranslatable("pv.addon.disks.error.not_a_record")
                 return
             }}
             .itemMeta
@@ -72,7 +75,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         player.inventory.itemInMainHand.itemMeta = meta
 
-        source.sendTranslatable("pv.addon.disks.success.burn", loreName)
+        voicePlayer.instance.sendTranslatable("pv.addon.disks.success.burn", loreName)
     }
 
     override fun checkCanExecute(sender: CommandSender): Boolean = sender.hasPermission("pv.addon.disks.burn")

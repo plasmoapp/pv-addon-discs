@@ -4,11 +4,11 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
-import su.plo.voice.disks.TestPlugin
+import su.plo.voice.disks.DisksPlugin
 import su.plo.voice.disks.utils.extend.asJukebox
 
 class CancelJukeboxPlayEvent(
-    private val testPlugin: TestPlugin,
+    private val testPlugin: DisksPlugin,
     priority: ListenerPriority,
 ): PacketAdapter(
     testPlugin,
@@ -17,7 +17,11 @@ class CancelJukeboxPlayEvent(
 ) {
     override fun onPacketSending(event: PacketEvent) {
 
-        if (event.packet.integers.read(0) != 1010) return
+        val worldEventId = event.packet.integers.read(0)
+
+        // https://wiki.vg/Protocol#World_Event
+        // 1010: Play record
+        if (worldEventId != 1010) return
 
         val jukebox = event.packet.blockPositionModifier
             .read(0)

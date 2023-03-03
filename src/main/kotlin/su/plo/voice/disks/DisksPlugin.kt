@@ -22,7 +22,7 @@ import su.plo.voice.groups.AddonConfig
 
 
 @Addon(id = "disks", scope = AddonScope.SERVER, version = "1.0.0", authors = ["KPidS"])
-class TestPlugin : JavaPlugin() {
+class DisksPlugin : JavaPlugin() {
 
     private val addonName = "disks"
 

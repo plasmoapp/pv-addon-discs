@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.disks.command.CommandHandler
 import su.plo.voice.disks.utils.extend.asPlayer
+import su.plo.voice.disks.utils.extend.asVoicePlayer
 import su.plo.voice.disks.utils.extend.sendTranslatable
 import su.plo.voice.groups.command.SubCommand
 
@@ -25,15 +26,17 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
 
     override fun execute(source: CommandSender, arguments: Array<out String>) {
 
+        val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
+
         val player = source.asPlayer() ?: run {
-            source.sendTranslatable("pv.error.player_only_command")
+            voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
             return
         }
 
         val item = player.inventory.itemInMainHand
             .takeIf { it.type.isRecord && it.hasItemMeta() }
             ?: run {
-                source.sendTranslatable("pv.addon.disks.error.erase_wrong_item")
+                voicePlayer.instance.sendTranslatable("pv.addon.disks.error.erase_wrong_item")
                 return
             }
 
@@ -41,7 +44,7 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
 
         item.itemMeta = meta
 
-        source.sendTranslatable("pv.addon.disks.success.erase")
+        voicePlayer.instance.sendTranslatable("pv.addon.disks.success.erase")
     }
 
     override fun checkCanExecute(sender: CommandSender): Boolean =

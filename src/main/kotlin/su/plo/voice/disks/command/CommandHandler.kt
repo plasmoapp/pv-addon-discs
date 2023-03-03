@@ -5,16 +5,16 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
-import su.plo.lib.api.server.command.MinecraftCommand
-import su.plo.lib.api.server.command.MinecraftCommandSource
+import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.disks.TestPlugin
-import su.plo.voice.disks.utils.extend.sendTranslatable
+import su.plo.voice.disks.DisksPlugin
+import su.plo.voice.disks.utils.extend.asPlayer
+import su.plo.voice.disks.utils.extend.asVoicePlayer
 import su.plo.voice.groups.command.SubCommand
 import java.util.concurrent.ConcurrentHashMap
 
 open class CommandHandler(
-    val plugin: TestPlugin,
+    val plugin: DisksPlugin,
 ): CommandExecutor, TabCompleter {
 
     private val subCommands: MutableMap<String, SubCommand> = ConcurrentHashMap()
@@ -35,15 +35,19 @@ open class CommandHandler(
         }
     }
 
-    private val unknownCommandComponent = Component.translatable(
+    private val unknownCommandComponent = MinecraftTextComponent.translatable(
         "pv.addon.disks.error.unknown_subcommand",
         subCommands.keys.joinToString(", ").let { Component.text(it) }
     )
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, arguments: Array<out String>): Boolean {
 
+        val voicePlayer = sender.asPlayer()?.asVoicePlayer(plugin.voiceServer) ?: run {
+            return false
+        }
+
         val subCommand = arguments.getOrNull(0) ?: run {
-            sender.sendMessage(unknownCommandComponent)
+            voicePlayer.instance.sendMessage(unknownCommandComponent)
             return false
         }
 
@@ -52,7 +56,7 @@ open class CommandHandler(
             return true
         }
 
-        sender.sendMessage(unknownCommandComponent)
+        voicePlayer.instance.sendMessage(unknownCommandComponent)
 
         return false
     }

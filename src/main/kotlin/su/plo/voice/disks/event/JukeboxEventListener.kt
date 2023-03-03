@@ -5,23 +5,26 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import su.plo.lib.api.server.world.ServerPos3d
-import su.plo.voice.disks.TestPlugin
+import su.plo.voice.disks.DisksPlugin
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextColor
 import org.bukkit.block.Block
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.persistence.PersistentDataType
+import su.plo.lib.api.chat.MinecraftTextComponent
+import su.plo.lib.api.chat.MinecraftTextStyle
 import su.plo.voice.disks.utils.extend.asJukebox
+import su.plo.voice.disks.utils.extend.asPlayer
+import su.plo.voice.disks.utils.extend.asVoicePlayer
 import su.plo.voice.disks.utils.extend.isJukebox
 import java.util.concurrent.ConcurrentHashMap
 
 class JukeboxEventListener(
-    private val plugin: TestPlugin
+    private val plugin: DisksPlugin
 ): Listener {
 
     private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
@@ -61,11 +64,13 @@ class JukeboxEventListener(
             true
         )
 
+        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
+
         val track = plugin.audioPlayerManager.getTrack(identifier) ?: run {
             block.asJukebox()?.eject()
-            event.player.sendActionBar(
-                Component.translatable("pv.addon.disks.actionbar.track_not_found")
-                    .color(NamedTextColor.RED)
+            voicePlayer.instance.sendActionBar(
+                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found")
+                    .withStyle(MinecraftTextStyle.GOLD)
             )
             return
         }
@@ -82,13 +87,14 @@ class JukeboxEventListener(
             ?.content()
             ?: track.info.title
 
-        val actionbarMessage = Component.translatable(
+        val actionbarMessage = MinecraftTextComponent.translatable(
             "pv.addon.disks.actionbar.playing",
             Component.text(trackName)
-        ).color(NamedTextColor.GOLD)
+        ).withStyle(MinecraftTextStyle.GOLD)
 
         block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble())
-            .forEach { it.sendActionBar(actionbarMessage) }
+            .map { it.asVoicePlayer(plugin.voiceServer) }
+            .forEach { it?.instance?.sendActionBar(actionbarMessage) }
     }
 
     @EventHandler
