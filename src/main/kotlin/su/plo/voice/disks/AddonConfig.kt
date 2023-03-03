@@ -18,6 +18,9 @@ class AddonConfig {
     @ConfigField(path = "default_jukebox_distance")
     val jukeboxDistance = 65
 
+    @ConfigField(path = "add_glint_to_custom_disks")
+    val addGlintToCustomDisks = true
+
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {
 

@@ -55,4 +55,3 @@ If you want to stream audio from direct URLs
 - Make it work with hoppers
 - Custom goat horn audio
 - Copy disc like you can copy maps
-- Optional: Add glint to custom music disks to make them stand out

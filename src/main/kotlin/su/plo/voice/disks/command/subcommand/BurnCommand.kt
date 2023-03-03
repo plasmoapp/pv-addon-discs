@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.command.CommandSender
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
@@ -69,6 +70,10 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             PersistentDataType.STRING,
             identifier
         )
+
+        if (handler.plugin.addonConfig.addGlintToCustomDisks) {
+            meta.addEnchant(Enchantment.MENDING, 1, false)
+        }
 
         val loreName = Component.text()
             .content(name)
