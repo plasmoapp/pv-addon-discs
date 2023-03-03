@@ -11,19 +11,18 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import kotlinx.coroutines.*
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.source.ServerStaticSource
-import su.plo.voice.groups.AddonConfig
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 class PlasmoAudioPlayerManager(
-    val voiceServer: PlasmoVoiceServer,
-    val addonConfig: AddonConfig
+    private val voiceServer: PlasmoVoiceServer,
+    addonConfig: AddonConfig
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypter = voiceServer.defaultEncryption
+    private val encrypt = voiceServer.defaultEncryption
 
     init {
         AudioSourceManagers.registerRemoteSources(lavaPlayerManager)
@@ -49,7 +48,7 @@ class PlasmoAudioPlayerManager(
             val packet = SourceAudioPacket(
                 i++,
                 source.state.toByte(),
-                encrypter.encrypt(frame.data),
+                encrypt.encrypt(frame.data),
                 source.id,
                 distance
             )

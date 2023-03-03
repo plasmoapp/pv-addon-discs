@@ -7,11 +7,17 @@ unknown_subcommand = "&cUnknown subcommand. Available commands: %s"
 [server.pv.addon.disks.usage]
 burn = "&cUsage: /disks burn <url> [label]"
 
+[server.pv.addon.disks.arg]
+url = "<url>"
+label = "[label]"
+
 [server.pv.addon.disks.actionbar]
 track_not_found = "Track not found"
-playing = "Now playing: %s"
+playing = "Now playing – %s"
 
 [server.pv.addon.disks.success]
 erase = "&aCustom audio erased"
 burn = "&aDisk burned. Label: %s"
 
+[client.pv.activation]
+disks = "Disks"

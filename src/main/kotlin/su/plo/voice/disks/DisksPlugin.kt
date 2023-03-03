@@ -18,7 +18,6 @@ import su.plo.voice.disks.command.subcommand.BurnCommand
 import su.plo.voice.disks.command.CommandHandler
 import su.plo.voice.disks.command.subcommand.EraseCommand
 import su.plo.voice.disks.packet.CancelJukeboxPlayEvent
-import su.plo.voice.groups.AddonConfig
 
 
 @Addon(id = "disks", scope = AddonScope.SERVER, version = "1.0.0", authors = ["KPidS"])

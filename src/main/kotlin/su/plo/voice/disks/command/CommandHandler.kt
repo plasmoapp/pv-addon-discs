@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import su.plo.lib.api.chat.MinecraftTextComponent
+import su.plo.lib.api.server.command.MinecraftCommandSource
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.disks.DisksPlugin
 import su.plo.voice.disks.utils.extend.asPlayer
@@ -83,5 +84,9 @@ open class CommandHandler(
         subCommands[subCommand]?.let { return it.suggest(sender, arguments) }
 
         return listOf()
+    }
+
+    fun getTranslationStringByKey(key: String, source: MinecraftCommandSource): String {
+        return plugin.voiceServer.languages.getServerLanguage(source)[key] ?: key
     }
 }

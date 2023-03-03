@@ -22,14 +22,19 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
     )
 
     override fun suggest(source: CommandSender, arguments: Array<out String>): List<String> {
+        val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return listOf()
         if (arguments.size < 2 ) return listOf()
-        if (arguments.size == 2) return listOf("<url>")
-        return listOf("[label]")
+        if (arguments.size == 2) return listOf(
+            handler.getTranslationStringByKey("pv.addon.disks.arg.url", voicePlayer.instance)
+        )
+        return listOf(
+            handler.getTranslationStringByKey("pv.addon.disks.arg.label", voicePlayer.instance)
+        )
     }
 
-    override fun execute(source: CommandSender, arguments: Array<out String>) {
+    override fun execute(sender: CommandSender, arguments: Array<out String>) {
 
-        val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
+        val voicePlayer = sender.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
 
         val identifier = arguments.getOrNull(1) ?: run {
             voicePlayer.instance.sendTranslatable("pv.addon.disks.usage.burn")
@@ -45,7 +50,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             .joinToString(" ")
             .ifEmpty { track.info.title }
 
-        val player = source.asPlayer() ?: run {
+        val player = sender.asPlayer() ?: run {
             voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
             return
         }

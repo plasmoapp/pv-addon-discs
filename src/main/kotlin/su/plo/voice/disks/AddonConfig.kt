@@ -1,4 +1,4 @@
-package su.plo.voice.groups
+package su.plo.voice.disks
 
 import org.bukkit.Bukkit
 import su.plo.config.Config
@@ -12,7 +12,7 @@ import java.io.InputStream
 
 @Config
 class AddonConfig {
-    @ConfigField(path = "sourceline_weight")
+    @ConfigField(path = "source_line_weight")
     val sourceLineWeight = 10
 
     @ConfigField(path = "jukebox_distance")
@@ -21,7 +21,7 @@ class AddonConfig {
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {
 
-            val addonFolder = getAddonFolder(server)
+            val addonFolder = getAddonFolder()
 
             server.languages.register(
                 { resourcePath: String -> getLanguageResource(resourcePath)
@@ -44,7 +44,7 @@ class AddonConfig {
             TomlConfiguration::class.java
         )
 
-        fun getAddonFolder(server: PlasmoVoiceServer): File =
+        private fun getAddonFolder(): File =
             File(Bukkit.getPluginsFolder(), "pv-addon-disks")
     }
 }
