@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "pv-addon-audio-player"
+rootProject.name = "pv-addon-disks"

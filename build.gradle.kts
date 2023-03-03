@@ -45,6 +45,8 @@ repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     maven { url = uri("https://repo.codemc.io/repository/maven-public/") }
 
+    maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
+
 }
 
 dependencies {
@@ -55,6 +57,7 @@ dependencies {
 
     compileOnly("su.plo.voice.api:server:2.0.0+ALPHA")
     compileOnly("su.plo.config:config:1.0.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
 
     kapt("su.plo.voice.api:server:2.0.0+ALPHA")
 }
@@ -99,9 +102,13 @@ tasks {
 
 bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
-    main = "su.plo.template.TestPlugin"
+    main = "su.plo.voice.disks.TestPlugin"
     apiVersion = "1.19"
     authors = listOf("Author")
 
     depend = listOf("PlasmoVoice")
+
+    commands {
+        register("disk") {}
+    }
 }
