@@ -17,7 +17,7 @@ playing = "Now playing – %s"
 
 [server.pv.addon.disks.success]
 erase = "&aCustom audio erased"
-burn = "&aDisk burned. Label: %s"
+burn = "&aDisc burned. Label: %s"
 
 [client.pv.activation]
 disks = "Disks"

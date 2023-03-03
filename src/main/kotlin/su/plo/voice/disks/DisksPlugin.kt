@@ -49,7 +49,7 @@ class DisksPlugin : JavaPlugin() {
             this,
             addonName,
             "pv.activation.$addonName",
-            "plasmovoice:textures/icons/speaker_group.png",
+            "plasmovoice:textures/icons/speaker.png",
             addonConfig.sourceLineWeight
         )
 
@@ -63,7 +63,7 @@ class DisksPlugin : JavaPlugin() {
             .addSubCommand(::BurnCommand)
             .addSubCommand(::EraseCommand)
 
-        val command = getCommand("disk") ?: throw Exception("")
+        val command = getCommand("disc") ?: throw Exception("Command not found")
 
         command.setExecutor(handler)
         command.tabCompleter = handler

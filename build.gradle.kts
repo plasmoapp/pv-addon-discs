@@ -109,6 +109,6 @@ bukkit {
     depend = listOf("PlasmoVoice")
 
     commands {
-        register("disk") {}
+        register("disc") {}
     }
 }

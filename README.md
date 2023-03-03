@@ -9,9 +9,9 @@ Inspired by [SVC](https://github.com/henkelmax/simple-voice-chat)'s [AudioPlayer
 
 ## Commands
 
-`/disk burn <url> [name]` – Create a disk with custom audio from the URL. You need to hold a music disk in your hand.
+`/disc burn <url> [name]` – Create a disc with custom audio from the URL. You need to hold a music disk in your hand.
 
-`/disk erase` – Return a custom disk to a normal one.
+`/disc erase` – Return a custom disc to a normal one.
 
 ## Permissions
 Both are only available to OP by default.
@@ -50,6 +50,6 @@ If you want to stream audio from direct URLs
 - Set distance on a jukebox
 - Make it work with hoppers
 - Custom goat horn audio
-- Permission to use the disk
-- Copy disk like you can copy maps
+- Permission to play the disc
+- Copy disc like you can copy maps
 - Optional: Add glint to custom music disks to make them stand out
