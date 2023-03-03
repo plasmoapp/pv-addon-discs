@@ -13,13 +13,13 @@ import java.io.InputStream
 @Config
 class AddonConfig {
     @ConfigField(path = "source_line_weight")
-    val sourceLineWeight = 10
+    var sourceLineWeight = 10
 
     @ConfigField(path = "default_jukebox_distance")
-    val jukeboxDistance = 65
+    var jukeboxDistance = 65
 
     @ConfigField(path = "add_glint_to_custom_disks")
-    val addGlintToCustomDisks = true
+    var addGlintToCustomDisks = false
 
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {
