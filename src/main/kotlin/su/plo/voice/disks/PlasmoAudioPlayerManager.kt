@@ -78,7 +78,7 @@ class PlasmoAudioPlayerManager(
         val future = CompletableFuture<AudioTrack>()
         lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) { future.complete(track) }
-            override fun playlistLoaded(playlist: AudioPlaylist) { future.complete(null) }
+            override fun playlistLoaded(playlist: AudioPlaylist) { future.complete(playlist.tracks.getOrNull(0)) }
             override fun loadFailed(exception: FriendlyException) { future.complete(null) }
             override fun noMatches() { future.complete(null) }
         })
