@@ -15,7 +15,7 @@ class AddonConfig {
     @ConfigField(path = "source_line_weight")
     val sourceLineWeight = 10
 
-    @ConfigField(path = "jukebox_distance")
+    @ConfigField(path = "default_jukebox_distance")
     val jukeboxDistance = 65
 
     companion object {

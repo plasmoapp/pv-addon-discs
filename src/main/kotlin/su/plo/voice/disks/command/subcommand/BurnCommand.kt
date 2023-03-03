@@ -80,7 +80,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         player.inventory.itemInMainHand.itemMeta = meta
 
-        voicePlayer.instance.sendTranslatable("pv.addon.disks.success.burn", loreName)
+        voicePlayer.instance.sendTranslatable("pv.addon.disks.success.burn", name)
     }
 
     override fun checkCanExecute(sender: CommandSender): Boolean = sender.hasPermission("pv.addon.disks.burn")

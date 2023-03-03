@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.google.inject.Inject
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
+import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.disks.event.JukeboxEventListener
 import su.plo.voice.api.addon.AddonManager
 import su.plo.voice.api.addon.AddonScope
@@ -67,6 +68,9 @@ class DisksPlugin : JavaPlugin() {
 
         command.setExecutor(handler)
         command.tabCompleter = handler
+
+        voiceServer.minecraftServer.permissionsManager
+            .register("pv.addon.disks.play", PermissionDefault.TRUE)
 
         val protocolManager: ProtocolManager = ProtocolLibrary.getProtocolManager()
 

@@ -42,6 +42,8 @@ class JukeboxEventListener(
 
         val item = event.item?.takeIf { it.type.isRecord } ?: return
 
+        if (!event.player.hasPermission("pv.addon.disks.play")) return
+
         val identifier = item?.itemMeta
             ?.persistentDataContainer
             ?.get(plugin.identifierKey, PersistentDataType.STRING)
@@ -88,8 +90,7 @@ class JukeboxEventListener(
             ?: track.info.title
 
         val actionbarMessage = MinecraftTextComponent.translatable(
-            "pv.addon.disks.actionbar.playing",
-            Component.text(trackName)
+            "pv.addon.disks.actionbar.playing", trackName
         ).withStyle(MinecraftTextStyle.GOLD)
 
         block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble())

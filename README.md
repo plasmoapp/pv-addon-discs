@@ -14,11 +14,15 @@ Inspired by [SVC](https://github.com/henkelmax/simple-voice-chat)'s [AudioPlayer
 `/disc erase` – Return a custom disc to a normal one.
 
 ## Permissions
-Both are only available to OP by default.
+Commands are only available to OP by default:
 
-`pv.addon.disks.burn`
+`pv.addon.disks.burn` – Burn command
 
-`pv.addon.disks.erase`
+`pv.addon.disks.erase` – Erase command
+
+Available to everyone by default:
+
+`pv.addon.disks.play` – Use custom music disks
 
 ## Supported sources
 
@@ -50,6 +54,5 @@ If you want to stream audio from direct URLs
 - Set distance on a jukebox
 - Make it work with hoppers
 - Custom goat horn audio
-- Permission to play the disc
 - Copy disc like you can copy maps
 - Optional: Add glint to custom music disks to make them stand out
