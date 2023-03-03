@@ -50,7 +50,7 @@ class DisksPlugin : JavaPlugin() {
             this,
             addonName,
             "pv.activation.$addonName",
-            "plasmovoice:textures/icons/speaker.png",
+            "plasmovoice:textures/icons/speaker_disc.png",
             addonConfig.sourceLineWeight
         )
 

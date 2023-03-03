@@ -104,9 +104,9 @@ bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
     main = "su.plo.voice.disks.DisksPlugin"
     apiVersion = "1.19"
-    authors = listOf("Author")
+    authors = listOf("KPidS", "Apehum")
 
-    depend = listOf("PlasmoVoice")
+    depend = listOf("PlasmoVoice", "ProtocolLib")
 
     commands {
         register("disc") {}

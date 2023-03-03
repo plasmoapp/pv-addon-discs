@@ -49,6 +49,24 @@ class JukeboxEventListener(
             ?.get(plugin.identifierKey, PersistentDataType.STRING)
             ?: return
 
+        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
+
+        val track = plugin.audioPlayerManager.getTrack(identifier) ?: run {
+            block.asJukebox()?.eject()
+            voicePlayer.instance.sendActionBar(
+                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found")
+                    .withStyle(MinecraftTextStyle.GOLD)
+            )
+            return
+        }
+
+        val trackName = item.itemMeta
+            ?.lore()
+            ?.getOrNull(0)
+            ?.let { it as? TextComponent }
+            ?.content()
+            ?: track.info.title
+
         val world = plugin.voiceServer.minecraftServer.getWorld(block.world)
 
         val pos = ServerPos3d(
@@ -66,36 +84,20 @@ class JukeboxEventListener(
             true
         )
 
-        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
-
-        val track = plugin.audioPlayerManager.getTrack(identifier) ?: run {
-            block.asJukebox()?.eject()
-            voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found")
-                    .withStyle(MinecraftTextStyle.GOLD)
-            )
-            return
-        }
+        source.setName(trackName)
 
         val job = plugin.audioPlayerManager.startTrackJob(track, source)
 
         jobByBlock[block]?.cancel()
         jobByBlock[block] = job
 
-        val trackName = item.itemMeta
-            ?.lore()
-            ?.getOrNull(0)
-            ?.let { it as? TextComponent }
-            ?.content()
-            ?: track.info.title
-
         val actionbarMessage = MinecraftTextComponent.translatable(
             "pv.addon.disks.actionbar.playing", trackName
-        ).withStyle(MinecraftTextStyle.GOLD)
+        )
 
         block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble())
             .map { it.asVoicePlayer(plugin.voiceServer) }
-            .forEach { it?.instance?.sendActionBar(actionbarMessage) }
+            .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
     }
 
     @EventHandler

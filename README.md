@@ -9,11 +9,12 @@ Inspired by [SVC](https://github.com/henkelmax/simple-voice-chat)'s [AudioPlayer
 
 ## Commands
 
-`/disc burn <url> [name]` – Create a disc with custom audio from the URL. You need to hold a music disk in your hand.
+`/disc burn <url> [name]` – Create a disc with custom audio from the URL. You need to hold a music disc in your hand.
 
 `/disc erase` – Return a custom disc to a normal one.
 
 ## Permissions
+
 Commands are only available to OP by default:
 
 `pv.addon.disks.burn` – Burn command
@@ -50,8 +51,8 @@ If you want to stream audio from direct URLs
 
 ## Planned features
 
+- Copy disks like you can copy maps
 - YouTube search
 - Set distance on a jukebox
-- Make it work with hoppers
 - Custom goat horn audio
-- Copy disc like you can copy maps
+- Make it work with hoppers
