@@ -39,7 +39,7 @@ class DiscsPlugin : JavaPlugin() {
     val oldIdentifierKey = NamespacedKey("pv-addon-disks", "identifier")
 
     override fun onLoad() {
-        AddonManager.getInstance().load(this)
+        PlasmoVoiceServer.getAddonManagerInstance().load(this)
     }
 
     @EventSubscribe
