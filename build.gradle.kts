@@ -47,12 +47,14 @@ repositories {
 
     maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
 
+    maven { url = uri("https://jitpack.io/") }
+
 }
 
 dependencies {
     compileOnly(kotlin("stdlib", kotlinVersion))
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
-    implementation(shadow("com.sedmelluq:lavaplayer:1.3.77")!!)
+    implementation(shadow("com.github.walkyst:lavaplayer-fork:1.4.0")!!)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     compileOnly("su.plo.voice.api:server:2.0.0+ALPHA")

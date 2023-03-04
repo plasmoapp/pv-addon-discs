@@ -15,6 +15,7 @@ import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
+import kotlin.jvm.Throws
 
 class PlasmoAudioPlayerManager(
     private val voiceServer: PlasmoVoiceServer,
@@ -73,13 +74,33 @@ class PlasmoAudioPlayerManager(
         }}
     }
 
-    fun getTrack(identifier: String): AudioTrack? {
+    fun getTrack(identifier: String): AudioTrack {
+
         val future = CompletableFuture<AudioTrack>()
+
         lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
-            override fun trackLoaded(track: AudioTrack) { future.complete(track) }
-            override fun playlistLoaded(playlist: AudioPlaylist) { future.complete(playlist.tracks.getOrNull(0)) }
-            override fun loadFailed(exception: FriendlyException) { future.complete(null) }
-            override fun noMatches() { future.complete(null) }
+
+            override fun trackLoaded(track: AudioTrack) {
+                future.complete(track)
+            }
+
+            override fun playlistLoaded(playlist: AudioPlaylist) {
+                future.complete(playlist.tracks.getOrNull(0))
+            }
+
+            override fun loadFailed(exception: FriendlyException) {
+                future.completeExceptionally(exception)
+            }
+
+            override fun noMatches() {
+                future.completeExceptionally(
+                    FriendlyException(
+                        "No matches",
+                        FriendlyException.Severity.COMMON,
+                        Exception("No matches")
+                    )
+                )
+            }
         })
         return future.get()
     }

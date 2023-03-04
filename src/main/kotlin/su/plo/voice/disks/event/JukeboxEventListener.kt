@@ -1,5 +1,6 @@
 package su.plo.voice.disks.event
 
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -17,10 +18,7 @@ import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextStyle
-import su.plo.voice.disks.utils.extend.asJukebox
-import su.plo.voice.disks.utils.extend.asPlayer
-import su.plo.voice.disks.utils.extend.asVoicePlayer
-import su.plo.voice.disks.utils.extend.isJukebox
+import su.plo.voice.disks.utils.extend.*
 import java.util.concurrent.ConcurrentHashMap
 
 class JukeboxEventListener(
@@ -51,10 +49,12 @@ class JukeboxEventListener(
 
         val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
 
-        val track = plugin.audioPlayerManager.getTrack(identifier) ?: run {
+        val track = try {
+            plugin.audioPlayerManager.getTrack(identifier)
+        } catch (e: FriendlyException) {
             block.asJukebox()?.eject()
             voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found")
+                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found", e.message)
                     .withStyle(MinecraftTextStyle.GOLD)
             )
             return

@@ -1,5 +1,6 @@
 package su.plo.voice.disks.command.subcommand
 
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -42,8 +43,10 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             return
         }
 
-        val track = handler.plugin.audioPlayerManager.getTrack(identifier) ?: run {
-            voicePlayer.instance.sendTranslatable("pv.addon.disks.error.get_track_fail")
+        val track = try {
+            handler.plugin.audioPlayerManager.getTrack(identifier)
+        } catch (e: FriendlyException) {
+            voicePlayer.instance.sendTranslatable("pv.addon.disks.error.get_track_fail", e.message)
             return
         }
 
