@@ -39,14 +39,14 @@ class JukeboxEventListener(
 
         val item = event.item?.takeIf { it.type.isRecord } ?: return
 
-        if (!event.player.hasPermission("pv.addon.discs.play")) return
+        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
+
+        if (!voicePlayer.instance.hasPermission("pv.addon.discs.play")) return
 
         val identifier = item?.itemMeta
             ?.persistentDataContainer
             ?.get(plugin.identifierKey, PersistentDataType.STRING)
             ?: return
-
-        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
 
         val track = try {
             plugin.audioPlayerManager.getTrack(identifier)

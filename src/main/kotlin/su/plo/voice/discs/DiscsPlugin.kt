@@ -69,8 +69,9 @@ class DiscsPlugin : JavaPlugin() {
         command.setExecutor(handler)
         command.tabCompleter = handler
 
-        voiceServer.minecraftServer.permissionsManager
-            .register("pv.addon.discs.play", PermissionDefault.TRUE)
+        val permissions = voiceServer.minecraftServer.permissionsManager
+
+        permissions.register("pv.addon.discs.play", PermissionDefault.TRUE)
 
         val protocolManager: ProtocolManager = ProtocolLibrary.getProtocolManager()
 

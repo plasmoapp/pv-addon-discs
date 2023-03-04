@@ -3,6 +3,7 @@ erase_wrong_item = "&cЭтот предмет нельзя очистить"
 get_track_fail = "&cНе получилось получить трек: %s"
 not_a_record = "&cЧтобы прожечь диск вам нужно держать его в руке"
 unknown_subcommand = "&cТакой команды нет. Доступные команды: %s"
+no_permission = "&cНет прав"
 
 [server.pv.addon.discs.usage]
 burn = "&cИспользование: /disc burn <ссылка> [название]"

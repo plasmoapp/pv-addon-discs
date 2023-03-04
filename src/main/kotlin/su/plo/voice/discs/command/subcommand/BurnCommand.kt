@@ -39,6 +39,11 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         val voicePlayer = sender.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
 
+        if (!voicePlayer.instance.hasPermission("pv.addon.discs.burn")) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.no_permission")
+            return
+        }
+
         val identifier = arguments.getOrNull(1) ?: run {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.usage.burn")
             return

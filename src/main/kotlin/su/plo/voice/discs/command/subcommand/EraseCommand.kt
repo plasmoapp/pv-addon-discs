@@ -20,6 +20,11 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
 
         val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
 
+        if (!voicePlayer.instance.hasPermission("pv.addon.discs.erase")) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.no_permission")
+            return
+        }
+
         val player = source.asPlayer() ?: run {
             voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
             return
