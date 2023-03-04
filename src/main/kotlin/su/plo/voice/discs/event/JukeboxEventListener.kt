@@ -49,7 +49,7 @@ class JukeboxEventListener(
             ?.persistentDataContainer
             ?.let {
                 it.get(plugin.identifierKey, PersistentDataType.STRING) ?:
-                it.get(NamespacedKey("pv-addon-disks", "identifier"), PersistentDataType.STRING)
+                it.get(plugin.oldIdentifierKey, PersistentDataType.STRING)
             }
             ?: return
 
