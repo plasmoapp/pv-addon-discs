@@ -5,14 +5,16 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import org.bukkit.NamespacedKey
+import org.bukkit.inventory.ItemStack
 import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.utils.extend.asJukebox
+import su.plo.voice.discs.utils.extend.isCustomDisc
 
 class CancelJukeboxPlayEvent(
-    private val disksPlugin: DiscsPlugin,
+    private val discsPlugin: DiscsPlugin,
     priority: ListenerPriority,
 ): PacketAdapter(
-    disksPlugin,
+    discsPlugin,
     priority,
     PacketType.Play.Server.WORLD_EVENT,
 ) {
@@ -24,17 +26,15 @@ class CancelJukeboxPlayEvent(
         // 1010: Play record
         if (worldEventId != 1010) return
 
-        val jukebox = event.packet.blockPositionModifier
+        val isCustomDisc = event.packet.blockPositionModifier
             .read(0)
             .toLocation(event.player.world)
             .block
             .asJukebox()
-            ?.takeIf { it.record.hasItemMeta() } ?: return
+            ?.takeIf { it.record.hasItemMeta() }
+            ?.record
+            ?.isCustomDisc(discsPlugin) ?: return
 
-        val isCustomDisk = jukebox.record.itemMeta
-            .persistentDataContainer
-            .let { it.has(disksPlugin.identifierKey) || it.has(disksPlugin.oldIdentifierKey) }
-
-        if (isCustomDisk) event.isCancelled = true
+        if (isCustomDisc) event.isCancelled = true
     }
 }

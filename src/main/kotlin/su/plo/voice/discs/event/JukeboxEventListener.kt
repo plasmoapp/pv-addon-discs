@@ -19,6 +19,7 @@ import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextStyle
 import su.plo.voice.discs.utils.extend.*
+import su.plo.voice.discs.utils.suspendSync
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutionException
 
@@ -27,6 +28,8 @@ class JukeboxEventListener(
 ): Listener {
 
     private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
+
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiscInsert(event: PlayerInteractEvent) {
@@ -39,7 +42,7 @@ class JukeboxEventListener(
 
         if (jukebox.isPlaying) return
 
-        val item = event.item?.takeIf { it.type.isRecord } ?: return
+        val item = event.item?.takeIf { it.isCustomDisc(plugin) } ?: return
 
         val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
 
@@ -53,6 +56,13 @@ class JukeboxEventListener(
             }
             ?: return
 
+        voicePlayer.instance.sendActionBar(
+            MinecraftTextComponent.translatable("pv.addon.discs.actionbar.loading")
+                .withStyle(MinecraftTextStyle.YELLOW)
+        )
+
+        scope.launch {
+
         val track = try {
             plugin.audioPlayerManager.getTrack(identifier)
         } catch (e: ExecutionException) {
@@ -62,10 +72,10 @@ class JukeboxEventListener(
             }
             voicePlayer.instance.sendActionBar(
                 MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", message)
-                    .withStyle(MinecraftTextStyle.GOLD)
+                    .withStyle(MinecraftTextStyle.RED)
             )
-            block.asJukebox()?.eject()
-            return
+            suspendSync(plugin) { block.asJukebox()?.eject() }
+            return@launch
         }
 
         val trackName = item.itemMeta
@@ -103,10 +113,10 @@ class JukeboxEventListener(
             "pv.addon.discs.actionbar.playing", trackName
         )
 
-        block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble())
+        suspendSync(plugin) { block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
-    }
+    }}
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiskEject(event: PlayerInteractEvent) {
