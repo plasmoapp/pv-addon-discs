@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import kotlinx.coroutines.*
+import su.plo.voice.api.encryption.Encryption
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.source.ServerStaticSource
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
@@ -22,7 +23,8 @@ class PlasmoAudioPlayerManager(
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypt = voiceServer.defaultEncryption
+    private val encrypt: Encryption
+        get() = voiceServer.defaultEncryption
 
     init {
         AudioSourceManagers.registerRemoteSources(lavaPlayerManager)
