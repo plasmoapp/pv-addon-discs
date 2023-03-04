@@ -36,6 +36,7 @@ class DiscsPlugin : JavaPlugin() {
     lateinit var addonConfig: AddonConfig
 
     val identifierKey = NamespacedKey(this, "identifier")
+
     val oldIdentifierKey = NamespacedKey("pv-addon-disks", "identifier")
 
     override fun onLoad() {

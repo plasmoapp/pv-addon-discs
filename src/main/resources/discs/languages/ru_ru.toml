@@ -15,6 +15,7 @@ label = "[название]"
 [server.pv.addon.discs.actionbar]
 track_not_found = "Трек не найден: %s"
 playing = "Сейчас играет: %s"
+loading = "Загружаем..."
 
 [server.pv.addon.discs.success]
 erase = "&aДиск очищен"

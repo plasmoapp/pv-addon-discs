@@ -15,6 +15,7 @@ label = "[label]"
 [server.pv.addon.discs.actionbar]
 track_not_found = "Track not found: %s"
 playing = "Now playing: %s"
+loading = "Loading..."
 
 [server.pv.addon.discs.success]
 erase = "&aCustom audio erased"

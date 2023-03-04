@@ -1,6 +1,9 @@
 package su.plo.voice.discs.command.subcommand
 
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -13,6 +16,7 @@ import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.sendTranslatable
+import su.plo.voice.discs.utils.suspendSync
 import su.plo.voice.groups.command.SubCommand
 import java.util.concurrent.ExecutionException
 
@@ -24,8 +28,14 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         "burn" to PermissionDefault.OP
     )
 
+    private val scope = CoroutineScope(Dispatchers.Default)
+
     override fun suggest(source: CommandSender, arguments: Array<out String>): List<String> {
+
         val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return listOf()
+
+        if (!voicePlayer.instance.hasPermission("pv.addon.discs.burn")) return listOf()
+
         if (arguments.size < 2 ) return listOf()
         if (arguments.size == 2) return listOf(
             handler.getTranslationStringByKey("pv.addon.discs.arg.url", voicePlayer.instance)
@@ -35,18 +45,18 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         )
     }
 
-    override fun execute(sender: CommandSender, arguments: Array<out String>) {
+    override fun execute(sender: CommandSender, arguments: Array<out String>) { scope.launch {
 
-        val voicePlayer = sender.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
+        val voicePlayer = sender.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return@launch
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.burn")) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.no_permission")
-            return
+            return@launch
         }
 
         val identifier = arguments.getOrNull(1) ?: run {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.usage.burn")
-            return
+            return@launch
         }
 
         val track = try {
@@ -57,7 +67,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
                 else -> e.message
             }
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", message)
-            return
+            return@launch
         }
 
         val name = arguments.drop(2)
@@ -66,15 +76,17 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         val player = sender.asPlayer() ?: run {
             voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
-            return
+            return@launch
         }
 
-        val meta = player.inventory.itemInMainHand
-            .also { if (!it.type.isRecord) {
+        val meta = suspendSync(handler.plugin) {
+            val item = player.inventory.itemInMainHand
+            if (!item.type.isRecord) {
                 voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
-                return
-            }}
-            .itemMeta
+                return@suspendSync null
+            }
+           return@suspendSync item.itemMeta
+        } ?: return@launch
 
         meta.addItemFlags(*ItemFlag.values())
 
@@ -96,10 +108,16 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         meta.lore(listOf(loreName))
 
-        player.inventory.itemInMainHand.itemMeta = meta
-
-        voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
-    }
+        suspendSync(handler.plugin) {
+            val item = player.inventory.itemInMainHand
+            if (!item.type.isRecord) {
+                voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
+                return@suspendSync
+            }
+            item.itemMeta = meta
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
+        }
+    }}
 
     override fun checkCanExecute(sender: CommandSender): Boolean = sender.hasPermission("pv.addon.discs.burn")
 }
