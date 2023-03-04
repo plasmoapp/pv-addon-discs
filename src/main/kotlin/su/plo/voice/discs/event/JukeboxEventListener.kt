@@ -9,7 +9,9 @@ import su.plo.lib.api.server.world.ServerPos3d
 import su.plo.voice.discs.DiscsPlugin
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.TextComponent
+import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
+import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
@@ -26,7 +28,7 @@ class JukeboxEventListener(
 
     private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiscInsert(event: PlayerInteractEvent) {
 
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
@@ -45,7 +47,10 @@ class JukeboxEventListener(
 
         val identifier = item?.itemMeta
             ?.persistentDataContainer
-            ?.get(plugin.identifierKey, PersistentDataType.STRING)
+            ?.let {
+                it.get(plugin.identifierKey, PersistentDataType.STRING) ?:
+                it.get(NamespacedKey("pv-addon-disks", "identifier"), PersistentDataType.STRING)
+            }
             ?: return
 
         val track = try {
@@ -103,7 +108,7 @@ class JukeboxEventListener(
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiskEject(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
 
