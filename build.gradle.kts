@@ -104,7 +104,7 @@ tasks {
 
 bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
-    main = "su.plo.voice.disks.DisksPlugin"
+    main = "su.plo.voice.discs.DiscsPlugin"
     apiVersion = "1.19"
     authors = listOf("KPidS", "Apehum")
 

@@ -1,9 +1,8 @@
 package su.plo.voice.groups.command
 
 import org.bukkit.command.CommandSender
-import su.plo.lib.api.server.command.MinecraftCommandSource
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.disks.command.CommandHandler
+import su.plo.voice.discs.command.CommandHandler
 
 abstract class SubCommand(val handler: CommandHandler) {
 

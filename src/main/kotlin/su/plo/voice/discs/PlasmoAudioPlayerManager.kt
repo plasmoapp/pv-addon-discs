@@ -1,4 +1,4 @@
-package su.plo.voice.disks
+package su.plo.voice.discs
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
@@ -15,7 +15,6 @@ import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
-import kotlin.jvm.Throws
 
 class PlasmoAudioPlayerManager(
     private val voiceServer: PlasmoVoiceServer,
@@ -53,6 +52,7 @@ class PlasmoAudioPlayerManager(
                 source.id,
                 distance
             )
+
             source.sendAudioPacket(packet, distance)
 
             if (start == 0L) start = System.currentTimeMillis()

@@ -1,7 +1,5 @@
-package su.plo.voice.disks.utils.extend
+package su.plo.voice.discs.utils.extend
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentLike
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import su.plo.lib.api.chat.MinecraftTextComponent

@@ -1,6 +1,5 @@
-package su.plo.voice.disks.command
+package su.plo.voice.discs.command
 
-import net.kyori.adventure.text.Component
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -8,14 +7,14 @@ import org.bukkit.command.TabCompleter
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.server.command.MinecraftCommandSource
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.disks.DisksPlugin
-import su.plo.voice.disks.utils.extend.asPlayer
-import su.plo.voice.disks.utils.extend.asVoicePlayer
+import su.plo.voice.discs.DiscsPlugin
+import su.plo.voice.discs.utils.extend.asPlayer
+import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.groups.command.SubCommand
 import java.util.concurrent.ConcurrentHashMap
 
 open class CommandHandler(
-    val plugin: DisksPlugin,
+    val plugin: DiscsPlugin,
 ): CommandExecutor, TabCompleter {
 
     private val subCommands: MutableMap<String, SubCommand> = ConcurrentHashMap()
@@ -30,14 +29,14 @@ open class CommandHandler(
     private fun registerPermissions(permissions: List<Pair<String, PermissionDefault>>) {
         permissions.forEach {
             plugin.voiceServer.minecraftServer.permissionsManager.register(
-                "pv.addon.disks.${it.first}",
+                "pv.addon.discs.${it.first}",
                 it.second
             )
         }
     }
 
     private val unknownCommandComponent = MinecraftTextComponent.translatable(
-        "pv.addon.disks.error.unknown_subcommand",
+        "pv.addon.discs.error.unknown_subcommand",
         subCommands.keys.joinToString(", ")
     )
 

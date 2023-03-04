@@ -1,4 +1,4 @@
-package su.plo.voice.disks.event
+package su.plo.voice.discs.event
 
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import org.bukkit.event.EventHandler
@@ -6,11 +6,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import su.plo.lib.api.server.world.ServerPos3d
-import su.plo.voice.disks.DisksPlugin
+import su.plo.voice.discs.DiscsPlugin
 import kotlinx.coroutines.*
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.block.Block
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
@@ -18,12 +16,12 @@ import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextStyle
-import su.plo.voice.disks.utils.extend.*
+import su.plo.voice.discs.utils.extend.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutionException
 
 class JukeboxEventListener(
-    private val plugin: DisksPlugin
+    private val plugin: DiscsPlugin
 ): Listener {
 
     private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
@@ -41,7 +39,7 @@ class JukeboxEventListener(
 
         val item = event.item?.takeIf { it.type.isRecord } ?: return
 
-        if (!event.player.hasPermission("pv.addon.disks.play")) return
+        if (!event.player.hasPermission("pv.addon.discs.play")) return
 
         val identifier = item?.itemMeta
             ?.persistentDataContainer
@@ -58,7 +56,7 @@ class JukeboxEventListener(
                 else -> e.message
             }
             voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found", message)
+                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", message)
                     .withStyle(MinecraftTextStyle.GOLD)
             )
             block.asJukebox()?.eject()
@@ -97,7 +95,7 @@ class JukeboxEventListener(
         jobByBlock[block] = job
 
         val actionbarMessage = MinecraftTextComponent.translatable(
-            "pv.addon.disks.actionbar.playing", trackName
+            "pv.addon.discs.actionbar.playing", trackName
         )
 
         block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble())

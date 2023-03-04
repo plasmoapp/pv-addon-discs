@@ -1,14 +1,14 @@
-package su.plo.voice.disks.packet
+package su.plo.voice.discs.packet
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
-import su.plo.voice.disks.DisksPlugin
-import su.plo.voice.disks.utils.extend.asJukebox
+import su.plo.voice.discs.DiscsPlugin
+import su.plo.voice.discs.utils.extend.asJukebox
 
 class CancelJukeboxPlayEvent(
-    private val testPlugin: DisksPlugin,
+    private val testPlugin: DiscsPlugin,
     priority: ListenerPriority,
 ): PacketAdapter(
     testPlugin,

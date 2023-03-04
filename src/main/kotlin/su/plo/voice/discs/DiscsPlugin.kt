@@ -1,4 +1,4 @@
-package su.plo.voice.disks
+package su.plo.voice.discs
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.disks.event.JukeboxEventListener
+import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.api.addon.AddonManager
 import su.plo.voice.api.addon.AddonScope
 import su.plo.voice.api.addon.annotation.Addon
@@ -15,16 +15,16 @@ import su.plo.voice.api.event.EventSubscribe
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.event.config.VoiceServerConfigLoadedEvent
-import su.plo.voice.disks.command.subcommand.BurnCommand
-import su.plo.voice.disks.command.CommandHandler
-import su.plo.voice.disks.command.subcommand.EraseCommand
-import su.plo.voice.disks.packet.CancelJukeboxPlayEvent
+import su.plo.voice.discs.command.subcommand.BurnCommand
+import su.plo.voice.discs.command.CommandHandler
+import su.plo.voice.discs.command.subcommand.EraseCommand
+import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 
 
-@Addon(id = "disks", scope = AddonScope.SERVER, version = "1.0.0", authors = ["KPidS"])
-class DisksPlugin : JavaPlugin() {
+@Addon(id = "discs", scope = AddonScope.SERVER, version = "1.0.0", authors = ["KPidS"])
+class DiscsPlugin : JavaPlugin() {
 
-    private val addonName = "disks"
+    private val addonName = "discs"
 
     @Inject
     lateinit var voiceServer: PlasmoVoiceServer
@@ -70,7 +70,7 @@ class DisksPlugin : JavaPlugin() {
         command.tabCompleter = handler
 
         voiceServer.minecraftServer.permissionsManager
-            .register("pv.addon.disks.play", PermissionDefault.TRUE)
+            .register("pv.addon.discs.play", PermissionDefault.TRUE)
 
         val protocolManager: ProtocolManager = ProtocolLibrary.getProtocolManager()
 

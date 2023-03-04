@@ -1,19 +1,11 @@
-package su.plo.voice.disks.command.subcommand
+package su.plo.voice.discs.command.subcommand
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.NamespacedKey
-import org.bukkit.Server
 import org.bukkit.command.CommandSender
-import org.bukkit.inventory.ItemFactory
-import org.bukkit.inventory.ItemFlag
-import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.disks.command.CommandHandler
-import su.plo.voice.disks.utils.extend.asPlayer
-import su.plo.voice.disks.utils.extend.asVoicePlayer
-import su.plo.voice.disks.utils.extend.sendTranslatable
+import su.plo.voice.discs.command.CommandHandler
+import su.plo.voice.discs.utils.extend.asPlayer
+import su.plo.voice.discs.utils.extend.asVoicePlayer
+import su.plo.voice.discs.utils.extend.sendTranslatable
 import su.plo.voice.groups.command.SubCommand
 
 class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
@@ -36,7 +28,7 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
         val item = player.inventory.itemInMainHand
             .takeIf { it.type.isRecord && it.hasItemMeta() }
             ?: run {
-                voicePlayer.instance.sendTranslatable("pv.addon.disks.error.erase_wrong_item")
+                voicePlayer.instance.sendTranslatable("pv.addon.discs.error.erase_wrong_item")
                 return
             }
 
@@ -44,9 +36,9 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
 
         item.itemMeta = meta
 
-        voicePlayer.instance.sendTranslatable("pv.addon.disks.success.erase")
+        voicePlayer.instance.sendTranslatable("pv.addon.discs.success.erase")
     }
 
     override fun checkCanExecute(sender: CommandSender): Boolean =
-        sender.hasPermission("pv.addon.disks.erase")
+        sender.hasPermission("pv.addon.discs.erase")
 }

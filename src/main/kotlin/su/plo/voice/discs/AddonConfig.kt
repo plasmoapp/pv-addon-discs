@@ -1,4 +1,4 @@
-package su.plo.voice.disks
+package su.plo.voice.discs
 
 import org.bukkit.Bukkit
 import su.plo.config.Config
@@ -18,8 +18,8 @@ class AddonConfig {
     @ConfigField(path = "default_jukebox_distance")
     var jukeboxDistance = 65
 
-    @ConfigField(path = "add_glint_to_custom_disks")
-    var addGlintToCustomDisks = false
+    @ConfigField(path = "add_glint_to_custom_discs")
+    var addGlintToCustomDiscs = false
 
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {
@@ -32,7 +32,7 @@ class AddonConfig {
                 File(addonFolder, "languages")
             )
 
-            val configFile = File(addonFolder, "disks.toml")
+            val configFile = File(addonFolder, "discs.toml")
 
             return toml.load<AddonConfig>(AddonConfig::class.java, configFile, false)
                 .also { toml.save(AddonConfig::class.java, it, configFile) }
@@ -40,7 +40,7 @@ class AddonConfig {
 
         @Throws(IOException::class)
         private fun getLanguageResource(resourcePath: String): InputStream? {
-            return javaClass.classLoader.getResourceAsStream(String.format("disks/%s", resourcePath))
+            return javaClass.classLoader.getResourceAsStream(String.format("discs/%s", resourcePath))
         }
 
         private val toml = ConfigurationProvider.getProvider<ConfigurationProvider>(
@@ -48,6 +48,6 @@ class AddonConfig {
         )
 
         private fun getAddonFolder(): File =
-            File(Bukkit.getPluginsFolder(), "pv-addon-disks")
+            File(Bukkit.getPluginsFolder(), "pv-addon-discs")
     }
 }

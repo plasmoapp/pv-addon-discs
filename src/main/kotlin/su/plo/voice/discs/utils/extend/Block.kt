@@ -1,4 +1,4 @@
-package su.plo.voice.disks.utils.extend
+package su.plo.voice.discs.utils.extend
 
 import org.bukkit.Material
 import org.bukkit.block.Block

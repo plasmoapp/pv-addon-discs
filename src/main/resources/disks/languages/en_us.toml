@@ -1,23 +1,23 @@
-[server.pv.addon.disks.error]
+[server.pv.addon.discs.error]
 erase_wrong_item = "&cCan't erase this item"
 get_track_fail = "&cFailed to get the track: %s"
 not_a_record = "&cYou need have a record in your hand to burn it"
 unknown_subcommand = "&cUnknown subcommand. Available commands: %s"
 
-[server.pv.addon.disks.usage]
-burn = "&cUsage: /disks burn <url> [label]"
+[server.pv.addon.discs.usage]
+burn = "&cUsage: /discs burn <url> [label]"
 
-[server.pv.addon.disks.arg]
+[server.pv.addon.discs.arg]
 url = "<url>"
 label = "[label]"
 
-[server.pv.addon.disks.actionbar]
+[server.pv.addon.discs.actionbar]
 track_not_found = "Track not found: %s"
 playing = "Now playing: %s"
 
-[server.pv.addon.disks.success]
+[server.pv.addon.discs.success]
 erase = "&aCustom audio erased"
 burn = "&aDisc burned. Label: %s"
 
 [client.pv.activation]
-disks = "Disks"
+discs = "discs"

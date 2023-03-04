@@ -1,4 +1,4 @@
-package su.plo.voice.disks.command.subcommand
+package su.plo.voice.discs.command.subcommand
 
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import net.kyori.adventure.text.Component
@@ -9,10 +9,10 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.disks.command.CommandHandler
-import su.plo.voice.disks.utils.extend.asPlayer
-import su.plo.voice.disks.utils.extend.asVoicePlayer
-import su.plo.voice.disks.utils.extend.sendTranslatable
+import su.plo.voice.discs.command.CommandHandler
+import su.plo.voice.discs.utils.extend.asPlayer
+import su.plo.voice.discs.utils.extend.asVoicePlayer
+import su.plo.voice.discs.utils.extend.sendTranslatable
 import su.plo.voice.groups.command.SubCommand
 import java.util.concurrent.ExecutionException
 
@@ -28,10 +28,10 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         val voicePlayer = source.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return listOf()
         if (arguments.size < 2 ) return listOf()
         if (arguments.size == 2) return listOf(
-            handler.getTranslationStringByKey("pv.addon.disks.arg.url", voicePlayer.instance)
+            handler.getTranslationStringByKey("pv.addon.discs.arg.url", voicePlayer.instance)
         )
         return listOf(
-            handler.getTranslationStringByKey("pv.addon.disks.arg.label", voicePlayer.instance)
+            handler.getTranslationStringByKey("pv.addon.discs.arg.label", voicePlayer.instance)
         )
     }
 
@@ -40,7 +40,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         val voicePlayer = sender.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return
 
         val identifier = arguments.getOrNull(1) ?: run {
-            voicePlayer.instance.sendTranslatable("pv.addon.disks.usage.burn")
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.usage.burn")
             return
         }
 
@@ -51,7 +51,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
                 is FriendlyException -> (e.cause as FriendlyException).message
                 else -> e.message
             }
-            voicePlayer.instance.sendTranslatable("pv.addon.disks.error.get_track_fail", message)
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", message)
             return
         }
 
@@ -66,7 +66,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         val meta = player.inventory.itemInMainHand
             .also { if (!it.type.isRecord) {
-                voicePlayer.instance.sendTranslatable("pv.addon.disks.error.not_a_record")
+                voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
                 return
             }}
             .itemMeta
@@ -79,7 +79,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             identifier
         )
 
-        if (handler.plugin.addonConfig.addGlintToCustomDisks) {
+        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
             meta.addEnchant(Enchantment.MENDING, 1, false)
         }
 
@@ -93,8 +93,8 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         player.inventory.itemInMainHand.itemMeta = meta
 
-        voicePlayer.instance.sendTranslatable("pv.addon.disks.success.burn", name)
+        voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
     }
 
-    override fun checkCanExecute(sender: CommandSender): Boolean = sender.hasPermission("pv.addon.disks.burn")
+    override fun checkCanExecute(sender: CommandSender): Boolean = sender.hasPermission("pv.addon.discs.burn")
 }
