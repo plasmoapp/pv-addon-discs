@@ -20,6 +20,7 @@ import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextStyle
 import su.plo.voice.disks.utils.extend.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutionException
 
 class JukeboxEventListener(
     private val plugin: DisksPlugin
@@ -51,12 +52,16 @@ class JukeboxEventListener(
 
         val track = try {
             plugin.audioPlayerManager.getTrack(identifier)
-        } catch (e: FriendlyException) {
-            block.asJukebox()?.eject()
+        } catch (e: ExecutionException) {
+            val message = when (e.cause) {
+                is FriendlyException -> (e.cause as FriendlyException).message
+                else -> e.message
+            }
             voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found", e.message)
+                MinecraftTextComponent.translatable("pv.addon.disks.actionbar.track_not_found", message)
                     .withStyle(MinecraftTextStyle.GOLD)
             )
+            block.asJukebox()?.eject()
             return
         }
 

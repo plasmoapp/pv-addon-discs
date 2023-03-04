@@ -14,6 +14,7 @@ import su.plo.voice.disks.utils.extend.asPlayer
 import su.plo.voice.disks.utils.extend.asVoicePlayer
 import su.plo.voice.disks.utils.extend.sendTranslatable
 import su.plo.voice.groups.command.SubCommand
+import java.util.concurrent.ExecutionException
 
 class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -45,8 +46,12 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         val track = try {
             handler.plugin.audioPlayerManager.getTrack(identifier)
-        } catch (e: FriendlyException) {
-            voicePlayer.instance.sendTranslatable("pv.addon.disks.error.get_track_fail", e.message)
+        } catch (e: ExecutionException) {
+            val message = when (e.cause) {
+                is FriendlyException -> (e.cause as FriendlyException).message
+                else -> e.message
+            }
+            voicePlayer.instance.sendTranslatable("pv.addon.disks.error.get_track_fail", message)
             return
         }
 
