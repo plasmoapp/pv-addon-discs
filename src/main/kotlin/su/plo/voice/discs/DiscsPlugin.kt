@@ -56,7 +56,7 @@ class DiscsPlugin : JavaPlugin() {
             addonConfig.sourceLineWeight
         )
 
-        audioPlayerManager = PlasmoAudioPlayerManager(voiceServer, addonConfig)
+        audioPlayerManager = PlasmoAudioPlayerManager(this)
     }
 
     override fun onEnable() {

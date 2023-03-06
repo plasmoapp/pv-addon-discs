@@ -10,7 +10,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import kotlinx.coroutines.*
 import su.plo.voice.api.encryption.Encryption
-import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.source.ServerStaticSource
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
@@ -18,19 +17,18 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 class PlasmoAudioPlayerManager(
-    private val voiceServer: PlasmoVoiceServer,
-    addonConfig: AddonConfig
+    private val plugin: DiscsPlugin
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
     private val encrypt: Encryption
-        get() = voiceServer.defaultEncryption
+        get() = plugin.voiceServer.defaultEncryption
 
     init {
         AudioSourceManagers.registerRemoteSources(lavaPlayerManager)
     }
 
-    private val distance: Short = addonConfig.jukeboxDistance.toShort()
+    private val distance: Short = plugin.addonConfig.jukeboxDistance.toShort()
 
     fun startTrackJob(track: AudioTrack, source: ServerStaticSource) = scope.launch {
 
@@ -72,7 +70,7 @@ class PlasmoAudioPlayerManager(
                 i++
             ), distance)
 
-            voiceServer.sourceManager.remove(source)
+            plugin.sourceLine.removeSource(source)
         }}
     }
 

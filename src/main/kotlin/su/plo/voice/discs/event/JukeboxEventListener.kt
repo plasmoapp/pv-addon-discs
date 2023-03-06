@@ -94,13 +94,7 @@ class JukeboxEventListener(
             block.z.toDouble() + 0.5
         )
 
-        val source = plugin.voiceServer.sourceManager.createStaticSource(
-            plugin,
-            pos,
-            plugin.sourceLine,
-            "opus",
-            true
-        )
+        val source = plugin.sourceLine.createStaticSource(pos, true)
 
         source.setName(trackName)
 
