@@ -7,21 +7,29 @@ import com.google.inject.Inject
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.discs.event.JukeboxEventListener
-import su.plo.voice.api.addon.AddonManager
 import su.plo.voice.api.addon.AddonScope
 import su.plo.voice.api.addon.annotation.Addon
+import su.plo.voice.api.addon.annotation.Dependency
 import su.plo.voice.api.event.EventSubscribe
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.event.config.VoiceServerConfigLoadedEvent
-import su.plo.voice.discs.command.subcommand.BurnCommand
 import su.plo.voice.discs.command.CommandHandler
+import su.plo.voice.discs.command.subcommand.BurnCommand
 import su.plo.voice.discs.command.subcommand.EraseCommand
+import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 
 
-@Addon(id = "discs", scope = AddonScope.SERVER, version = "1.0.0", authors = ["KPidS"])
+@Addon(
+    id = "discs",
+    scope = AddonScope.SERVER,
+    version = "1.0.0",
+    authors = ["KPidS"],
+    dependencies = [
+        Dependency(id = "lavaplayer-lib")
+    ]
+)
 class DiscsPlugin : JavaPlugin() {
 
     private val addonName = "discs"
