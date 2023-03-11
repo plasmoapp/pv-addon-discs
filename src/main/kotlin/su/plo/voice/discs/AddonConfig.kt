@@ -12,13 +12,16 @@ import java.io.InputStream
 
 @Config
 class AddonConfig {
-    @ConfigField(path = "source_line_weight")
+    @ConfigField
     var sourceLineWeight = 10
 
-    @ConfigField(path = "default_jukebox_distance")
+    @ConfigField
+    var defaultSourceLineVolume = 0.2
+
+    @ConfigField
     var jukeboxDistance: Short = 65
 
-    @ConfigField(path = "add_glint_to_custom_discs")
+    @ConfigField
     var addGlintToCustomDiscs = false
 
     @ConfigField(path = "enable_beacon_like_distance_amplification",)

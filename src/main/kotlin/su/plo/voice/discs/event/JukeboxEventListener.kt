@@ -46,6 +46,8 @@ class JukeboxEventListener(
 
         if (jukebox.isPlaying) return
 
+        if (event.hasItem() && event.player.isSneaking) return
+
         val item = event.item?.takeIf { it.isCustomDisc(plugin) } ?: return
 
         val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return

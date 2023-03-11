@@ -54,7 +54,7 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib", kotlinVersion))
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
-    compileOnly("su.plo:pv-addon-lavaplayer-lib:1.0.0")
+    compileOnly("su.plo:pv-addon-lavaplayer-lib:1.0.1")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     compileOnly("su.plo.voice.api:server:2.0.0+ALPHA")
@@ -108,7 +108,7 @@ bukkit {
     apiVersion = "1.19"
     authors = listOf("KPidS", "Apehum")
 
-    depend = listOf("PlasmoVoice", "ProtocolLib")
+    depend = listOf("PlasmoVoice", "ProtocolLib", "pv-addon-lavaplayer-lib")
 
     commands {
         register("disc") {}

@@ -25,10 +25,7 @@ import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
     id = "discs",
     scope = AddonScope.SERVER,
     version = "1.0.0",
-    authors = ["KPidS"],
-    dependencies = [
-        Dependency(id = "lavaplayer-lib")
-    ]
+    authors = ["KPidS"]
 )
 class DiscsPlugin : JavaPlugin() {
 
@@ -56,13 +53,15 @@ class DiscsPlugin : JavaPlugin() {
 
         addonConfig = AddonConfig.loadConfig(voiceServer)
 
-        sourceLine = voiceServer.sourceLineManager.register(
+        sourceLine = voiceServer.sourceLineManager.createBuilder(
             this,
             addonName,
             "pv.activation.$addonName",
             "plasmovoice:textures/icons/speaker_disc.png",
             addonConfig.sourceLineWeight
-        )
+        ).apply {
+            setDefaultVolume(addonConfig.defaultSourceLineVolume)
+        }.build()
 
         audioPlayerManager = PlasmoAudioPlayerManager(this)
     }
