@@ -31,9 +31,8 @@ class CancelJukeboxPlayEvent(
             .toLocation(event.player.world)
             .block
             .asJukebox()
-            ?.takeIf { it.record.hasItemMeta() }
             ?.record
-            ?.isCustomDisc(discsPlugin) ?: return
+            ?.isCustomDisc(discsPlugin) ?: false
 
         if (isCustomDisc) event.isCancelled = true
     }

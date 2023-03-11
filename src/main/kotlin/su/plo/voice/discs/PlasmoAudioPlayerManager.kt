@@ -28,9 +28,9 @@ class PlasmoAudioPlayerManager(
         AudioSourceManagers.registerRemoteSources(lavaPlayerManager)
     }
 
-    private val distance: Short = plugin.addonConfig.jukeboxDistance.toShort()
+//    private val distance: Short = plugin.addonConfig.jukeboxDistance.toShort()
 
-    fun startTrackJob(track: AudioTrack, source: ServerStaticSource) = scope.launch {
+    fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short) = scope.launch {
 
         val player = lavaPlayerManager.createPlayer()
 

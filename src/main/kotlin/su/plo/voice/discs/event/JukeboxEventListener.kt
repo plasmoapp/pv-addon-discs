@@ -1,5 +1,6 @@
 package su.plo.voice.discs.event
 
+import com.destroystokyo.paper.MaterialTags
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -9,7 +10,10 @@ import su.plo.lib.api.server.world.ServerPos3d
 import su.plo.voice.discs.DiscsPlugin
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.TextComponent
+import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Tag
 import org.bukkit.block.Block
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
@@ -98,7 +102,12 @@ class JukeboxEventListener(
 
         source.setName(trackName)
 
-        val job = plugin.audioPlayerManager.startTrackJob(track, source)
+        val distance = when (plugin.addonConfig.enableBeaconLikeDistance) {
+            true -> plugin.addonConfig.beaconLikeDistanceList[getBeaconLevel(block).toInt()]
+            false -> plugin.addonConfig.jukeboxDistance
+        }
+
+        val job = plugin.audioPlayerManager.startTrackJob(track, source, distance)
 
         jobByBlock[block]?.cancel()
         jobByBlock[block] = job
@@ -107,7 +116,13 @@ class JukeboxEventListener(
             "pv.addon.discs.actionbar.playing", trackName
         )
 
-        suspendSync(plugin) { block.world.getNearbyPlayers(block.location, plugin.addonConfig.jukeboxDistance.toDouble()) }
+        voicePlayer.visualizeDistance(
+            pos.toPosition(),
+            distance.toInt(),
+            0xf1c40f
+        )
+
+        suspendSync(plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
     }}
@@ -137,5 +152,17 @@ class JukeboxEventListener(
             .filter { it.isJukebox() }
             .forEach { jobByBlock[it]?.cancel() }
     }
-}
 
+    private fun getBeaconLevel(block: Block) = (1 until plugin.addonConfig.beaconLikeDistanceList.size).takeWhile { level ->
+        (-level..level).all { xOffset ->
+            (-level..level).all { zOffset ->
+                Location(
+                    block.world,
+                    (block.x + xOffset).toDouble(),
+                    (block.y - level).toDouble(),
+                    (block.z + zOffset).toDouble()
+                ).block.isBeaconBaseBlock()
+            }
+        }
+    }.count()
+}

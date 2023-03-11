@@ -16,10 +16,16 @@ class AddonConfig {
     var sourceLineWeight = 10
 
     @ConfigField(path = "default_jukebox_distance")
-    var jukeboxDistance = 65
+    var jukeboxDistance: Short = 65
 
     @ConfigField(path = "add_glint_to_custom_discs")
     var addGlintToCustomDiscs = false
+
+    @ConfigField(path = "enable_beacon_like_distance_amplification",)
+    var enableBeaconLikeDistance = false
+
+    @ConfigField(path = "beacon_like_distances")
+    var beaconLikeDistanceList: List<Short> = listOf(12, 24, 32, 48, 64)
 
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {
