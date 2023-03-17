@@ -46,8 +46,6 @@ class JukeboxEventListener(
 
         if (jukebox.isPlaying) return
 
-        if (event.hasItem() && event.player.isSneaking) return
-
         val item = event.item?.takeIf { it.isCustomDisc(plugin) } ?: return
 
         val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
@@ -132,6 +130,11 @@ class JukeboxEventListener(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiskEject(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
+
+        if ((event.player.inventory.itemInMainHand.type != Material.AIR ||
+                    event.player.inventory.itemInOffHand.type != Material.AIR) &&
+            event.player.isSneaking
+        ) return
 
         val block = event.clickedBlock ?: return
 
