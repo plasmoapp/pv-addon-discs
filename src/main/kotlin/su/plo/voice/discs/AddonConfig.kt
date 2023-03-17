@@ -36,6 +36,8 @@ class AddonConfig {
             val addonFolder = getAddonFolder()
 
             server.languages.register(
+                "plasmo-voice-addons",
+                "server/discs.toml",
                 { resourcePath: String -> getLanguageResource(resourcePath)
                     ?: throw Exception("Can't load language resource") },
                 File(addonFolder, "languages")
