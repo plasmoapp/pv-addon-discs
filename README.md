@@ -3,13 +3,15 @@
 <div>
     <a href="https://modrinth.com/mod/plasmo-voice">Plasmo Voice</a>
     <span> | </span>
-    <a href="https://www.curseforge.com/minecraft/mc-mods/pv-addon-discs">Modrinth</a>
+    <a href="https://modrinth.com/plugin/pv-addon-discs">Modrinth</a>
     <span> | </span>
     <a href="https://www.spigotmc.org/resources/plasmo-voice-server.91064/">Spigot</a>
     <span> | </span>
     <a href="https://github.com/plasmoapp/pv-addon-discs/">GitHub</a>
     <span> | </span>
     <a href="https://discord.com/invite/uueEqzwCJJ">Discord</a>
+     <span> | </span>
+    <a href="https://www.patreon.com/plasmomc">Patreon</a>
 </div>
 
 # pv-addon-discs
@@ -20,7 +22,7 @@ The addon can stream audio from various sources instead of saving audio files on
 
 ## Installation
 
-1. Install [Plasmo Voice](https://modrinth.com/mod/plasmo-voice), [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) and [pv-addon-lavaplayer-lib](https://modrinth.com/mod/pv-addon-lavaplayerlib). You also need to install Plasmo Voice on your client.
+1. Install [Plasmo Voice](https://modrinth.com/mod/plasmo-voice), [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) and [pv-addon-lavaplayer-lib](https://modrinth.com/mod/pv-addon-lavaplayer-lib). You also need to install Plasmo Voice on your client.
 2. Download this plugin from Modrinth and drop it into the `~/plugins` folder.
 3. Restart the server
 
