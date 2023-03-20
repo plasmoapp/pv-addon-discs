@@ -3,11 +3,11 @@
 <div>
     <a href="https://modrinth.com/mod/plasmo-voice">Plasmo Voice</a>
     <span> | </span>
-    <a href="https://www.curseforge.com/minecraft/mc-mods/plasmo-voice">Modrinth</a>
+    <a href="https://www.curseforge.com/minecraft/mc-mods/pv-addon-discs">Modrinth</a>
     <span> | </span>
     <a href="https://www.spigotmc.org/resources/plasmo-voice-server.91064/">Spigot</a>
     <span> | </span>
-    <a href="https://github.com/plasmoapp/pv-addon-disks/">GitHub</a>
+    <a href="https://github.com/plasmoapp/pv-addon-discs/">GitHub</a>
     <span> | </span>
     <a href="https://discord.com/invite/uueEqzwCJJ">Discord</a>
 </div>
