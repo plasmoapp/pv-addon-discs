@@ -1,11 +1,30 @@
+<img src="https://i.imgur.com/4o67Wn1.png" width="256"/>
+
+<div>
+    <a href="https://modrinth.com/mod/plasmo-voice">Plasmo Voice</a>
+    <span> | </span>
+    <a href="https://modrinth.com/plugin/pv-addon-discs">Modrinth</a>
+    <span> | </span>
+    <a href="https://www.spigotmc.org/resources/plasmo-voice-server.91064/">Spigot</a>
+    <span> | </span>
+    <a href="https://github.com/plasmoapp/pv-addon-discs/">GitHub</a>
+    <span> | </span>
+    <a href="https://discord.com/invite/uueEqzwCJJ">Discord</a>
+     <span> | </span>
+    <a href="https://www.patreon.com/plasmomc">Patreon</a>
+</div>
+
 # pv-addon-discs
-Paper only [Plasmo Voice](https://github.com/plasmoapp/plasmo-voice) addon. Play audio from Youtube and other sources in Minecraft using music discs.
+
+Paper only [Plasmo Voice](https://github.com/plasmoapp/plasmo-voice) addon. Play audio from Youtube and other sources in Minecraft using music discs. Inspired by [SVC](https://github.com/henkelmax/simple-voice-chat)'s [AudioPlayer](https://github.com/henkelmax/audio-player) & [CustomDiscs](https://github.com/Navoei/CustomDiscs).
 
 The addon can stream audio from various sources instead of saving audio files on the server. It even supports Youtube and Twitch live streams. Thanks to the brilliant [LavaPlayer](https://github.com/sedmelluq/lavaplayer) library.
 
-**Depends on [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)**
+## Installation
 
-Inspired by [SVC](https://github.com/henkelmax/simple-voice-chat)'s [AudioPlayer](https://github.com/henkelmax/audio-player) & [Customdiscs](https://github.com/Navoei/CustomDiscs).
+1. Install [Plasmo Voice](https://modrinth.com/mod/plasmo-voice), [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) and [pv-addon-lavaplayer-lib](https://modrinth.com/mod/pv-addon-lavaplayer-lib). You also need to install Plasmo Voice on your client.
+2. Download this plugin from Modrinth and drop it into the `~/plugins` folder.
+3. Restart the server
 
 ## Commands
 
@@ -25,7 +44,7 @@ Available to everyone by default:
 
 `pv.addon.discs.play` – Use custom music discs
 
-## Supported sources
+# Supported sources
 
 Addon can load audio from:
 
@@ -53,6 +72,5 @@ If you want to stream audio from direct URLs
 
 - Copy discs like you can copy maps
 - YouTube search
-- Set distance on a jukebox
 - Custom goat horn audio
 - Make it work with hoppers
