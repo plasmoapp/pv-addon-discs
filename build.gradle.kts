@@ -55,7 +55,7 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib", kotlinVersion))
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
-    compileOnly("su.plo:pv-addon-lavaplayer-lib:1.0.1")
+    compileOnly("su.plo:pv-addon-lavaplayer-lib:1.0.2")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     compileOnly("su.plo.voice.api:server:2.0.0+ALPHA")

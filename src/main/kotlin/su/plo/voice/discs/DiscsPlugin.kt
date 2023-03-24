@@ -7,23 +7,21 @@ import com.google.inject.Inject
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.api.addon.AddonScope
+import su.plo.voice.api.addon.AddonLoaderScope
 import su.plo.voice.api.addon.annotation.Addon
-import su.plo.voice.api.addon.annotation.Dependency
 import su.plo.voice.api.event.EventSubscribe
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
-import su.plo.voice.api.server.event.config.VoiceServerConfigLoadedEvent
+import su.plo.voice.api.server.event.config.VoiceServerConfigReloadedEvent
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.subcommand.BurnCommand
 import su.plo.voice.discs.command.subcommand.EraseCommand
 import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 
-
 @Addon(
-    id = "discs",
-    scope = AddonScope.SERVER,
+    id = "pv-addon-discs",
+    scope = AddonLoaderScope.SERVER,
     version = "1.0.0",
     authors = ["KPidS"]
 )
@@ -45,28 +43,17 @@ class DiscsPlugin : JavaPlugin() {
     val oldIdentifierKey = NamespacedKey("pv-addon-disks", "identifier")
 
     override fun onLoad() {
-        PlasmoVoiceServer.getAddonManagerInstance().load(this)
+        PlasmoVoiceServer.getAddonsLoader().load(this)
     }
 
     @EventSubscribe
-    fun onConfigLoaded(event: VoiceServerConfigLoadedEvent) {
-
-        addonConfig = AddonConfig.loadConfig(voiceServer)
-
-        sourceLine = voiceServer.sourceLineManager.createBuilder(
-            this,
-            addonName,
-            "pv.activation.$addonName",
-            "plasmovoice:textures/icons/speaker_disc.png",
-            addonConfig.sourceLineWeight
-        ).apply {
-            setDefaultVolume(addonConfig.defaultSourceLineVolume)
-        }.build()
-
-        audioPlayerManager = PlasmoAudioPlayerManager(this)
+    fun onConfigReloaded(event: VoiceServerConfigReloadedEvent) {
+        loadConfig()
     }
 
     override fun onEnable() {
+        loadConfig()
+
         server.pluginManager.registerEvents(JukeboxEventListener(this), this)
 
         val handler = CommandHandler(this)
@@ -87,5 +74,21 @@ class DiscsPlugin : JavaPlugin() {
         protocolManager.addPacketListener(
             CancelJukeboxPlayEvent(this, ListenerPriority.NORMAL)
         )
+    }
+
+    private fun loadConfig() {
+        addonConfig = AddonConfig.loadConfig(voiceServer)
+
+        sourceLine = voiceServer.sourceLineManager.createBuilder(
+            this,
+            addonName,
+            "pv.activation.$addonName",
+            "plasmovoice:textures/icons/speaker_disc.png",
+            addonConfig.sourceLineWeight
+        ).apply {
+            setDefaultVolume(addonConfig.defaultSourceLineVolume)
+        }.build()
+
+        audioPlayerManager = PlasmoAudioPlayerManager(this)
     }
 }
