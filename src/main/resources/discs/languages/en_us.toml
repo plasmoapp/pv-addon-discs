@@ -22,4 +22,4 @@ erase = "&aCustom audio erased"
 burn = "&aDisc burned. Label: %s"
 
 [client.pv.activation]
-discs = "discs"
+discs = "Discs"
