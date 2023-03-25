@@ -16,7 +16,7 @@ class AddonConfig {
     var sourceLineWeight = 10
 
     @ConfigField
-    var defaultSourceLineVolume = 0.2
+    var defaultSourceLineVolume = 0.5
 
     @ConfigField
     var jukeboxDistance: Short = 65
