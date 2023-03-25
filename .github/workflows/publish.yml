@@ -35,15 +35,7 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           loaders: |
-            fabric
-            forge
-            quilt
-            bukkit
             paper
-            spigot
-            bukkit
-            velocity
-            bungeecord
           game-versions: |
             1.19
 
