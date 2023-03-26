@@ -15,19 +15,37 @@ class AddonConfig {
     @ConfigField
     var sourceLineWeight = 10
 
-    @ConfigField
+    @ConfigField(comment = """
+        Default volume. It is set on the client side and is configurable
+        through mod settings
+    """)
     var defaultSourceLineVolume = 0.5
 
-    @ConfigField
+    @ConfigField(comment = """
+        Distance if 'enable_beacon_like_distance_amplification' is set to false
+    """)
     var jukeboxDistance: Short = 65
 
-    @ConfigField
+    @ConfigField(comment = "Add enchantment glint to custom discs")
     var addGlintToCustomDiscs = false
 
-    @ConfigField(path = "enable_beacon_like_distance_amplification",)
+    @ConfigField(
+        path = "enable_beacon_like_distance_amplification",
+        comment = """
+            With this option enabled you can build a beacon-like pyramid
+            under a jukebox to change the distance of the sound
+        """
+    )
     var enableBeaconLikeDistance = false
 
-    @ConfigField(path = "beacon_like_distances")
+    @ConfigField(
+        path = "beacon_like_distances",
+        comment = """
+            First element is the distance without any pyramid layers.
+            You can add as much layers as you want.
+            Even more/less than the beacon, but not less than one. 
+        """
+    )
     var beaconLikeDistanceList: List<Short> = listOf(12, 24, 32, 48, 64)
 
     companion object {
