@@ -16,6 +16,7 @@ import su.plo.voice.api.server.event.config.VoiceServerConfigReloadedEvent
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.subcommand.BurnCommand
 import su.plo.voice.discs.command.subcommand.EraseCommand
+import su.plo.voice.discs.command.subcommand.SearchCommand
 import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 
@@ -59,6 +60,7 @@ class DiscsPlugin : JavaPlugin() {
         val handler = CommandHandler(this)
             .addSubCommand(::BurnCommand)
             .addSubCommand(::EraseCommand)
+            .addSubCommand(::SearchCommand)
 
         val command = getCommand("disc") ?: throw Exception("Command not found")
 

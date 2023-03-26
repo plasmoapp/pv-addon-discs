@@ -1,7 +1,5 @@
 package su.plo.voice.discs.event
 
-import com.destroystokyo.paper.MaterialTags
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -12,10 +10,7 @@ import kotlinx.coroutines.*
 import net.kyori.adventure.text.TextComponent
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
-import org.bukkit.Tag
 import org.bukkit.block.Block
-import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
@@ -52,7 +47,7 @@ class JukeboxEventListener(
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.play")) return
 
-        val identifier = item?.itemMeta
+        val identifier = item.itemMeta
             ?.persistentDataContainer
             ?.let {
                 it.get(plugin.identifierKey, PersistentDataType.STRING) ?:
@@ -70,12 +65,8 @@ class JukeboxEventListener(
         val track = try {
             plugin.audioPlayerManager.getTrack(identifier)
         } catch (e: ExecutionException) {
-            val message = when (e.cause) {
-                is FriendlyException -> (e.cause as FriendlyException).message
-                else -> e.message
-            }
             voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", message)
+                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.friendlyMessage())
                     .withStyle(MinecraftTextStyle.RED)
             )
             suspendSync(plugin) { block.asJukebox()?.eject() }
@@ -103,7 +94,7 @@ class JukeboxEventListener(
         source.setName(trackName)
 
         val distance = when (plugin.addonConfig.distance.enableBeaconLikeDistance) {
-            true -> plugin.addonConfig.distance.beaconLikeDistanceList[getBeaconLevel(block).toInt()]
+            true -> plugin.addonConfig.distance.beaconLikeDistanceList[getBeaconLevel(block)]
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 

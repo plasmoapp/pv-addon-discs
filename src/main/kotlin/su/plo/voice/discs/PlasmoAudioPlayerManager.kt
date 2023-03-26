@@ -1,10 +1,8 @@
 package su.plo.voice.discs
 
-import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
 import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.source.getyarn.GetyarnAudioSourceManager
@@ -18,11 +16,9 @@ import com.sedmelluq.discord.lavaplayer.track.*
 import kotlinx.coroutines.*
 import su.plo.voice.api.encryption.Encryption
 import su.plo.voice.api.server.audio.source.ServerStaticSource
-import su.plo.voice.lavaplayer.org.apache.http.protocol.UriPatternMatcher
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.net.URI
-import java.net.URL
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -37,8 +33,6 @@ class PlasmoAudioPlayerManager(
     init {
         registerSources()
     }
-
-//    private val distance: Short = plugin.addonConfig.jukeboxDistance.toShort()
 
     fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short) = scope.launch {
 
@@ -84,34 +78,52 @@ class PlasmoAudioPlayerManager(
         }}
     }
 
+    val noMatchesException = FriendlyException(
+        "No matches",
+        FriendlyException.Severity.COMMON,
+        Exception("No matches")
+    )
+
     fun getTrack(identifier: String): AudioTrack {
 
         val future = CompletableFuture<AudioTrack>()
 
         lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
-
             override fun trackLoaded(track: AudioTrack) {
                 future.complete(track)
             }
-
             override fun playlistLoaded(playlist: AudioPlaylist) {
-                future.complete(playlist.tracks.getOrNull(0))
+                future.completeExceptionally(noMatchesException)
             }
-
             override fun loadFailed(exception: FriendlyException) {
                 future.completeExceptionally(exception)
             }
-
             override fun noMatches() {
-                future.completeExceptionally(
-                    FriendlyException(
-                        "No matches",
-                        FriendlyException.Severity.COMMON,
-                        Exception("No matches")
-                    )
-                )
+                future.completeExceptionally(noMatchesException)
             }
         })
+        return future.get()
+    }
+
+    fun getPlaylist(identifier: String): AudioPlaylist {
+
+        val future = CompletableFuture<AudioPlaylist>()
+
+        lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
+            override fun trackLoaded(track: AudioTrack) {
+                future.completeExceptionally(noMatchesException)
+            }
+            override fun playlistLoaded(playlist: AudioPlaylist) {
+                future.complete(playlist)
+            }
+            override fun loadFailed(exception: FriendlyException) {
+                future.completeExceptionally(exception)
+            }
+            override fun noMatches() {
+                future.completeExceptionally(noMatchesException)
+            }
+        })
+
         return future.get()
     }
 
@@ -133,13 +145,11 @@ class PlasmoAudioPlayerManager(
     class CustomHttpAudioSourceManager(private val plugin: DiscsPlugin) : HttpAudioSourceManager() {
         override fun loadItem(manager: AudioPlayerManager?, reference: AudioReference?): AudioItem? {
             if (reference != null && plugin.addonConfig.httpSource.whitelistEnabled) {
-                val identifier = reference.identifier;
-                val host = runCatching { URI(identifier) }.getOrNull()?.host ?: return null;
-                if (!plugin.addonConfig.httpSource.whitelist.any { host.endsWith(it) }) return null;
+                val identifier = reference.identifier
+                val host = runCatching { URI(identifier) }.getOrNull()?.host ?: return null
+                if (!plugin.addonConfig.httpSource.whitelist.any { host.endsWith(it) }) return null
             }
             return super.loadItem(manager, reference)
         }
     }
-
-
 }
