@@ -102,9 +102,9 @@ class JukeboxEventListener(
 
         source.setName(trackName)
 
-        val distance = when (plugin.addonConfig.enableBeaconLikeDistance) {
-            true -> plugin.addonConfig.beaconLikeDistanceList[getBeaconLevel(block).toInt()]
-            false -> plugin.addonConfig.jukeboxDistance
+        val distance = when (plugin.addonConfig.distance.enableBeaconLikeDistance) {
+            true -> plugin.addonConfig.distance.beaconLikeDistanceList[getBeaconLevel(block).toInt()]
+            false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
         val job = plugin.audioPlayerManager.startTrackJob(track, source, distance)
@@ -158,7 +158,7 @@ class JukeboxEventListener(
             .forEach { jobByBlock[it]?.cancel() }
     }
 
-    private fun getBeaconLevel(block: Block) = (1 until plugin.addonConfig.beaconLikeDistanceList.size).takeWhile { level ->
+    private fun getBeaconLevel(block: Block) = (1 until plugin.addonConfig.distance.beaconLikeDistanceList.size).takeWhile { level ->
         (-level..level).all { xOffset ->
             (-level..level).all { zOffset ->
                 Location(
