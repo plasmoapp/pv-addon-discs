@@ -1,6 +1,5 @@
 package su.plo.voice.discs.command.subcommand
 
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,6 +14,7 @@ import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
+import su.plo.voice.discs.utils.extend.friendlyMessage
 import su.plo.voice.discs.utils.extend.sendTranslatable
 import su.plo.voice.discs.utils.suspendSync
 import su.plo.voice.groups.command.SubCommand
@@ -62,11 +62,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         val track = try {
             handler.plugin.audioPlayerManager.getTrack(identifier)
         } catch (e: ExecutionException) {
-            val message = when (e.cause) {
-                is FriendlyException -> (e.cause as FriendlyException).message
-                else -> e.message
-            }
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", message)
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.friendlyMessage())
             return@launch
         }
 

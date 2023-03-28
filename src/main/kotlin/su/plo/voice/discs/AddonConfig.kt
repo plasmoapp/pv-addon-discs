@@ -15,20 +15,92 @@ class AddonConfig {
     @ConfigField
     var sourceLineWeight = 10
 
-    @ConfigField
+    @ConfigField(
+        comment = """
+            The default volume. Volume is configured on the client side
+            and can be adjusted via the mod settings.
+        """
+    )
     var defaultSourceLineVolume = 0.5
 
-    @ConfigField
-    var jukeboxDistance: Short = 65
-
-    @ConfigField
+    @ConfigField(
+        comment = """
+            Add enchantment glint to custom discs.
+        """
+    )
     var addGlintToCustomDiscs = false
 
-    @ConfigField(path = "enable_beacon_like_distance_amplification",)
-    var enableBeaconLikeDistance = false
+    @Config class DistanceConfig {
 
-    @ConfigField(path = "beacon_like_distances")
-    var beaconLikeDistanceList: List<Short> = listOf(12, 24, 32, 48, 64)
+        @ConfigField(
+            comment = """
+                Distance if 'enable_beacon_like_distance_amplification' is set
+                to false
+            """
+        )
+        var jukeboxDistance: Short = 65
+
+        @ConfigField(
+            path = "enable_beacon_like_distance_amplification",
+            comment = """
+                With this option enabled you can build a beacon-like pyramid
+                under a jukebox to change the distance of the sound
+            """
+        )
+        var enableBeaconLikeDistance = false
+
+        @ConfigField(
+            path = "beacon_like_distances",
+            comment = """
+                The first element is the distance without any pyramid layers.
+                You can add as much layers as you want. Even more or less
+                than the vanilla beacon, but at least one layer is required.  
+            """
+        )
+        var beaconLikeDistanceList: List<Short> = listOf(12, 24, 32, 48, 64)
+    }
+
+    @ConfigField
+    val distance = DistanceConfig()
+
+    @Config
+    class YouTubeConfig {
+        @ConfigField(
+            comment = """
+                You can specify an email and a password to a YouTube account.
+                This will help with age restricted content and rate limits.
+                
+                Authorization via password can fail. You need to check the
+                console and see if you've been prompted to visit a specific
+                link and enter a unique code to complete the process.
+            """
+        )
+        val email: String = ""
+        @ConfigField
+        val password: String = ""
+    }
+
+    @ConfigField
+    val youtube = YouTubeConfig()
+
+    @Config
+    class HttpSourceConfig {
+        @ConfigField(
+            comment = """
+                Only allow links from trusted sources. You can disable this if
+                the server IP is public and leaking it is not a problem
+            """
+        )
+        val whitelistEnabled = true
+        @ConfigField
+        val whitelist = listOf(
+            "dropbox.com",
+            "dropboxusercontent.com"
+        )
+    }
+
+    @ConfigField
+    val httpSource = HttpSourceConfig()
 
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {

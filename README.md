@@ -32,6 +32,8 @@ The addon can stream audio from various sources instead of saving audio files on
 
 `/disc erase` – Return a custom disc to a normal one.
 
+`/disc search <query>` – Search tracks on YouTube.
+
 ## Permissions
 
 Commands are only available to OP by default:
@@ -39,6 +41,8 @@ Commands are only available to OP by default:
 `pv.addon.discs.burn` – Burn command
 
 `pv.addon.discs.erase` – Erase command
+
+`pv.addon.discs.search` – Search command
 
 Available to everyone by default:
 
@@ -71,6 +75,5 @@ If you want to stream audio from direct URLs
 ## Planned features
 
 - Copy discs like you can copy maps
-- YouTube search
 - Custom goat horn audio
 - Make it work with hoppers
