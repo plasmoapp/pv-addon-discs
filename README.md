@@ -5,8 +5,6 @@
     <span> | </span>
     <a href="https://modrinth.com/plugin/pv-addon-discs">Modrinth</a>
     <span> | </span>
-    <a href="https://www.spigotmc.org/resources/plasmo-voice-server.91064/">Spigot</a>
-    <span> | </span>
     <a href="https://github.com/plasmoapp/pv-addon-discs/">GitHub</a>
     <span> | </span>
     <a href="https://discord.com/invite/uueEqzwCJJ">Discord</a>
