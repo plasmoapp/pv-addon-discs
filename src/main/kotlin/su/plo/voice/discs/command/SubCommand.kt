@@ -1,8 +1,7 @@
-package su.plo.voice.groups.command
+package su.plo.voice.discs.command
 
 import org.bukkit.command.CommandSender
 import su.plo.lib.api.server.permission.PermissionDefault
-import su.plo.voice.discs.command.CommandHandler
 
 abstract class SubCommand(val handler: CommandHandler) {
 
