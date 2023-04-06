@@ -34,6 +34,8 @@ jobs:
           modrinth-id: WXJRlyZ9
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
+          changelog-file: changelog.md
+
           loaders: |
             paper
           game-versions: |
@@ -45,4 +47,3 @@ jobs:
         uses: Apehum/mc-publish@v1.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-generate-changelog: false
