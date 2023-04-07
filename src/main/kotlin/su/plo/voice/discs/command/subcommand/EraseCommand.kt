@@ -3,10 +3,10 @@ package su.plo.voice.discs.command.subcommand
 import org.bukkit.command.CommandSender
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.discs.command.CommandHandler
+import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.sendTranslatable
-import su.plo.voice.groups.command.SubCommand
 
 class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
 

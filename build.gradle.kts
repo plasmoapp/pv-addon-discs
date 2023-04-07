@@ -1,28 +1,19 @@
 // version
 val mavenGroup: String by rootProject
-val mavenArtifactId: String by rootProject
 val pluginVersion: String by rootProject
 
-// java
-val targetJavaVersion: String by rootProject
-
 // libs
-val kotlinVersion: String by rootProject
 val paperVersion: String by rootProject
-val lombokVersion: String by rootProject
-
-// dev
-val devDirs: String by rootProject
-val slurper = groovy.json.JsonSlurper()
+val plasmoVoiceVersion: String by rootProject
 
 plugins {
-    kotlin("jvm") version("1.8.10")
-    kotlin("kapt") version "1.6.10"
+    kotlin("jvm") version("1.6.10")
     `maven-publish`
-    id("xyz.jpenilla.run-paper") version "2.0.1" // Adds runServer and runMojangMappedServer tasks for testing
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2" // Generates plugin.yml
+    id("xyz.jpenilla.run-paper") version("2.0.1")
+    id("net.minecrell.plugin-yml.bukkit") version("0.5.2")
     id("com.github.johnrengelman.shadow") version("7.0.0")
     id("su.plo.crowdin.plugin") version("1.0.0")
+    id("su.plo.voice.relocate") version("1.0.1")
 }
 
 group = mavenGroup
@@ -37,32 +28,28 @@ repositories {
         url = uri("https://repo.codemc.io/repository/maven-snapshots/")
     }
 
-    maven {
-        url = uri("https://repo.plo.su")
-    }
+    maven(("https://repo.plo.su"))
 
-    maven { url = uri("https://m2.dv8tion.net/releases") }
+    maven("https://m2.dv8tion.net/releases")
 
-    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
-    maven { url = uri("https://repo.codemc.io/repository/maven-public/") }
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-public/")
 
-    maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
+    maven("https://repo.dmulloy2.net/repository/public/")
 
-    maven { url = uri("https://jitpack.io/") }
+    maven("https://jitpack.io/")
 
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib", kotlinVersion))
+    compileOnly(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
     compileOnly("su.plo:pv-addon-lavaplayer-lib:1.0.2")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
-    compileOnly("su.plo.voice.api:server:2.0.0+ALPHA")
+    compileOnly("su.plo.voice.api:server:$plasmoVoiceVersion")
     compileOnly("su.plo.config:config:1.0.0")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
-
-    kapt("su.plo.voice.api:server:2.0.0+ALPHA")
 }
 
 plasmoCrowdin {
@@ -92,19 +79,6 @@ tasks {
 
     build {
         dependsOn(shadowJar)
-        doLast {
-            val dirs = slurper.parse(devDirs.reader()) as ArrayList<String>
-            for (dir in dirs) {
-                val target = shadowJar.get().archiveFile.get().asFile
-                val dest = File(dir).resolve(target.name)
-
-                target.inputStream().use { input ->
-                    dest.outputStream().use { output ->
-                        input.copyTo(output, 8 * 1024)
-                    }
-                }
-            }
-        }
     }
 }
 
