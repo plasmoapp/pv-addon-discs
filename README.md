@@ -42,6 +42,8 @@ Commands are only available to OP by default:
 
 `pv.addon.discs.search` – Search command
 
+`pv.addon.discs.burn.burnable_check_bypass` – If enabled in a config, you can only burn special discs. This permission allows you to bypass this check
+
 Available to everyone by default:
 
 `pv.addon.discs.play` – Use custom music discs

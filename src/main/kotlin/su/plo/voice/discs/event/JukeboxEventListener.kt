@@ -11,13 +11,9 @@ import net.kyori.adventure.text.TextComponent
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
-import org.bukkit.event.inventory.InventoryMoveItemEvent
-import org.bukkit.event.inventory.InventoryType
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.chat.MinecraftTextComponent
@@ -140,8 +136,9 @@ class JukeboxEventListener(
     fun onDiskEject(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
 
-        if ((event.player.inventory.itemInMainHand.type != Material.AIR ||
-                    event.player.inventory.itemInOffHand.type != Material.AIR) &&
+        if (
+            (event.player.inventory.itemInMainHand.type != Material.AIR ||
+            event.player.inventory.itemInOffHand.type != Material.AIR) &&
             event.player.isSneaking
         ) return
 
@@ -168,18 +165,6 @@ class JukeboxEventListener(
         event.blockList()
             .filter { it.isJukebox() }
             .forEach { jobByBlock[it]?.cancel() }
-    }
-
-    @EventHandler
-    fun onHopperMoveIn(event: InventoryMoveItemEvent) {
-        if (event.destination.type !== InventoryType.JUKEBOX) return
-        println("Move in")
-    }
-
-    @EventHandler
-    fun onHopperMoveOut(event: InventoryMoveItemEvent) {
-        if (event.source.type !== InventoryType.JUKEBOX) return
-        println("Move out")
     }
 
     private fun getBeaconLevel(block: Block) = (1 until plugin.addonConfig.distance.beaconLikeDistanceList.size).takeWhile { level ->

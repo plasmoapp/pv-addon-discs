@@ -27,7 +27,8 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
     override val name = "burn"
 
     override val permissions = listOf(
-        "burn" to PermissionDefault.OP
+        "burn" to PermissionDefault.OP,
+        "burn.burnable_check_bypass" to PermissionDefault.OP,
     )
 
     private val scope = CoroutineScope(Dispatchers.Default)
@@ -55,8 +56,11 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         }
 
         if (
-            handler.plugin.addonConfig.requireBurnableTag &&
-            !item.itemMeta.persistentDataContainer.has(handler.plugin.burnableKey)
+            handler.plugin.addonConfig.burnableTag.requireBurnableTag &&
+            (
+                !item.itemMeta.persistentDataContainer.has(handler.plugin.burnableKey) &&
+                !voicePlayer.instance.hasPermission("pv.addon.discs.burn.burnable_check_bypass")
+            )
         ) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_burnable")
             return false

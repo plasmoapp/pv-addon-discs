@@ -102,14 +102,39 @@ class AddonConfig {
     @ConfigField
     val httpSource = HttpSourceConfig()
 
-    @ConfigField(
-        comment = """
-            With this option you can only burn discs that have a special NBT
-            tag. You can use this to add a custom way of getting burnable
-            discs, like buying for in-game currency, or crafting.
-        """
-    )
-    val requireBurnableTag = false
+    @Config
+    class BurnableTag {
+        @ConfigField(
+            comment = """
+                With this option you can only burn discs that have a special NBT
+                tag. You can use this to add a custom way of getting burnable
+                discs, like buying for in-game currency, or crafting.
+            """
+        )
+        var requireBurnableTag = false
+        @ConfigField(
+            comment = """
+                Enable a recipe for burnable discs. It's a shapeless craft.
+                By default you need a disc + 4 diamonds to get a burnable disc.
+                You can configure recipe item and cost. 
+            """
+        )
+        var enableDefaultRecipe = false
+        @ConfigField
+        var defaultRecipeItem = "minecraft:diamond"
+        @ConfigField
+        var defaultRecipeCost = 4
+        @ConfigField(
+            comment = """
+                A lore that will be added to a burnable disc crafted with the
+                default recipe.
+            """
+        )
+        var defaultRecipeLore = "Burnable"
+    }
+
+    @ConfigField
+    val burnableTag = BurnableTag()
 
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {

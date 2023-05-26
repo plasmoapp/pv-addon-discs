@@ -1,5 +1,8 @@
 package su.plo.voice.discs.crafting
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -9,10 +12,9 @@ import org.bukkit.persistence.PersistentDataType
 import su.plo.voice.discs.DiscsPlugin
 
 
-object BurnableDiscCraft {
+class BurnableDiscCraft(val plugin: DiscsPlugin) {
 
     private val records = arrayOf(
-        Material.MUSIC_DISC_13,
         Material.MUSIC_DISC_5,
         Material.MUSIC_DISC_11,
         Material.MUSIC_DISC_13,
@@ -30,28 +32,49 @@ object BurnableDiscCraft {
         Material.MUSIC_DISC_WARD,
     )
 
-    fun registerRecipies(plugin: DiscsPlugin) {
-        val recipeKey = NamespacedKey(plugin, "burnableCraft")
-        val burnableKey = plugin.burnableKey
-        for (record in records) {
-            Bukkit.addRecipe(
-                createRecipe(record, recipeKey, burnableKey)
-            )
+    private val groupKey = NamespacedKey(plugin, "burnable_record_craft")
+
+    fun registerRecipies() = records.forEach {record ->
+        createRecipe(record).let(Bukkit::addRecipe)
+    }
+
+    private val cost = plugin.addonConfig.burnableTag.defaultRecipeCost.also {
+        if (it > 8 || it <= 0) throw Exception("Cost should be greater than 0 and less than 9")
+    }
+
+    private val material = plugin.addonConfig.burnableTag.defaultRecipeItem.let {
+        Material.matchMaterial(it) ?: throw Exception("Material '$it' not found")
+    }
+
+    private fun createRecipe(record: Material): ShapelessRecipe {
+        val recipeKey = NamespacedKey(
+            plugin,
+            "burnable_record_craft.${record.key().value().lowercase()}"
+        )
+        return ShapelessRecipe(recipeKey, createCustomRecord(record)).also { recipe ->
+            recipe.addIngredient(ItemStack(record))
+            recipe.addIngredient(cost, material)
+            recipe.group = groupKey.key
         }
     }
 
-    private fun createRecipe(record: Material, recipeKey: NamespacedKey, burnableKey: NamespacedKey): ShapelessRecipe =
-        ShapelessRecipe(recipeKey, createCustomRecord(record, burnableKey)).also {
-            it.addIngredient(ItemStack(record))
-            it.addIngredient(6, Material.DIAMOND)
-        }
 
-    private fun createCustomRecord(record: Material, burnableKey: NamespacedKey): ItemStack {
+    private fun createCustomRecord(record: Material): ItemStack {
         val itemStack = ItemStack(record)
         itemStack.editMeta {
             it.addEnchant(Enchantment.MENDING, 1, true)
             it.addItemFlags(*ItemFlag.values())
-            it.persistentDataContainer.set(burnableKey, PersistentDataType.BYTE, 1)
+            it.persistentDataContainer.set(
+                plugin.burnableKey,
+                PersistentDataType.BYTE,
+                1
+            )
+            val loreName = Component.text()
+                .content(plugin.addonConfig.burnableTag.defaultRecipeLore)
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.BLUE)
+                .build()
+            it.lore(listOf(loreName))
         }
         return itemStack
     }

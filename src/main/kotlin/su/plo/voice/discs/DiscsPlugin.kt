@@ -47,7 +47,6 @@ class DiscsPlugin : JavaPlugin() {
     val burnableKey = NamespacedKey(this, "burnable")
 
     override fun onLoad() {
-        BurnableDiscCraft.registerRecipies(this)
         PlasmoVoiceServer.getAddonsLoader().load(this)
     }
 
@@ -80,6 +79,10 @@ class DiscsPlugin : JavaPlugin() {
         protocolManager.addPacketListener(
             CancelJukeboxPlayEvent(this, ListenerPriority.NORMAL)
         )
+
+        if (addonConfig.burnableTag.enableDefaultRecipe) {
+            BurnableDiscCraft(this).also { it.registerRecipies() }
+        }
     }
 
     override fun onDisable() {
