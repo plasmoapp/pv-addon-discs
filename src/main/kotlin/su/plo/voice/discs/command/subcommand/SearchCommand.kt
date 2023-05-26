@@ -9,11 +9,11 @@ import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextHoverEvent
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.discs.command.CommandHandler
+import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.friendlyMessage
 import su.plo.voice.discs.utils.extend.sendTranslatable
-import su.plo.voice.groups.command.SubCommand
 import java.util.concurrent.ExecutionException
 
 class SearchCommand(handler: CommandHandler) : SubCommand(handler) {

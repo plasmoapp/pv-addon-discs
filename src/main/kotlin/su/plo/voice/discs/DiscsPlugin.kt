@@ -24,7 +24,7 @@ import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 @Addon(
     id = "pv-addon-discs",
     scope = AddonLoaderScope.SERVER,
-    version = "1.0.0",
+    version = "1.0.2",
     authors = ["KPidS"]
 )
 class DiscsPlugin : JavaPlugin() {
@@ -80,6 +80,10 @@ class DiscsPlugin : JavaPlugin() {
         protocolManager.addPacketListener(
             CancelJukeboxPlayEvent(this, ListenerPriority.NORMAL)
         )
+    }
+
+    override fun onDisable() {
+        PlasmoVoiceServer.getAddonsLoader().unload(this)
     }
 
     private fun loadConfig() {

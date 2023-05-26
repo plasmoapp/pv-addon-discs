@@ -1,6 +1,6 @@
 package su.plo.voice.discs.utils.extend
 
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import java.util.concurrent.ExecutionException
 
 val ExecutionException.friendlyMessage: String?
