@@ -17,6 +17,7 @@ import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.subcommand.BurnCommand
 import su.plo.voice.discs.command.subcommand.EraseCommand
 import su.plo.voice.discs.command.subcommand.SearchCommand
+import su.plo.voice.discs.crafting.BurnableDiscCraft
 import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 
@@ -43,7 +44,10 @@ class DiscsPlugin : JavaPlugin() {
 
     val oldIdentifierKey = NamespacedKey("pv-addon-disks", "identifier")
 
+    val burnableKey = NamespacedKey(this, "burnable")
+
     override fun onLoad() {
+        BurnableDiscCraft.registerRecipies(this)
         PlasmoVoiceServer.getAddonsLoader().load(this)
     }
 

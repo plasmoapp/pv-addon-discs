@@ -11,12 +11,18 @@ import net.kyori.adventure.text.TextComponent
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
+import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.event.inventory.InventoryMoveItemEvent
+import org.bukkit.event.inventory.InventoryType
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextStyle
+import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.utils.extend.*
 import su.plo.voice.discs.utils.suspendSync
 import java.util.concurrent.ConcurrentHashMap
@@ -60,13 +66,22 @@ class JukeboxEventListener(
                 .withStyle(MinecraftTextStyle.YELLOW)
         )
 
-        scope.launch {
+        jobByBlock[block]?.cancel()
+        jobByBlock[block] = playTrack(identifier, voicePlayer, block, item)
+    }
+
+    private fun playTrack(
+        identifier: String,
+        voicePlayer: VoicePlayer,
+        block: Block,
+        item: ItemStack
+    ): Job = scope.launch {
 
         val track = try {
             plugin.audioPlayerManager.getTrack(identifier)
         } catch (e: ExecutionException) {
             voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.friendlyMessage())
+                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.friendlyMessage)
                     .withStyle(MinecraftTextStyle.RED)
             )
             suspendSync(plugin) { block.asJukebox()?.eject() }
@@ -100,9 +115,6 @@ class JukeboxEventListener(
 
         val job = plugin.audioPlayerManager.startTrackJob(track, source, distance)
 
-        jobByBlock[block]?.cancel()
-        jobByBlock[block] = job
-
         val actionbarMessage = MinecraftTextComponent.translatable(
             "pv.addon.discs.actionbar.playing", trackName
         )
@@ -116,7 +128,13 @@ class JukeboxEventListener(
         suspendSync(plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
-    }}
+
+        job.join()
+    }
+
+//    fun onJukeboxStopPlaying(event: Event) {
+//
+//    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiskEject(event: PlayerInteractEvent) {
@@ -138,6 +156,9 @@ class JukeboxEventListener(
     fun onJukeboxBreak(event: BlockBreakEvent) {
         event.block
             .takeIf { it.isJukebox() }
+            ?.also {
+                it.asJukebox()?.stopPlaying();
+            }
             ?.let { jobByBlock[it] }
             ?.cancel()
     }
@@ -147,6 +168,18 @@ class JukeboxEventListener(
         event.blockList()
             .filter { it.isJukebox() }
             .forEach { jobByBlock[it]?.cancel() }
+    }
+
+    @EventHandler
+    fun onHopperMoveIn(event: InventoryMoveItemEvent) {
+        if (event.destination.type !== InventoryType.JUKEBOX) return
+        println("Move in")
+    }
+
+    @EventHandler
+    fun onHopperMoveOut(event: InventoryMoveItemEvent) {
+        if (event.source.type !== InventoryType.JUKEBOX) return
+        println("Move out")
     }
 
     private fun getBeaconLevel(block: Block) = (1 until plugin.addonConfig.distance.beaconLikeDistanceList.size).takeWhile { level ->

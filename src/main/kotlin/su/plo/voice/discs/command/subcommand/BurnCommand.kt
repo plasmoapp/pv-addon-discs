@@ -9,8 +9,10 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
@@ -45,6 +47,24 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         )
     }
 
+    private fun checkBurnable(voicePlayer: VoicePlayer, item: ItemStack): Boolean {
+
+        if (!item.type.isRecord) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
+            return false
+        }
+
+        if (
+            handler.plugin.addonConfig.requireBurnableTag &&
+            !item.itemMeta.persistentDataContainer.has(handler.plugin.burnableKey)
+        ) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_burnable")
+            return false
+        }
+
+        return true
+    }
+
     override fun execute(sender: CommandSender, arguments: Array<out String>) { scope.launch {
 
         val voicePlayer = sender.asPlayer()?.asVoicePlayer(handler.plugin.voiceServer) ?: return@launch
@@ -62,7 +82,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         val track = try {
             handler.plugin.audioPlayerManager.getTrack(identifier)
         } catch (e: ExecutionException) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.friendlyMessage())
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.friendlyMessage)
             return@launch
         }
 
@@ -75,14 +95,11 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             return@launch
         }
 
-        val meta = suspendSync(handler.plugin) {
-            val item = player.inventory.itemInMainHand
-            if (!item.type.isRecord) {
-                voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
-                return@suspendSync null
-            }
-           return@suspendSync item.itemMeta
-        } ?: return@launch
+        val item = suspendSync(handler.plugin) { player.inventory.itemInMainHand }
+
+        if (!checkBurnable(voicePlayer, item)) return@launch
+
+        val meta = item.itemMeta
 
         meta.addItemFlags(*ItemFlag.values())
 
@@ -106,10 +123,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         suspendSync(handler.plugin) {
             val item = player.inventory.itemInMainHand
-            if (!item.type.isRecord) {
-                voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
-                return@suspendSync
-            }
+            if (!checkBurnable(voicePlayer, item)) return@suspendSync
             item.itemMeta = meta
             voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
         }

@@ -35,7 +35,7 @@ class AddonConfig {
         @ConfigField(
             comment = """
                 Distance if 'enable_beacon_like_distance_amplification' is set
-                to false
+                to false.
             """
         )
         var jukeboxDistance: Short = 65
@@ -44,7 +44,7 @@ class AddonConfig {
             path = "enable_beacon_like_distance_amplification",
             comment = """
                 With this option enabled you can build a beacon-like pyramid
-                under a jukebox to change the distance of the sound
+                under a jukebox to change the distance of the sound.
             """
         )
         var enableBeaconLikeDistance = false
@@ -88,7 +88,7 @@ class AddonConfig {
         @ConfigField(
             comment = """
                 Only allow links from trusted sources. You can disable this if
-                the server IP is public and leaking it is not a problem
+                the server IP is public and leaking it is not a problem.
             """
         )
         val whitelistEnabled = true
@@ -101,6 +101,15 @@ class AddonConfig {
 
     @ConfigField
     val httpSource = HttpSourceConfig()
+
+    @ConfigField(
+        comment = """
+            With this option you can only burn discs that have a special NBT
+            tag. You can use this to add a custom way of getting burnable
+            discs, like buying for in-game currency, or crafting.
+        """
+    )
+    val requireBurnableTag = false
 
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {

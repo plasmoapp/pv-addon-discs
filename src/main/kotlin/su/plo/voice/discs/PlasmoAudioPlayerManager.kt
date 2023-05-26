@@ -27,8 +27,7 @@ class PlasmoAudioPlayerManager(
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypt: Encryption
-        get() = plugin.voiceServer.defaultEncryption
+    private val encrypt: Encryption = plugin.voiceServer.defaultEncryption
 
     init {
         registerSources()
@@ -88,7 +87,7 @@ class PlasmoAudioPlayerManager(
 
         val future = CompletableFuture<AudioTrack>()
 
-        lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
+        lavaPlayerManager.loadItem(identifier, object: AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 future.complete(track)
             }
