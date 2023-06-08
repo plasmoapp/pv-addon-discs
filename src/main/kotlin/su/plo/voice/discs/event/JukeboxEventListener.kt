@@ -125,12 +125,12 @@ class JukeboxEventListener(
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
 
-        job.join()
+        try {
+            job.join()
+        } finally {
+            job.cancelAndJoin()
+        }
     }
-
-//    fun onJukeboxStopPlaying(event: Event) {
-//
-//    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiskEject(event: PlayerInteractEvent) {

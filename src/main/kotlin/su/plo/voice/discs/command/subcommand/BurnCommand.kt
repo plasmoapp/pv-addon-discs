@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFactory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -103,7 +104,11 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         if (!checkBurnable(voicePlayer, item)) return@launch
 
-        val meta = item.itemMeta
+        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
+            handler.plugin.forbidGrindstone(item)
+        }
+
+        val meta = handler.plugin.server.itemFactory.getItemMeta(item.type)
 
         meta.addItemFlags(*ItemFlag.values())
 

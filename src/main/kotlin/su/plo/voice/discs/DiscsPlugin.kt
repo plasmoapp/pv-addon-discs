@@ -5,6 +5,9 @@ import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.ListenerPriority
 import com.google.inject.Inject
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.Item
+import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.api.addon.AddonLoaderScope
@@ -18,6 +21,7 @@ import su.plo.voice.discs.command.subcommand.BurnCommand
 import su.plo.voice.discs.command.subcommand.EraseCommand
 import su.plo.voice.discs.command.subcommand.SearchCommand
 import su.plo.voice.discs.crafting.BurnableDiscCraft
+import su.plo.voice.discs.event.ForbidGrindstoneListener
 import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 
@@ -40,11 +44,17 @@ class DiscsPlugin : JavaPlugin() {
 
     lateinit var addonConfig: AddonConfig
 
+    // PersistentDataType.String
     val identifierKey = NamespacedKey(this, "identifier")
 
+    // PersistentDataType.String
     val oldIdentifierKey = NamespacedKey("pv-addon-disks", "identifier")
 
+    // PersistentDataType.BYTE 0 or 1 representing boolean
     val burnableKey = NamespacedKey(this, "burnable")
+
+    // PersistentDataType.BYTE 0 or 1 representing boolean
+    val forbidGrindstoneKey = NamespacedKey(this, "forbid_grindstone")
 
     override fun onLoad() {
         PlasmoVoiceServer.getAddonsLoader().load(this)
@@ -55,10 +65,13 @@ class DiscsPlugin : JavaPlugin() {
         loadConfig()
     }
 
+    @EventSubscribe
+
     override fun onEnable() {
         loadConfig()
 
         server.pluginManager.registerEvents(JukeboxEventListener(this), this)
+        server.pluginManager.registerEvents(ForbidGrindstoneListener(this), this)
 
         val handler = CommandHandler(this)
             .addSubCommand(::BurnCommand)
@@ -81,7 +94,7 @@ class DiscsPlugin : JavaPlugin() {
         )
 
         if (addonConfig.burnableTag.enableDefaultRecipe) {
-            BurnableDiscCraft(this).also { it.registerRecipies() }
+            BurnableDiscCraft(this).also { it.registerRecipes() }
         }
     }
 
@@ -103,5 +116,11 @@ class DiscsPlugin : JavaPlugin() {
         }.build()
 
         audioPlayerManager = PlasmoAudioPlayerManager(this)
+    }
+
+    fun forbidGrindstone(item: ItemStack) {
+        item.editMeta {
+            it.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
+        }
     }
 }

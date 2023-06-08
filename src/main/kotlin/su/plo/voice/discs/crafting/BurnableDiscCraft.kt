@@ -34,7 +34,7 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
 
     private val groupKey = NamespacedKey(plugin, "burnable_record_craft")
 
-    fun registerRecipies() = records.forEach {record ->
+    fun registerRecipes() = records.forEach { record ->
         createRecipe(record).let(Bukkit::addRecipe)
     }
 
@@ -61,8 +61,15 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
 
     private fun createCustomRecord(record: Material): ItemStack {
         val itemStack = ItemStack(record)
+
+        if (plugin.addonConfig.addGlintToCustomDiscs) {
+            plugin.forbidGrindstone(itemStack)
+        }
+
         itemStack.editMeta {
-            it.addEnchant(Enchantment.MENDING, 1, true)
+            if (plugin.addonConfig.addGlintToCustomDiscs) {
+                it.addEnchant(Enchantment.MENDING, 1, true)
+            }
             it.addItemFlags(*ItemFlag.values())
             it.persistentDataContainer.set(
                 plugin.burnableKey,
