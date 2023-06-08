@@ -3,6 +3,7 @@ erase_wrong_item = "&cCan't erase this item"
 get_track_fail = "&cFailed to get the track: %s"
 search_fail = "&cFailed to get the search result: %s"
 not_a_record = "&cYou need have a record in your hand to burn it"
+not_burnable = "&cThis record is not burnable"
 unknown_subcommand = "&cUnknown subcommand. Available commands: %s"
 no_permission = "&cNo permission"
 

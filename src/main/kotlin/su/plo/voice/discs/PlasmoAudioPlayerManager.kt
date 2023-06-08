@@ -1,21 +1,21 @@
 package su.plo.voice.discs
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
-import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.getyarn.GetyarnAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
-import com.sedmelluq.discord.lavaplayer.track.*
 import kotlinx.coroutines.*
 import su.plo.voice.api.encryption.Encryption
 import su.plo.voice.api.server.audio.source.ServerStaticSource
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.getyarn.GetyarnAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.*
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.net.URI
@@ -27,8 +27,7 @@ class PlasmoAudioPlayerManager(
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypt: Encryption
-        get() = plugin.voiceServer.defaultEncryption
+    private val encrypt: Encryption = plugin.voiceServer.defaultEncryption
 
     init {
         registerSources()
@@ -88,7 +87,7 @@ class PlasmoAudioPlayerManager(
 
         val future = CompletableFuture<AudioTrack>()
 
-        lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
+        lavaPlayerManager.loadItem(identifier, object: AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 future.complete(track)
             }

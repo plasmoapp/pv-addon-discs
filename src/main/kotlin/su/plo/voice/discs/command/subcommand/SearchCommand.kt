@@ -51,7 +51,7 @@ class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
         val tracks = try {
             handler.plugin.audioPlayerManager.getPlaylist("ytsearch:$query").tracks
         } catch (e: ExecutionException) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.friendlyMessage())
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.friendlyMessage)
             return@launch
         }
 

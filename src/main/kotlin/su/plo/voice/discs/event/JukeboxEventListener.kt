@@ -14,9 +14,11 @@ import org.bukkit.block.Block
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextStyle
+import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.utils.extend.*
 import su.plo.voice.discs.utils.suspendSync
 import java.util.concurrent.ConcurrentHashMap
@@ -60,13 +62,22 @@ class JukeboxEventListener(
                 .withStyle(MinecraftTextStyle.YELLOW)
         )
 
-        scope.launch {
+        jobByBlock[block]?.cancel()
+        jobByBlock[block] = playTrack(identifier, voicePlayer, block, item)
+    }
+
+    private fun playTrack(
+        identifier: String,
+        voicePlayer: VoicePlayer,
+        block: Block,
+        item: ItemStack
+    ): Job = scope.launch {
 
         val track = try {
             plugin.audioPlayerManager.getTrack(identifier)
         } catch (e: ExecutionException) {
             voicePlayer.instance.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.friendlyMessage())
+                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.friendlyMessage)
                     .withStyle(MinecraftTextStyle.RED)
             )
             suspendSync(plugin) { block.asJukebox()?.eject() }
@@ -100,9 +111,6 @@ class JukeboxEventListener(
 
         val job = plugin.audioPlayerManager.startTrackJob(track, source, distance)
 
-        jobByBlock[block]?.cancel()
-        jobByBlock[block] = job
-
         val actionbarMessage = MinecraftTextComponent.translatable(
             "pv.addon.discs.actionbar.playing", trackName
         )
@@ -116,14 +124,21 @@ class JukeboxEventListener(
         suspendSync(plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
-    }}
+
+        try {
+            job.join()
+        } finally {
+            job.cancelAndJoin()
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onDiskEject(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
 
-        if ((event.player.inventory.itemInMainHand.type != Material.AIR ||
-                    event.player.inventory.itemInOffHand.type != Material.AIR) &&
+        if (
+            (event.player.inventory.itemInMainHand.type != Material.AIR ||
+            event.player.inventory.itemInOffHand.type != Material.AIR) &&
             event.player.isSneaking
         ) return
 
@@ -138,6 +153,9 @@ class JukeboxEventListener(
     fun onJukeboxBreak(event: BlockBreakEvent) {
         event.block
             .takeIf { it.isJukebox() }
+            ?.also {
+                it.asJukebox()?.stopPlaying();
+            }
             ?.let { jobByBlock[it] }
             ?.cancel()
     }

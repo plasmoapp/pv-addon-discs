@@ -5,6 +5,7 @@ val pluginVersion: String by rootProject
 // libs
 val paperVersion: String by rootProject
 val plasmoVoiceVersion: String by rootProject
+val lavaplayerLibVersion: String by rootProject
 
 plugins {
     kotlin("jvm") version("1.6.10")
@@ -43,13 +44,14 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    compileOnly("io.papermc.paper:paper-api:$paperVersion")
-    compileOnly("su.plo:pv-addon-lavaplayer-lib:1.0.2")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
+    compileOnly("io.papermc.paper:paper-api:$paperVersion")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
+
+    compileOnly("su.plo:pv-addon-lavaplayer-lib:$lavaplayerLibVersion")
     compileOnly("su.plo.voice.api:server:$plasmoVoiceVersion")
     compileOnly("su.plo.config:config:1.0.0")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
 }
 
 plasmoCrowdin {
@@ -73,7 +75,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.19.2")
+        minecraftVersion("1.19.4")
         systemProperty("plasmovoice.alpha.disableversioncheck", "true")
     }
 
