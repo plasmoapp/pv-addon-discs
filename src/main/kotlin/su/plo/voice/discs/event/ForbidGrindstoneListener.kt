@@ -18,9 +18,8 @@ class ForbidGrindstoneListener(val plugin: DiscsPlugin): Listener {
     @EventHandler
     fun onPrepareGrindstoneEvent(event: PrepareGrindstoneEvent) {
         if (
-            event.inventory.lowerItem?.isForbidden() == false &&
-            event.inventory.upperItem?.isForbidden() == false
-        ) return
-        event.result = null
+            event.inventory.lowerItem?.isForbidden() == true ||
+            event.inventory.upperItem?.isForbidden() == true
+        ) event.result = null
     }
 }
