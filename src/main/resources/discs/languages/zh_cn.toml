@@ -1,0 +1,31 @@
+[server.pv.addon.discs.error]
+erase_wrong_item = "&c不能擦除这个物品"
+get_track_fail = "&c未能成功获取音频：%s"
+search_fail = "&c未能成功获取搜索结果：%s"
+not_a_record = "&c你需要拿着一张唱片才能刻录"
+not_burnable = "&c此唱片不能被刻录"
+unknown_subcommand = "&c未知子命令。可用命令：%s"
+no_permission = "&c没有权限"
+
+[server.pv.addon.discs.usage]
+burn = "&c用法：/discs burn <URL> [标签]"
+
+[server.pv.addon.discs.arg]
+url = "<URL>"
+label = "[标签]"
+search = "<搜索>"
+
+[server.pv.addon.discs.actionbar]
+track_not_found = "未找到音频：%s"
+playing = "正在播放：%s"
+loading = "正在加载…"
+
+[server.pv.addon.discs.success]
+erase = "&a已擦除自定义音频"
+burn = "&a已刻录唱片。标签：%s"
+
+[server.pv.addon.discs.format]
+search_entry = "&e%1$s&7 - %2$s"
+
+[client.pv.activation]
+discs = "唱片"
