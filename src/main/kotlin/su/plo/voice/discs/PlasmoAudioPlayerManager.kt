@@ -27,7 +27,8 @@ class PlasmoAudioPlayerManager(
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypt: Encryption = plugin.voiceServer.defaultEncryption
+    private val encrypt: Encryption
+        get() = plugin.voiceServer.defaultEncryption
 
     init {
         registerSources()
