@@ -2,6 +2,7 @@ package su.plo.voice.discs.command.subcommand
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -85,7 +86,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         }
 
         val track = try {
-            handler.plugin.audioPlayerManager.getTrack(identifier)
+            handler.plugin.audioPlayerManager.getTrack(identifier).await()
         } catch (e: ExecutionException) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.friendlyMessage)
             return@launch
