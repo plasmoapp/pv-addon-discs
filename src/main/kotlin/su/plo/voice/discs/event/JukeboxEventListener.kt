@@ -29,7 +29,7 @@ class JukeboxEventListener(
     private val plugin: DiscsPlugin
 ): Listener {
 
-    private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
+    private val jobByBlock: MutableMap<Block, Job> = HashMap()
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -110,8 +110,6 @@ class JukeboxEventListener(
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
-        val job = plugin.audioPlayerManager.startTrackJob(track, source, distance)
-
         val actionbarMessage = MinecraftTextComponent.translatable(
             "pv.addon.discs.actionbar.playing", trackName
         )
@@ -126,6 +124,7 @@ class JukeboxEventListener(
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
 
+        val job = plugin.audioPlayerManager.startTrackJob(track, source, distance)
         try {
             job.join()
         } finally {
