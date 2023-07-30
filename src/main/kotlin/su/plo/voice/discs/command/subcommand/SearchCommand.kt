@@ -13,9 +13,7 @@ import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
-import su.plo.voice.discs.utils.extend.friendlyMessage
 import su.plo.voice.discs.utils.extend.sendTranslatable
-import java.util.concurrent.ExecutionException
 
 class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -51,8 +49,8 @@ class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
 
         val tracks = try {
             handler.plugin.audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks
-        } catch (e: ExecutionException) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.friendlyMessage)
+        } catch (e: Exception) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.message)
             return@launch
         }
 
