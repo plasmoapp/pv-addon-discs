@@ -27,7 +27,8 @@ class PlasmoAudioPlayerManager(
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
     private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypt: Encryption = plugin.voiceServer.defaultEncryption
+    private val encrypt: Encryption
+        get() = plugin.voiceServer.defaultEncryption
 
     init {
         registerSources()
@@ -83,7 +84,7 @@ class PlasmoAudioPlayerManager(
         Exception("No matches")
     )
 
-    fun getTrack(identifier: String): AudioTrack {
+    fun getTrack(identifier: String): CompletableFuture<AudioTrack> {
 
         val future = CompletableFuture<AudioTrack>()
 
@@ -101,10 +102,10 @@ class PlasmoAudioPlayerManager(
                 future.completeExceptionally(noMatchesException)
             }
         })
-        return future.get()
+        return future
     }
 
-    fun getPlaylist(identifier: String): AudioPlaylist {
+    fun getPlaylist(identifier: String): CompletableFuture<AudioPlaylist> {
 
         val future = CompletableFuture<AudioPlaylist>()
 
@@ -123,7 +124,7 @@ class PlasmoAudioPlayerManager(
             }
         })
 
-        return future.get()
+        return future
     }
 
     private fun registerSources() {

@@ -45,6 +45,7 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
@@ -75,7 +76,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.19.4")
+        minecraftVersion("1.20.1")
         systemProperty("plasmovoice.alpha.disableversioncheck", "true")
     }
 

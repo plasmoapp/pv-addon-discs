@@ -28,7 +28,7 @@ import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 @Addon(
     id = "pv-addon-discs",
     scope = AddonLoaderScope.SERVER,
-    version = "1.0.2",
+    version = "1.0.5",
     authors = ["KPidS"]
 )
 class DiscsPlugin : JavaPlugin() {

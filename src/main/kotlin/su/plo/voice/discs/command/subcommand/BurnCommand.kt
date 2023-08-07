@@ -2,13 +2,13 @@ package su.plo.voice.discs.command.subcommand
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.inventory.ItemFactory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -18,10 +18,9 @@ import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
-import su.plo.voice.discs.utils.extend.friendlyMessage
 import su.plo.voice.discs.utils.extend.sendTranslatable
 import su.plo.voice.discs.utils.suspendSync
-import java.util.concurrent.ExecutionException
+import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 
 class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -85,9 +84,9 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         }
 
         val track = try {
-            handler.plugin.audioPlayerManager.getTrack(identifier)
-        } catch (e: ExecutionException) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.friendlyMessage)
+            handler.plugin.audioPlayerManager.getTrack(identifier).await()
+        } catch (e: Exception) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.message)
             return@launch
         }
 

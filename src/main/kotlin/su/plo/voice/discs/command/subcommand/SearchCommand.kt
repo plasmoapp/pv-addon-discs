@@ -2,6 +2,7 @@ package su.plo.voice.discs.command.subcommand
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.bukkit.command.CommandSender
 import su.plo.lib.api.chat.MinecraftTextClickEvent
@@ -12,9 +13,7 @@ import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
-import su.plo.voice.discs.utils.extend.friendlyMessage
 import su.plo.voice.discs.utils.extend.sendTranslatable
-import java.util.concurrent.ExecutionException
 
 class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -49,9 +48,9 @@ class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
         val query = arguments.drop(1).joinToString(" ")
 
         val tracks = try {
-            handler.plugin.audioPlayerManager.getPlaylist("ytsearch:$query").tracks
-        } catch (e: ExecutionException) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.friendlyMessage)
+            handler.plugin.audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks
+        } catch (e: Exception) {
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.message)
             return@launch
         }
 
