@@ -1,2 +1,2 @@
-- Fixed bug when you can take disc from jukebox, but it doesn't stop playing
-- Fixed bug with proxy when discs just wouldn't play
+- Hopper interactions support
+- 1.20 discs burnable craft
