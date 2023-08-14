@@ -10,4 +10,5 @@ fun Jukebox.stopPlayingWithUpdate() {
     setRecord(oldRecord)
     stopPlaying()
     update()
+    stopPlaying()
 }
