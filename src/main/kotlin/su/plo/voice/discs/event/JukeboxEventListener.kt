@@ -64,9 +64,6 @@ class JukeboxEventListener(
         event.chunk.getTileEntities({ it.isJukebox() }, true)
             .forEach {
                 jobByBlock.remove(it.block)?.cancel()
-
-                val jukebox = it as? Jukebox ?: return@forEach
-                jukebox.stopPlayingWithUpdate()
             }
     }
 
