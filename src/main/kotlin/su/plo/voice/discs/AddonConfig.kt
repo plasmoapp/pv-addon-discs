@@ -43,21 +43,21 @@ class AddonConfig {
         @ConfigField(
             path = "enable_beacon_like_distance_amplification",
             comment = """
-                With this option enabled you can build a beacon-like pyramid
-                under a jukebox to change the distance of the sound.
+                With this option enabled you can place diamond block in 2
+                block radius near jukebox to change the distance of the sound.
             """
         )
-        var enableBeaconLikeDistance = false
+        var increaseDistance = false
 
         @ConfigField(
             path = "beacon_like_distances",
             comment = """
-                The first element is the distance without any pyramid layers.
-                You can add as much layers as you want. Even more or less
-                than the vanilla beacon, but at least one layer is required.  
+                The first element is the distance without any diamond blocks.
+                You can add as much diamond blocks as you want. 
+                At least one layer is required.  
             """
         )
-        var beaconLikeDistanceList: List<Short> = listOf(12, 24, 32, 48, 64)
+        var increasedDistanceList: List<Short> = listOf(12, 24, 32, 48, 64)
     }
 
     @ConfigField

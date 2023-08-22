@@ -5,6 +5,7 @@ import kotlinx.coroutines.future.await
 import net.kyori.adventure.text.TextComponent
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.block.Jukebox
 import org.bukkit.event.EventHandler
@@ -169,8 +170,8 @@ class JukeboxEventListener(
 
         source.setName(trackName)
 
-        val distance = when (plugin.addonConfig.distance.enableBeaconLikeDistance) {
-            true -> plugin.addonConfig.distance.beaconLikeDistanceList[getBeaconLevel(block)]
+        val distance = when (plugin.addonConfig.distance.increaseDistance) {
+            true -> plugin.addonConfig.distance.increasedDistanceList[getJukeboxLevel(block)]
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
@@ -221,17 +222,36 @@ class JukeboxEventListener(
         }
     }
 
-    private fun getBeaconLevel(block: Block) =
-        (1 until plugin.addonConfig.distance.beaconLikeDistanceList.size).takeWhile { level ->
-            (-level..level).all { xOffset ->
-                (-level..level).all { zOffset ->
-                    Location(
-                        block.world,
-                        (block.x + xOffset).toDouble(),
-                        (block.y - level).toDouble(),
-                        (block.z + zOffset).toDouble()
-                    ).block.isBeaconBaseBlock()
+    private fun getJukeboxLevel(block: Block): Int {
+        var amount : Int = 0
+
+        val world = block.world
+
+        val radius: Int = 2
+
+        for (x in -radius..radius){
+            for(y in -radius..radius){
+                for(z in -radius..radius){
+
+                    val loc = Location(
+                            world,
+                            block.x.toDouble() + x,
+                            block.y.toDouble() + y,
+                            block.z.toDouble() + z
+                    )
+
+                    val searchingBlock : Block = loc.block
+
+                    if (searchingBlock.type == Material.DIAMOND_BLOCK) {
+                        amount += 1
+                    }
                 }
             }
-        }.count()
+        }
+        if (amount > plugin.addonConfig.distance.increasedDistanceList.size) {
+            amount = plugin.addonConfig.distance.increasedDistanceList.size
+        }
+        return amount
+    }
+
 }
