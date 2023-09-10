@@ -147,7 +147,16 @@ class PlasmoAudioPlayerManager(
             if (reference != null && plugin.addonConfig.httpSource.whitelistEnabled) {
                 val identifier = reference.identifier
                 val host = runCatching { URI(identifier) }.getOrNull()?.host ?: return null
-                if (!plugin.addonConfig.httpSource.whitelist.any { host.endsWith(it) }) return null
+                val hostSplit = host.split(".")
+                if (!plugin.addonConfig.httpSource.whitelist.any {
+                    val itemSplitLength = it.split(".").size
+
+                    val hostToCompare = hostSplit
+                        .subList((hostSplit.size - itemSplitLength).coerceAtLeast(0), hostSplit.size)
+                        .joinToString(".")
+
+                    hostToCompare == it
+                }) return null
             }
             return super.loadItem(manager, reference)
         }
