@@ -24,8 +24,8 @@ import su.plo.lib.api.chat.MinecraftTextStyle
 import su.plo.lib.api.server.world.ServerPos3d
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.DiscsPlugin
+import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
 import su.plo.voice.discs.utils.extend.*
-import su.plo.voice.discs.utils.suspendSync
 
 class JukeboxEventListener(
     private val plugin: DiscsPlugin
@@ -145,7 +145,7 @@ class JukeboxEventListener(
                 MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.message)
                     .withStyle(MinecraftTextStyle.RED)
             )
-            suspendSync(plugin) { block.asJukebox()?.eject() }
+            suspendSync(block.location, plugin) { block.asJukebox()?.eject() }
             return@launch
         }
 
@@ -185,7 +185,7 @@ class JukeboxEventListener(
             0xf1c40f
         )
 
-        suspendSync(plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
+        suspendSync(block.location, plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
 
@@ -200,7 +200,7 @@ class JukeboxEventListener(
                     continue
                 }
 
-                suspendSync(plugin) {
+                suspendSync(block.location, plugin) {
                     val jukebox = block.asJukebox() ?: return@suspendSync
 
                     jukebox.setRecord(jukebox.record)
@@ -213,7 +213,7 @@ class JukeboxEventListener(
         } finally {
             job.cancelAndJoin()
 
-            suspendSync(plugin) {
+            suspendSync(block.location, plugin) {
                 val jukebox = block.asJukebox() ?: return@suspendSync
                 jukebox.stopPlayingWithUpdate()
                 jobByBlock.remove(block)

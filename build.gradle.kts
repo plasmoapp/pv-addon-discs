@@ -4,6 +4,7 @@ val pluginVersion: String by rootProject
 
 // libs
 val paperVersion: String by rootProject
+val foliaVersion: String by rootProject
 val plasmoVoiceVersion: String by rootProject
 val lavaplayerLibVersion: String by rootProject
 
@@ -11,7 +12,7 @@ plugins {
     kotlin("jvm") version("1.6.10")
     `maven-publish`
     id("xyz.jpenilla.run-paper") version("2.0.1")
-    id("net.minecrell.plugin-yml.bukkit") version("0.5.2")
+    id("net.minecrell.plugin-yml.bukkit") version("0.6.0")
     id("com.github.johnrengelman.shadow") version("7.0.0")
     id("su.plo.crowdin.plugin") version("1.0.0")
     id("su.plo.voice.relocate") version("1.0.1")
@@ -48,6 +49,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
+    compileOnly("dev.folia:folia-api:$foliaVersion")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
 
     compileOnly("su.plo:pv-addon-lavaplayer-lib:$lavaplayerLibVersion")
@@ -92,6 +94,8 @@ bukkit {
     authors = listOf("KPidS", "Apehum")
 
     depend = listOf("PlasmoVoice", "ProtocolLib", "pv-addon-lavaplayer-lib")
+
+    foliaSupported = true
 
     commands {
         register("disc") {}

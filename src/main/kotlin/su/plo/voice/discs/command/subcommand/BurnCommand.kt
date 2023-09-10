@@ -16,11 +16,10 @@ import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
+import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.sendTranslatable
-import su.plo.voice.discs.utils.suspendSync
-import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 
 class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -99,7 +98,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             return@launch
         }
 
-        val item = suspendSync(handler.plugin) { player.inventory.itemInMainHand }
+        val item = suspendSync(player, handler.plugin) { player.inventory.itemInMainHand }
 
         if (!checkBurnable(voicePlayer, item)) return@launch
 
@@ -129,7 +128,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         meta.lore(listOf(loreName))
 
-        suspendSync(handler.plugin) {
+        suspendSync(player.location, handler.plugin) {
             val item = player.inventory.itemInMainHand
             if (!checkBurnable(voicePlayer, item)) return@suspendSync
             item.itemMeta = meta
