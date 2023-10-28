@@ -1,0 +1,31 @@
+[server.pv.addon.discs.error]
+erase_wrong_item = "&cБу предметны бетереп булмады"
+get_track_fail = "&cТрәк алып булмады: %s"
+search_fail = "&cЭзләү нәтиҗәсен алып булмады: %s"
+not_a_record = "&cАны яндыру өчен Сезгә Сезнең кулдагы яздыру кирәк"
+not_burnable = "&cБу яндырылмаучы яздыру"
+unknown_subcommand = "&cБилгесез боерыкча. Ирешерлек боерыклар: %s"
+no_permission = "&cХокук юк"
+
+[server.pv.addon.discs.usage]
+burn = "&cКулланылу: /discs burn <сылтама> [тамга]"
+
+[server.pv.addon.discs.arg]
+url = "<сылтама>"
+label = "[тамга]"
+search = "<эзләү>"
+
+[server.pv.addon.discs.actionbar]
+track_not_found = "Трәк табылмады: %s"
+playing = "Хәзер уйный: %s"
+loading = "Йөкләү..."
+
+[server.pv.addon.discs.success]
+erase = "&aКөйләнгән тавыш бетерелде"
+burn = "&aПластинка яндырылды. Тамга: %s"
+
+[server.pv.addon.discs.format]
+search_entry = "&e%1$s &7Автор: %2$s"
+
+[client.pv.activation]
+discs = "Пластинкалар"
