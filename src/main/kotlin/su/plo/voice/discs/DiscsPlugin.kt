@@ -3,14 +3,14 @@ package su.plo.voice.discs
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.ListenerPriority
-import com.google.inject.Inject
 import org.bukkit.NamespacedKey
-import org.bukkit.entity.Item
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
-import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.api.addon.AddonLoaderScope
+import su.plo.voice.api.addon.InjectPlasmoVoice
 import su.plo.voice.api.addon.annotation.Addon
 import su.plo.voice.api.event.EventSubscribe
 import su.plo.voice.api.server.PlasmoVoiceServer
@@ -28,14 +28,14 @@ import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 @Addon(
     id = "pv-addon-discs",
     scope = AddonLoaderScope.SERVER,
-    version = "1.0.6",
-    authors = ["KPidS"]
+    version = "1.1.0",
+    authors = ["KPidS", "Apehum"]
 )
 class DiscsPlugin : JavaPlugin() {
 
     private val addonName = "discs"
 
-    @Inject
+    @InjectPlasmoVoice
     lateinit var voiceServer: PlasmoVoiceServer
 
     lateinit var sourceLine: ServerSourceLine
@@ -66,7 +66,6 @@ class DiscsPlugin : JavaPlugin() {
     }
 
     @EventSubscribe
-
     override fun onEnable() {
         loadConfig()
 
@@ -83,7 +82,7 @@ class DiscsPlugin : JavaPlugin() {
         command.setExecutor(handler)
         command.tabCompleter = handler
 
-        val permissions = voiceServer.minecraftServer.permissionsManager
+        val permissions = voiceServer.minecraftServer.permissionManager
 
         permissions.register("pv.addon.discs.play", PermissionDefault.TRUE)
 
@@ -118,9 +117,7 @@ class DiscsPlugin : JavaPlugin() {
         audioPlayerManager = PlasmoAudioPlayerManager(this)
     }
 
-    fun forbidGrindstone(item: ItemStack) {
-        item.editMeta {
-            it.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
-        }
+    fun forbidGrindstone(meta: ItemMeta) {
+        meta.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
     }
 }

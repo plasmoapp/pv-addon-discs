@@ -5,10 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.bukkit.command.CommandSender
-import su.plo.lib.api.chat.MinecraftTextClickEvent
-import su.plo.lib.api.chat.MinecraftTextComponent
-import su.plo.lib.api.chat.MinecraftTextHoverEvent
-import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.slib.api.chat.component.McTextComponent
+import su.plo.slib.api.chat.style.McTextClickEvent
+import su.plo.slib.api.chat.style.McTextHoverEvent
+import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
@@ -50,7 +50,7 @@ class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
         val tracks = try {
             handler.plugin.audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks
         } catch (e: Exception) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.message)
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.message ?: "Unexpected error")
             return@launch
         }
 
@@ -61,9 +61,9 @@ class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
 
         tracks.take(5).forEach {
             val command = "/disc burn ${it.identifier}"
-            val component = MinecraftTextComponent.translatable("pv.addon.discs.format.search_entry", it.info.title, it.info.author)
-                .hoverEvent(MinecraftTextHoverEvent.showText(MinecraftTextComponent.literal(command)))
-                .clickEvent(MinecraftTextClickEvent.suggestCommand(command))
+            val component = McTextComponent.translatable("pv.addon.discs.format.search_entry", it.info.title, it.info.author)
+                .hoverEvent(McTextHoverEvent.showText(McTextComponent.literal(command)))
+                .clickEvent(McTextClickEvent.suggestCommand(command))
             voicePlayer.instance.sendMessage(component)
         }
     }}

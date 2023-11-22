@@ -31,7 +31,7 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
     private fun createRecipe(record: Material): ShapelessRecipe {
         val recipeKey = NamespacedKey(
             plugin,
-            "burnable_record_craft.${record.key().value().lowercase()}"
+            "burnable_record_craft.${record.key.value().lowercase()}"
         )
         return ShapelessRecipe(recipeKey, createCustomRecord(record)).also { recipe ->
             recipe.addIngredient(ItemStack(record))
@@ -44,14 +44,14 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
     private fun createCustomRecord(record: Material): ItemStack {
         val itemStack = ItemStack(record)
 
-        if (plugin.addonConfig.addGlintToCustomDiscs) {
-            plugin.forbidGrindstone(itemStack)
-        }
-
         itemStack.editMeta {
             if (plugin.addonConfig.addGlintToCustomDiscs) {
                 it.addEnchant(Enchantment.MENDING, 1, true)
             }
+            if (plugin.addonConfig.addGlintToCustomDiscs) {
+                plugin.forbidGrindstone(it)
+            }
+
             it.addItemFlags(*ItemFlag.values())
             it.persistentDataContainer.set(
                 plugin.burnableKey,

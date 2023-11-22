@@ -8,7 +8,7 @@ fun ItemStack.isCustomDisc(plugin: DiscsPlugin) = this
     .takeIf { this.type.isRecord }
     ?.itemMeta
     ?.persistentDataContainer
-    ?.let { it.has(plugin.identifierKey) || it.has(plugin.oldIdentifierKey) }
+    ?.let { it.has(plugin.identifierKey, PersistentDataType.STRING) || it.has(plugin.oldIdentifierKey, PersistentDataType.STRING) }
     ?: false
 
 fun ItemStack.customDiscIdentifier(plugin: DiscsPlugin): String? =

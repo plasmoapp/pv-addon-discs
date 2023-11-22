@@ -12,14 +12,14 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
-import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.sendTranslatable
+import su.plo.voice.discs.utils.suspendSync
 
 class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -57,7 +57,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         if (
             handler.plugin.addonConfig.burnableTag.requireBurnableTag &&
             (
-                !item.itemMeta.persistentDataContainer.has(handler.plugin.burnableKey) &&
+                !item.itemMeta.persistentDataContainer.has(handler.plugin.burnableKey, PersistentDataType.BYTE) &&
                 !voicePlayer.instance.hasPermission("pv.addon.discs.burn.burnable_check_bypass")
             )
         ) {
@@ -85,7 +85,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
         val track = try {
             handler.plugin.audioPlayerManager.getTrack(identifier).await()
         } catch (e: Exception) {
-            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.message)
+            voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.message ?: "Unexpected error")
             return@launch
         }
 
@@ -102,10 +102,6 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         if (!checkBurnable(voicePlayer, item)) return@launch
 
-        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
-            handler.plugin.forbidGrindstone(item)
-        }
-
         val meta = handler.plugin.server.itemFactory.getItemMeta(item.type)
 
         meta.addItemFlags(*ItemFlag.values())
@@ -115,6 +111,10 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             PersistentDataType.STRING,
             identifier
         )
+
+        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
+            handler.plugin.forbidGrindstone(meta)
+        }
 
         if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
             meta.addEnchant(Enchantment.MENDING, 1, false)

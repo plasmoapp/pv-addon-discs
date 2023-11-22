@@ -1,7 +1,7 @@
 package su.plo.voice.discs.command.subcommand
 
 import org.bukkit.command.CommandSender
-import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer

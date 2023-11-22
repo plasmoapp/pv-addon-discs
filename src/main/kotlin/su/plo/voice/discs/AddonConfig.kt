@@ -1,10 +1,10 @@
 package su.plo.voice.discs
 
-import org.bukkit.Bukkit
 import su.plo.config.Config
 import su.plo.config.ConfigField
 import su.plo.config.provider.ConfigurationProvider
 import su.plo.config.provider.toml.TomlConfiguration
+import su.plo.slib.api.server.McServerLib
 import su.plo.voice.api.server.PlasmoVoiceServer
 import java.io.File
 import java.io.IOException
@@ -139,7 +139,7 @@ class AddonConfig {
     companion object {
         fun loadConfig(server: PlasmoVoiceServer): AddonConfig {
 
-            val addonFolder = getAddonFolder()
+            val addonFolder = getAddonFolder(server.minecraftServer)
 
             server.languages.register(
                 "plasmo-voice-addons",
@@ -164,7 +164,7 @@ class AddonConfig {
             TomlConfiguration::class.java
         )
 
-        private fun getAddonFolder(): File =
-            File(Bukkit.getPluginsFolder(), "pv-addon-discs")
+        private fun getAddonFolder(minecraftServer: McServerLib): File =
+            File(minecraftServer.configsFolder, "pv-addon-discs")
     }
 }

@@ -1,8 +1,9 @@
 package su.plo.voice.discs.event
 
+import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.PrepareGrindstoneEvent
+import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.voice.discs.DiscsPlugin
@@ -16,10 +17,12 @@ class ForbidGrindstoneListener(val plugin: DiscsPlugin): Listener {
             ?: false
 
     @EventHandler
-    fun onPrepareGrindstoneEvent(event: PrepareGrindstoneEvent) {
+    fun onPrepareGrindstoneEvent(event: PrepareResultEvent) {
+        val inventory = event.inventory as? GrindstoneInventory ?: return
+
         if (
-            event.inventory.lowerItem?.isForbidden() == true ||
-            event.inventory.upperItem?.isForbidden() == true
+            inventory.lowerItem?.isForbidden() == true ||
+            inventory.upperItem?.isForbidden() == true
         ) event.result = null
     }
 }

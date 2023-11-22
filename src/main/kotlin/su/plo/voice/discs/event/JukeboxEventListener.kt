@@ -2,7 +2,10 @@ package su.plo.voice.discs.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.await
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -19,13 +22,13 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.inventory.ItemStack
-import su.plo.lib.api.chat.MinecraftTextComponent
-import su.plo.lib.api.chat.MinecraftTextStyle
-import su.plo.lib.api.server.world.ServerPos3d
+import su.plo.slib.api.chat.component.McTextComponent
+import su.plo.slib.api.chat.style.McTextStyle
+import su.plo.slib.api.server.position.ServerPos3d
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.DiscsPlugin
-import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
 import su.plo.voice.discs.utils.extend.*
+import su.plo.voice.discs.utils.suspendSync
 
 class JukeboxEventListener(
     private val plugin: DiscsPlugin
@@ -35,17 +38,10 @@ class JukeboxEventListener(
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    fun onHopperInsertToJukebox(event: InventoryMoveItemEvent) {
-        if (event.destination.type != InventoryType.JUKEBOX) return
-
-        val block = event.destination.location?.block ?: return
-
-        val item = event.item
-        val identifier = item.customDiscIdentifier(plugin) ?: return
-
-        jobByBlock.remove(block)?.cancel()
-        jobByBlock[block] = playTrack(identifier, block, item)
+    init {
+        if (Bukkit.getServer().isVersionGreaterOrEqual("1.19.4")) {
+            Bukkit.getServer().pluginManager.registerEvents(HopperEventListener(), plugin)
+        }
     }
 
     @EventHandler
@@ -87,8 +83,8 @@ class JukeboxEventListener(
         val identifier = item.customDiscIdentifier(plugin) ?: return
 
         voicePlayer.instance.sendActionBar(
-            MinecraftTextComponent.translatable("pv.addon.discs.actionbar.loading")
-                .withStyle(MinecraftTextStyle.YELLOW)
+            McTextComponent.translatable("pv.addon.discs.actionbar.loading")
+                .withStyle(McTextStyle.YELLOW)
         )
 
         jobByBlock[block]?.cancel()
@@ -142,8 +138,8 @@ class JukeboxEventListener(
         } catch (e: Exception) {
             // todo: send error to who?
             voicePlayer?.instance?.sendActionBar(
-                MinecraftTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.message)
-                    .withStyle(MinecraftTextStyle.RED)
+                McTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.message ?: "Unexpected error")
+                    .withStyle(McTextStyle.RED)
             )
             suspendSync(block.location, plugin) { block.asJukebox()?.eject() }
             return@launch
@@ -174,7 +170,7 @@ class JukeboxEventListener(
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
-        val actionbarMessage = MinecraftTextComponent.translatable(
+        val actionbarMessage = McTextComponent.translatable(
             "pv.addon.discs.actionbar.playing", trackName
         )
 
@@ -204,19 +200,27 @@ class JukeboxEventListener(
                     val jukebox = block.asJukebox() ?: return@suspendSync
 
                     jukebox.setRecord(jukebox.record)
-                    jukebox.startPlaying()
+                    try {
+                        val startPlayingMethod = jukebox.javaClass.getMethod("startPlaying")
+                        println(startPlayingMethod)
+                        startPlayingMethod.invoke(jukebox)
+                    } catch (_: ReflectiveOperationException) {
+                        // ignore on old mc versions
+                    }
                     jukebox.update()
                 }
                 lastTick = System.currentTimeMillis()
 
             }
         } finally {
-            job.cancelAndJoin()
+            withContext(NonCancellable) {
+                job.cancelAndJoin()
 
-            suspendSync(block.location, plugin) {
-                val jukebox = block.asJukebox() ?: return@suspendSync
-                jukebox.stopPlayingWithUpdate()
-                jobByBlock.remove(block)
+                suspendSync(block.location, plugin) {
+                    val jukebox = block.asJukebox() ?: return@suspendSync
+                    jukebox.stopPlayingWithUpdate()
+                    jobByBlock.remove(block)
+                }
             }
         }
     }
@@ -234,4 +238,20 @@ class JukeboxEventListener(
                 }
             }
         }.count()
+
+    private inner class HopperEventListener : Listener {
+
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        fun onHopperInsertToJukebox(event: InventoryMoveItemEvent) {
+            if (event.destination.type.name != "JUKEBOX") return
+
+            val block = event.destination.location?.block ?: return
+
+            val item = event.item
+            val identifier = item.customDiscIdentifier(plugin) ?: return
+
+            jobByBlock.remove(block)?.cancel()
+            jobByBlock[block] = playTrack(identifier, block, item)
+        }
+    }
 }

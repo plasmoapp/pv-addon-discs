@@ -4,9 +4,9 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
-import su.plo.lib.api.chat.MinecraftTextComponent
-import su.plo.lib.api.server.command.MinecraftCommandSource
-import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.slib.api.chat.component.McTextComponent
+import su.plo.slib.api.command.McCommandSource
+import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
@@ -27,14 +27,14 @@ open class CommandHandler(
 
     private fun registerPermissions(permissions: List<Pair<String, PermissionDefault>>) {
         permissions.forEach {
-            plugin.voiceServer.minecraftServer.permissionsManager.register(
+            plugin.voiceServer.minecraftServer.permissionManager.register(
                 "pv.addon.discs.${it.first}",
                 it.second
             )
         }
     }
 
-    private val unknownCommandComponent = MinecraftTextComponent.translatable(
+    private val unknownCommandComponent = McTextComponent.translatable(
         "pv.addon.discs.error.unknown_subcommand",
         subCommands.keys.joinToString(", ")
     )
@@ -84,7 +84,7 @@ open class CommandHandler(
         return listOf()
     }
 
-    fun getTranslationStringByKey(key: String, source: MinecraftCommandSource): String {
+    fun getTranslationStringByKey(key: String, source: McCommandSource): String {
         return plugin.voiceServer.languages.getServerLanguage(source)[key] ?: key
     }
 }

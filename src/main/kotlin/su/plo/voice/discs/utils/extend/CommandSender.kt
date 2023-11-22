@@ -2,15 +2,15 @@ package su.plo.voice.discs.utils.extend
 
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import su.plo.lib.api.chat.MinecraftTextComponent
-import su.plo.lib.api.server.command.MinecraftCommandSource
+import su.plo.slib.api.chat.component.McTextComponent
+import su.plo.slib.api.command.McCommandSource
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.player.VoicePlayer
 
 fun CommandSender.asPlayer() = this as? Player
 
-fun MinecraftCommandSource.sendTranslatable(key: String, vararg args: Any?) = this.sendMessage(
-    MinecraftTextComponent.translatable(key, *args)
+fun McCommandSource.sendTranslatable(key: String, vararg args: Any) = this.sendMessage(
+    McTextComponent.translatable(key, *args)
 )
 
 fun CommandSender.asVoicePlayer(voiceServer: PlasmoVoiceServer): VoicePlayer? {

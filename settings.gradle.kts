@@ -4,7 +4,7 @@ pluginManagement {
         mavenLocal()
         mavenCentral()
         maven("https://jitpack.io/")
-        maven("https://repo.plo.su")
+        maven("https://repo.plasmoverse.com/snapshots")
         maven("https://repo.papermc.io/repository/maven-public/")
     }
 }

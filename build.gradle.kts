@@ -1,7 +1,3 @@
-// version
-val mavenGroup: String by rootProject
-val pluginVersion: String by rootProject
-
 // libs
 val paperVersion: String by rootProject
 val foliaVersion: String by rootProject
@@ -9,17 +5,14 @@ val plasmoVoiceVersion: String by rootProject
 val lavaplayerLibVersion: String by rootProject
 
 plugins {
-    kotlin("jvm") version("1.6.10")
+    kotlin("jvm") version("1.8.22")
     `maven-publish`
     id("xyz.jpenilla.run-paper") version("2.0.1")
     id("net.minecrell.plugin-yml.bukkit") version("0.6.0")
     id("com.github.johnrengelman.shadow") version("7.0.0")
-    id("su.plo.crowdin.plugin") version("1.0.0")
-    id("su.plo.voice.relocate") version("1.0.1")
+    id("su.plo.crowdin.plugin") version("1.0.2-SNAPSHOT")
+    id("su.plo.voice.plugin.relocate-kotlin") version("1.0.2-SNAPSHOT")
 }
-
-group = mavenGroup
-version = pluginVersion
 
 repositories {
     mavenCentral()
@@ -30,7 +23,8 @@ repositories {
         url = uri("https://repo.codemc.io/repository/maven-snapshots/")
     }
 
-    maven(("https://repo.plo.su"))
+    maven("https://repo.plasmoverse.com/snapshots")
+    maven("https://repo.plo.su")
 
     maven("https://m2.dv8tion.net/releases")
 
@@ -48,16 +42,16 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
-    compileOnly("io.papermc.paper:paper-api:$paperVersion")
-    compileOnly("dev.folia:folia-api:$foliaVersion")
+    compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
 
     compileOnly("su.plo:pv-addon-lavaplayer-lib:$lavaplayerLibVersion")
     compileOnly("su.plo.voice.api:server:$plasmoVoiceVersion")
-    compileOnly("su.plo.config:config:1.0.0")
+    compileOnly("su.plo.slib:spigot:1.0.0-SNAPSHOT")
 }
 
-plasmoCrowdin {
+crowdin {
     projectId = "plasmo-voice-addons"
     sourceFileName = "server/discs.toml"
     resourceDir = "discs/languages"
@@ -66,7 +60,6 @@ plasmoCrowdin {
 
 tasks {
     processResources {
-        dependsOn(plasmoCrowdinDownload)
         filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
     }
 
@@ -85,12 +78,16 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
 
 bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
     main = "su.plo.voice.discs.DiscsPlugin"
-    apiVersion = "1.19"
+    apiVersion = "1.16"
     authors = listOf("KPidS", "Apehum")
 
     depend = listOf("PlasmoVoice", "ProtocolLib", "pv-addon-lavaplayer-lib")

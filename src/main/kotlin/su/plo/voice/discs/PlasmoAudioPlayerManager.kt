@@ -2,6 +2,8 @@ package su.plo.voice.discs
 
 import kotlinx.coroutines.*
 import su.plo.voice.api.encryption.Encryption
+import su.plo.voice.api.server.audio.provider.AudioFrameProvider
+import su.plo.voice.api.server.audio.provider.AudioFrameResult
 import su.plo.voice.api.server.audio.source.ServerStaticSource
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
@@ -16,66 +18,44 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.vime
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.*
-import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
-import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.net.URI
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
 
 class PlasmoAudioPlayerManager(
     private val plugin: DiscsPlugin
 ) {
     private val lavaPlayerManager: AudioPlayerManager = DefaultAudioPlayerManager()
-    private val scope = CoroutineScope(Dispatchers.Default)
-    private val encrypt: Encryption
-        get() = plugin.voiceServer.defaultEncryption
+    private val encryption = plugin.voiceServer.defaultEncryption
 
     init {
         registerSources()
     }
 
-    fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short) = scope.launch {
-
+    fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short): Job {
         val player = lavaPlayerManager.createPlayer()
-
         player.playTrack(track)
 
-        var i = 0L
-        var start = 0L
+        val frameProvider = object : AudioFrameProvider {
+            override fun provide20ms(): AudioFrameResult =
+                if (track.state == AudioTrackState.FINISHED) {
+                    AudioFrameResult.Finished
+                } else {
+                    val frame = player.provide()?.data?.let {
+                        encryption.encrypt(it)
+                    }
 
-        try { while(isActive) {
+                    AudioFrameResult.Provided(frame)
+                }
+        }
 
-            if (track.state == AudioTrackState.FINISHED) break
-
-            val frame = player.provide(5L, TimeUnit.MILLISECONDS) ?: continue
-
-            val packet = SourceAudioPacket(
-                i++,
-                source.state.toByte(),
-                encrypt.encrypt(frame.data),
-                source.id,
-                distance
-            )
-
-            source.sendAudioPacket(packet, distance)
-
-            if (start == 0L) start = System.currentTimeMillis()
-
-            val wait = (start + frame.timecode) - System.currentTimeMillis()
-
-            if (wait <= 0) continue else delay(wait)
-
-        }} finally { withContext(NonCancellable) {
-
+        val sender = source.createAudioSender(frameProvider, distance)
+        val job = sender.start()
+        sender.onStop {
             player.destroy()
+            source.remove()
+        }
 
-            source.sendPacket(SourceAudioEndPacket(
-                source.id,
-                i++
-            ), distance)
-
-            plugin.sourceLine.removeSource(source)
-        }}
+        return job
     }
 
     val noMatchesException = FriendlyException(
@@ -88,16 +68,19 @@ class PlasmoAudioPlayerManager(
 
         val future = CompletableFuture<AudioTrack>()
 
-        lavaPlayerManager.loadItem(identifier, object: AudioLoadResultHandler {
+        lavaPlayerManager.loadItem(identifier, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 future.complete(track)
             }
+
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 future.completeExceptionally(noMatchesException)
             }
+
             override fun loadFailed(exception: FriendlyException) {
                 future.completeExceptionally(exception)
             }
+
             override fun noMatches() {
                 future.completeExceptionally(noMatchesException)
             }
@@ -113,12 +96,15 @@ class PlasmoAudioPlayerManager(
             override fun trackLoaded(track: AudioTrack) {
                 future.completeExceptionally(noMatchesException)
             }
+
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 future.complete(playlist)
             }
+
             override fun loadFailed(exception: FriendlyException) {
                 future.completeExceptionally(exception)
             }
+
             override fun noMatches() {
                 future.completeExceptionally(noMatchesException)
             }
@@ -149,14 +135,14 @@ class PlasmoAudioPlayerManager(
                 val host = runCatching { URI(identifier) }.getOrNull()?.host ?: return null
                 val hostSplit = host.split(".")
                 if (!plugin.addonConfig.httpSource.whitelist.any {
-                    val itemSplitLength = it.split(".").size
+                        val itemSplitLength = it.split(".").size
 
-                    val hostToCompare = hostSplit
-                        .subList((hostSplit.size - itemSplitLength).coerceAtLeast(0), hostSplit.size)
-                        .joinToString(".")
+                        val hostToCompare = hostSplit
+                            .subList((hostSplit.size - itemSplitLength).coerceAtLeast(0), hostSplit.size)
+                            .joinToString(".")
 
-                    hostToCompare == it
-                }) return null
+                        hostToCompare == it
+                    }) return null
             }
             return super.loadItem(manager, reference)
         }
