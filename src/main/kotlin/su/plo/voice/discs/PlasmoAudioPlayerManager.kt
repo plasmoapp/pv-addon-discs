@@ -37,8 +37,9 @@ class PlasmoAudioPlayerManager(
     fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short) = scope.launch {
 
         val player = lavaPlayerManager.createPlayer()
-
         player.playTrack(track)
+
+        DiscsPlugin.DEBUG_LOGGER.log("Starting track \"${source.sourceInfo.name}\" on $source")
 
         var i = 0L
         var start = 0L
@@ -66,6 +67,8 @@ class PlasmoAudioPlayerManager(
             if (wait <= 0) continue else delay(wait)
 
         }} finally { withContext(NonCancellable) {
+
+            DiscsPlugin.DEBUG_LOGGER.log("Track \"${source.sourceInfo.name}\" on $source was ended or cancelled")
 
             player.destroy()
 

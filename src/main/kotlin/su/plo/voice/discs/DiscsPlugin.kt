@@ -13,6 +13,7 @@ import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.api.addon.AddonLoaderScope
 import su.plo.voice.api.addon.annotation.Addon
 import su.plo.voice.api.event.EventSubscribe
+import su.plo.voice.api.logging.DebugLogger
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.event.config.VoiceServerConfigReloadedEvent
@@ -24,6 +25,7 @@ import su.plo.voice.discs.crafting.BurnableDiscCraft
 import su.plo.voice.discs.event.ForbidGrindstoneListener
 import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
+import su.plo.voice.discs.utils.extend.debug
 
 @Addon(
     id = "pv-addon-discs",
@@ -66,7 +68,6 @@ class DiscsPlugin : JavaPlugin() {
     }
 
     @EventSubscribe
-
     override fun onEnable() {
         loadConfig()
 
@@ -104,6 +105,8 @@ class DiscsPlugin : JavaPlugin() {
 
     private fun loadConfig() {
         addonConfig = AddonConfig.loadConfig(voiceServer)
+        DEBUG_LOGGER = DebugLogger(slF4JLogger)
+        DEBUG_LOGGER.enabled(voiceServer.debug())
 
         sourceLine = voiceServer.sourceLineManager.createBuilder(
             this,
@@ -122,5 +125,11 @@ class DiscsPlugin : JavaPlugin() {
         item.editMeta {
             it.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
         }
+    }
+
+    companion object {
+
+        @JvmStatic
+        lateinit var DEBUG_LOGGER: DebugLogger
     }
 }
