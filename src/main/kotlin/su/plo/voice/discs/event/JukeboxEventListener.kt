@@ -172,7 +172,12 @@ class JukeboxEventListener(
         source.setName(trackName)
 
         val distance = when (plugin.addonConfig.distance.enableBeaconLikeDistance) {
-            true -> plugin.addonConfig.distance.beaconLikeDistanceList[getBeaconLevel(block)]
+            true -> {
+                val beaconLevel = suspendSync(block.location, plugin) {
+                    getBeaconLevel(block)
+                }
+                plugin.addonConfig.distance.beaconLikeDistanceList[beaconLevel]
+            }
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
