@@ -186,7 +186,7 @@ class JukeboxEventListener(
             distance.toInt(),
             0xf1c40f
         )
-        DiscsPlugin.DEBUG_LOGGER.log("Starting track job \"$trackName\" with distance $distance at $block")
+        DiscsPlugin.DEBUG_LOGGER.log("Starting track job \"$trackName\" with distance $distance at ${block.location}")
 
         suspendSync(block.location, plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }
