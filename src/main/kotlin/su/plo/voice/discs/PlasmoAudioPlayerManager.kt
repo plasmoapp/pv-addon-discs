@@ -96,7 +96,12 @@ class PlasmoAudioPlayerManager(
                 future.complete(track)
             }
             override fun playlistLoaded(playlist: AudioPlaylist) {
-                future.completeExceptionally(noMatchesException)
+                if (playlist.selectedTrack == null) {
+                    future.completeExceptionally(noMatchesException)
+                    return
+                }
+
+                future.complete(playlist.selectedTrack)
             }
             override fun loadFailed(exception: FriendlyException) {
                 future.completeExceptionally(exception)
