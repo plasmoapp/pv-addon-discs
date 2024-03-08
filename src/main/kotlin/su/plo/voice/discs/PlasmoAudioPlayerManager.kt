@@ -35,6 +35,8 @@ class PlasmoAudioPlayerManager(
         val player = lavaPlayerManager.createPlayer()
         player.playTrack(track)
 
+        DiscsPlugin.DEBUG_LOGGER.log("Starting track \"${source.sourceInfo.name}\" on $source")
+
         val frameProvider = object : AudioFrameProvider {
             override fun provide20ms(): AudioFrameResult =
                 if (track.state == AudioTrackState.FINISHED) {
@@ -74,7 +76,12 @@ class PlasmoAudioPlayerManager(
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
-                future.completeExceptionally(noMatchesException)
+                if (playlist.selectedTrack == null) {
+                    future.completeExceptionally(noMatchesException)
+                    return
+                }
+
+                future.complete(playlist.selectedTrack)
             }
 
             override fun loadFailed(exception: FriendlyException) {

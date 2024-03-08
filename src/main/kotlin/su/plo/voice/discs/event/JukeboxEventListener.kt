@@ -141,6 +141,9 @@ class JukeboxEventListener(
                 McTextComponent.translatable("pv.addon.discs.actionbar.track_not_found", e.message ?: "Unexpected error")
                     .withStyle(McTextStyle.RED)
             )
+
+            DiscsPlugin.DEBUG_LOGGER.log("Failed to load track", e)
+
             suspendSync(block.location, plugin) { block.asJukebox()?.eject() }
             return@launch
         }
@@ -162,11 +165,15 @@ class JukeboxEventListener(
         )
 
         val source = plugin.sourceLine.createStaticSource(pos, true)
-
         source.setName(trackName)
 
         val distance = when (plugin.addonConfig.distance.enableBeaconLikeDistance) {
-            true -> plugin.addonConfig.distance.beaconLikeDistanceList[getBeaconLevel(block)]
+            true -> {
+                val beaconLevel = suspendSync(block.location, plugin) {
+                    getBeaconLevel(block)
+                }
+                plugin.addonConfig.distance.beaconLikeDistanceList[beaconLevel]
+            }
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
@@ -180,6 +187,7 @@ class JukeboxEventListener(
             distance.toInt(),
             0xf1c40f
         )
+        DiscsPlugin.DEBUG_LOGGER.log("Starting track job \"$trackName\" with distance $distance at ${block.location}")
 
         suspendSync(block.location, plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(plugin.voiceServer) }

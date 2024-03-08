@@ -46,6 +46,10 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
 
         itemStack.editMeta {
             if (plugin.addonConfig.addGlintToCustomDiscs) {
+                plugin.forbidGrindstone(it)
+            }
+
+            if (plugin.addonConfig.addGlintToCustomDiscs) {
                 it.addEnchant(Enchantment.MENDING, 1, true)
             }
             if (plugin.addonConfig.addGlintToCustomDiscs) {

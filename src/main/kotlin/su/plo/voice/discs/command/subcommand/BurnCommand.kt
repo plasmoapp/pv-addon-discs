@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
+import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
@@ -86,6 +87,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             handler.plugin.audioPlayerManager.getTrack(identifier).await()
         } catch (e: Exception) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.message ?: "Unexpected error")
+            DiscsPlugin.DEBUG_LOGGER.log("Failed to load track", e)
             return@launch
         }
 
