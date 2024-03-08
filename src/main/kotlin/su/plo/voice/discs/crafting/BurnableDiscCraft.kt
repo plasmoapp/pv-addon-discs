@@ -44,11 +44,11 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
     private fun createCustomRecord(record: Material): ItemStack {
         val itemStack = ItemStack(record)
 
-        if (plugin.addonConfig.addGlintToCustomDiscs) {
-            plugin.forbidGrindstone(itemStack)
-        }
-
         itemStack.editMeta {
+            if (plugin.addonConfig.addGlintToCustomDiscs) {
+                plugin.forbidGrindstone(it)
+            }
+
             if (plugin.addonConfig.addGlintToCustomDiscs) {
                 it.addEnchant(Enchantment.MENDING, 1, true)
             }

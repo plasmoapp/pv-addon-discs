@@ -5,8 +5,7 @@ import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.ListenerPriority
 import com.google.inject.Inject
 import org.bukkit.NamespacedKey
-import org.bukkit.entity.Item
-import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.permission.PermissionDefault
@@ -121,10 +120,8 @@ class DiscsPlugin : JavaPlugin() {
         audioPlayerManager = PlasmoAudioPlayerManager(this)
     }
 
-    fun forbidGrindstone(item: ItemStack) {
-        item.editMeta {
-            it.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
-        }
+    fun forbidGrindstone(itemMeta: ItemMeta) {
+        itemMeta.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
     }
 
     companion object {

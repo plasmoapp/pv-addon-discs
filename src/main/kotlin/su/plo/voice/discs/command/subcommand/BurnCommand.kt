@@ -104,10 +104,6 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         if (!checkBurnable(voicePlayer, item)) return@launch
 
-        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
-            handler.plugin.forbidGrindstone(item)
-        }
-
         val meta = handler.plugin.server.itemFactory.getItemMeta(item.type)
 
         meta.addItemFlags(*ItemFlag.values())
@@ -117,6 +113,10 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             PersistentDataType.STRING,
             identifier
         )
+
+        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
+            handler.plugin.forbidGrindstone(meta)
+        }
 
         if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
             meta.addEnchant(Enchantment.MENDING, 1, false)
