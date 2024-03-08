@@ -4,7 +4,6 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.ListenerPriority
 import org.bukkit.NamespacedKey
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
@@ -13,7 +12,6 @@ import su.plo.voice.api.addon.AddonLoaderScope
 import su.plo.voice.api.addon.InjectPlasmoVoice
 import su.plo.voice.api.addon.annotation.Addon
 import su.plo.voice.api.event.EventSubscribe
-import su.plo.voice.api.logging.DebugLogger
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.event.config.VoiceServerConfigReloadedEvent
@@ -24,6 +22,7 @@ import su.plo.voice.discs.command.subcommand.SearchCommand
 import su.plo.voice.discs.crafting.BurnableDiscCraft
 import su.plo.voice.discs.event.ForbidGrindstoneListener
 import su.plo.voice.discs.event.JukeboxEventListener
+import su.plo.voice.discs.logging.DebugLogger
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 import su.plo.voice.discs.utils.extend.debug
 
@@ -107,7 +106,7 @@ class DiscsPlugin : JavaPlugin() {
     private fun loadConfig() {
         addonConfig = AddonConfig.loadConfig(voiceServer)
         DEBUG_LOGGER = DebugLogger(slF4JLogger)
-        DEBUG_LOGGER.enabled(voiceServer.debug())
+        DEBUG_LOGGER.enabled = voiceServer.debug()
 
         sourceLine = voiceServer.sourceLineManager.createBuilder(
             this,

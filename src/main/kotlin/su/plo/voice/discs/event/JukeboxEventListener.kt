@@ -222,6 +222,7 @@ class JukeboxEventListener(
             }
         } finally {
             withContext(NonCancellable) {
+                DiscsPlugin.DEBUG_LOGGER.log("Track \"${source.sourceInfo.name}\" on $source was ended or cancelled")
                 job.cancelAndJoin()
 
                 suspendSync(block.location, plugin) {
