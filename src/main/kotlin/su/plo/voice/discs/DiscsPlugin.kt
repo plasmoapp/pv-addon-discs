@@ -124,6 +124,10 @@ class DiscsPlugin : JavaPlugin() {
         itemMeta.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
     }
 
+    fun allowGrindstone(itemMeta: ItemMeta) {
+        itemMeta.persistentDataContainer.remove(forbidGrindstoneKey)
+    }
+
     companion object {
 
         @JvmStatic
