@@ -1,6 +1,8 @@
 package su.plo.voice.discs.command.subcommand
 
 import org.bukkit.command.CommandSender
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFlag
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
@@ -37,9 +39,17 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
                 return
             }
 
-        val meta = source.server.itemFactory.getItemMeta(item.type)
+        item.editMeta { meta ->
+            meta.removeItemFlags(*ItemFlag.values())
+            meta.persistentDataContainer.remove(handler.plugin.identifierKey)
 
-        item.itemMeta = meta
+            if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
+                handler.plugin.allowGrindstone(meta)
+                meta.removeEnchant(Enchantment.MENDING)
+            }
+
+            meta.lore(null)
+        }
 
         voicePlayer.instance.sendTranslatable("pv.addon.discs.success.erase")
     }

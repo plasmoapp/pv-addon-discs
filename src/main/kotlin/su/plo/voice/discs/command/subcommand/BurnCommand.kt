@@ -104,36 +104,30 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
         if (!checkBurnable(voicePlayer, item)) return@launch
 
-        val meta = handler.plugin.server.itemFactory.getItemMeta(item.type)
-
-        meta.addItemFlags(*ItemFlag.values())
-
-        meta.persistentDataContainer.set(
-            handler.plugin.identifierKey,
-            PersistentDataType.STRING,
-            identifier
-        )
-
-        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
-            handler.plugin.forbidGrindstone(meta)
-        }
-
-        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
-            meta.addEnchant(Enchantment.MENDING, 1, false)
-        }
-
-        val loreName = Component.text()
-            .content(name)
-            .decoration(TextDecoration.ITALIC, false)
-            .color(NamedTextColor.GRAY)
-            .build()
-
-        meta.lore(listOf(loreName))
-
         suspendSync(player.location, handler.plugin) {
-            val item = player.inventory.itemInMainHand
-            if (!checkBurnable(voicePlayer, item)) return@suspendSync
-            item.itemMeta = meta
+            item.editMeta { meta ->
+                meta.addItemFlags(*ItemFlag.values())
+
+                meta.persistentDataContainer.set(
+                    handler.plugin.identifierKey,
+                    PersistentDataType.STRING,
+                    identifier
+                )
+
+                if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
+                    handler.plugin.forbidGrindstone(meta)
+                    meta.addEnchant(Enchantment.MENDING, 1, false)
+                }
+
+                val loreName = Component.text()
+                    .content(name)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .color(NamedTextColor.GRAY)
+                    .build()
+
+                meta.lore(listOf(loreName))
+            }
+
             voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
         }
     }}
