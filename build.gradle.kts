@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.pluginyml)
     alias(libs.plugins.crowdin)
     alias(libs.plugins.pv.kotlin.relocate)
+    alias(libs.plugins.pv.java.templates)
 }
 
 repositories {
