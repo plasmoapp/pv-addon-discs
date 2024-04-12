@@ -1,17 +1,10 @@
-// libs
-val paperVersion: String by rootProject
-val foliaVersion: String by rootProject
-val plasmoVoiceVersion: String by rootProject
-val lavaplayerLibVersion: String by rootProject
-
 plugins {
-    kotlin("jvm") version("1.8.22")
+    kotlin("jvm") version(libs.versions.kotlin.get())
     `maven-publish`
-    id("xyz.jpenilla.run-paper") version("2.0.1")
-    id("net.minecrell.plugin-yml.bukkit") version("0.6.0")
-    id("com.github.johnrengelman.shadow") version("7.0.0")
-    id("su.plo.crowdin.plugin") version("1.0.2-SNAPSHOT")
-    id("su.plo.voice.plugin.relocate-kotlin") version("1.0.2-SNAPSHOT")
+    alias(libs.plugins.runpaper)
+    alias(libs.plugins.pluginyml)
+    alias(libs.plugins.crowdin)
+    alias(libs.plugins.pv.kotlin.relocate)
 }
 
 repositories {
@@ -24,6 +17,7 @@ repositories {
     }
 
     maven("https://repo.plasmoverse.com/snapshots")
+    maven("https://repo.plasmoverse.com/releases")
     maven("https://repo.plo.su")
 
     maven("https://m2.dv8tion.net/releases")
@@ -39,16 +33,15 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
+    compileOnly(libs.kotlinx.coroutines.core)
+    compileOnly(libs.kotlinx.coroutines.jdk8)
 
-    compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    compileOnly(libs.paper)
+    compileOnly(libs.protocollib)
 
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
-
-    compileOnly("su.plo:pv-addon-lavaplayer-lib:$lavaplayerLibVersion")
-    compileOnly("su.plo.voice.api:server:$plasmoVoiceVersion")
-    compileOnly("su.plo.slib:spigot:1.0.0-SNAPSHOT")
+    compileOnly(libs.pv)
+    compileOnly(libs.pv.lavaplayer)
+    compileOnly(libs.slib)
 }
 
 crowdin {

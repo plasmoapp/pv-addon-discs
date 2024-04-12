@@ -1,0 +1,33 @@
+[versions]
+kotlin = "1.8.22"
+kotlinx = "1.6.4"
+
+pv = "2.1.0-SNAPSHOT"
+pv-lavaplayer = "1.0.4"
+slib = "1.0.0-SNAPSHOT"
+
+paper = "1.16.5-R0.1-SNAPSHOT"
+protocol-lib = "4.7.0"
+
+crowdin = "1.0.2-SNAPSHOT"
+pv-gradle-plugin = "1.0.2-SNAPSHOT"
+runpaper = "2.2.3"
+pluginyml = "0.6.0"
+
+[libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx" }
+
+pv = { module = "su.plo.voice.server:paper", version.ref = "pv" }
+pv-lavaplayer = { module = "su.plo:pv-addon-lavaplayer-lib", version.ref = "pv-lavaplayer" }
+slib = { module = "su.plo.slib:spigot", version.ref = "slib" }
+
+paper = { module = "com.destroystokyo.paper:paper-api", version.ref = "paper" }
+protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "protocol-lib" }
+
+[plugins]
+crowdin = { id = "su.plo.crowdin.plugin", version.ref = "crowdin" }
+pv-java-templates = { id = "su.plo.voice.plugin.java-templates", version.ref = "pv-gradle-plugin" }
+pv-kotlin-relocate = { id = "su.plo.voice.plugin.relocate-kotlin", version.ref = "pv-gradle-plugin" }
+runpaper = { id = "xyz.jpenilla.run-paper" , version.ref = "runpaper" }
+pluginyml = { id = "net.minecrell.plugin-yml.bukkit", version.ref = "pluginyml" }

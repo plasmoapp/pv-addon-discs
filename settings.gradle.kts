@@ -5,6 +5,7 @@ pluginManagement {
         mavenCentral()
         maven("https://jitpack.io/")
         maven("https://repo.plasmoverse.com/snapshots")
+        maven("https://repo.plasmoverse.com/releases")
         maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
