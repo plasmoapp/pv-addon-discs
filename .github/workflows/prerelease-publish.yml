@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - main
+      - v1.1
 
 jobs:
   build:
@@ -15,13 +15,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK 17
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'temurin'
-        server-id: github
-        settings-path: ${{ github.workspace }}
+        distribution: temurin
+        java-version: |
+          8
+          16
+          17
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
