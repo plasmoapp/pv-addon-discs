@@ -34,10 +34,11 @@ open class CommandHandler(
         }
     }
 
-    private val unknownCommandComponent = McTextComponent.translatable(
-        "pv.addon.discs.error.unknown_subcommand",
-        subCommands.keys.joinToString(", ")
-    )
+    private val unknownCommandComponent: McTextComponent
+        get() = McTextComponent.translatable(
+            "pv.addon.discs.error.unknown_subcommand",
+            subCommands.keys.joinToString(", ")
+        )
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, arguments: Array<out String>): Boolean {
 
