@@ -14,13 +14,13 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
+import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
+import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.sendTranslatable
-import su.plo.voice.discs.utils.suspendSync
-import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 
 class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
 
@@ -87,6 +87,7 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             handler.plugin.audioPlayerManager.getTrack(identifier).await()
         } catch (e: Exception) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.get_track_fail", e.message)
+            DiscsPlugin.DEBUG_LOGGER.log("Failed to load track", e)
             return@launch
         }
 
@@ -99,40 +100,33 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
             return@launch
         }
 
-        val item = suspendSync(handler.plugin) { player.inventory.itemInMainHand }
-
-        if (!checkBurnable(voicePlayer, item)) return@launch
-
-        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
-            handler.plugin.forbidGrindstone(item)
-        }
-
-        val meta = handler.plugin.server.itemFactory.getItemMeta(item.type)
-
-        meta.addItemFlags(*ItemFlag.values())
-
-        meta.persistentDataContainer.set(
-            handler.plugin.identifierKey,
-            PersistentDataType.STRING,
-            identifier
-        )
-
-        if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
-            meta.addEnchant(Enchantment.MENDING, 1, false)
-        }
-
-        val loreName = Component.text()
-            .content(name)
-            .decoration(TextDecoration.ITALIC, false)
-            .color(NamedTextColor.GRAY)
-            .build()
-
-        meta.lore(listOf(loreName))
-
-        suspendSync(handler.plugin) {
+        suspendSync(player.location, handler.plugin) {
             val item = player.inventory.itemInMainHand
             if (!checkBurnable(voicePlayer, item)) return@suspendSync
-            item.itemMeta = meta
+
+            item.editMeta { meta ->
+                meta.addItemFlags(*ItemFlag.values())
+
+                meta.persistentDataContainer.set(
+                    handler.plugin.identifierKey,
+                    PersistentDataType.STRING,
+                    identifier
+                )
+
+                if (handler.plugin.addonConfig.addGlintToCustomDiscs) {
+                    handler.plugin.forbidGrindstone(meta)
+                    meta.addEnchant(Enchantment.MENDING, 1, false)
+                }
+
+                val loreName = Component.text()
+                    .content(name)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .color(NamedTextColor.GRAY)
+                    .build()
+
+                meta.lore(listOf(loreName))
+            }
+
             voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
         }
     }}

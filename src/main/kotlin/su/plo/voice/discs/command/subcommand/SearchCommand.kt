@@ -9,6 +9,7 @@ import su.plo.lib.api.chat.MinecraftTextClickEvent
 import su.plo.lib.api.chat.MinecraftTextComponent
 import su.plo.lib.api.chat.MinecraftTextHoverEvent
 import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
@@ -51,6 +52,7 @@ class SearchCommand(handler: CommandHandler) : SubCommand(handler) {
             handler.plugin.audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks
         } catch (e: Exception) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.search_fail", e.message)
+            DiscsPlugin.DEBUG_LOGGER.log("Search failed", e)
             return@launch
         }
 

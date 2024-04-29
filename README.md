@@ -76,4 +76,3 @@ If you want to stream audio from direct URLs
 
 - Copy discs like you can copy maps
 - Custom goat horn audio
-- Make it work with hoppers

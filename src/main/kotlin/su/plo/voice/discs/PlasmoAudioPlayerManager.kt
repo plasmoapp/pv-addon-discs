@@ -13,9 +13,9 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.http
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager
-import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.*
+import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeAudioSourceManager
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.net.URI
@@ -37,8 +37,9 @@ class PlasmoAudioPlayerManager(
     fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short) = scope.launch {
 
         val player = lavaPlayerManager.createPlayer()
-
         player.playTrack(track)
+
+        DiscsPlugin.DEBUG_LOGGER.log("Starting track \"${source.sourceInfo.name}\" on $source")
 
         var i = 0L
         var start = 0L
@@ -67,6 +68,8 @@ class PlasmoAudioPlayerManager(
 
         }} finally { withContext(NonCancellable) {
 
+            DiscsPlugin.DEBUG_LOGGER.log("Track \"${source.sourceInfo.name}\" on $source was ended or cancelled")
+
             player.destroy()
 
             source.sendPacket(SourceAudioEndPacket(
@@ -93,7 +96,12 @@ class PlasmoAudioPlayerManager(
                 future.complete(track)
             }
             override fun playlistLoaded(playlist: AudioPlaylist) {
-                future.completeExceptionally(noMatchesException)
+                if (playlist.selectedTrack == null) {
+                    future.completeExceptionally(noMatchesException)
+                    return
+                }
+
+                future.complete(playlist.selectedTrack)
             }
             override fun loadFailed(exception: FriendlyException) {
                 future.completeExceptionally(exception)
@@ -128,11 +136,7 @@ class PlasmoAudioPlayerManager(
     }
 
     private fun registerSources() {
-        lavaPlayerManager.registerSourceManager(YoutubeAudioSourceManager(
-            true,
-            plugin.addonConfig.youtube.email.ifBlank { null },
-            plugin.addonConfig.youtube.password.ifBlank { null }
-        ))
+        lavaPlayerManager.registerSourceManager(YoutubeAudioSourceManager(true))
         lavaPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault())
         lavaPlayerManager.registerSourceManager(BandcampAudioSourceManager())
         lavaPlayerManager.registerSourceManager(VimeoAudioSourceManager())
@@ -147,7 +151,16 @@ class PlasmoAudioPlayerManager(
             if (reference != null && plugin.addonConfig.httpSource.whitelistEnabled) {
                 val identifier = reference.identifier
                 val host = runCatching { URI(identifier) }.getOrNull()?.host ?: return null
-                if (!plugin.addonConfig.httpSource.whitelist.any { host.endsWith(it) }) return null
+                val hostSplit = host.split(".")
+                if (!plugin.addonConfig.httpSource.whitelist.any {
+                    val itemSplitLength = it.split(".").size
+
+                    val hostToCompare = hostSplit
+                        .subList((hostSplit.size - itemSplitLength).coerceAtLeast(0), hostSplit.size)
+                        .joinToString(".")
+
+                    hostToCompare == it
+                }) return null
             }
             return super.loadItem(manager, reference)
         }

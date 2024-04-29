@@ -34,6 +34,14 @@ class AddonConfig {
 
         @ConfigField(
             comment = """
+                Visualizes the distance to the player who inserted a custom disc into the jukebox.
+                Visualization will be seen only by players with "Visualize Voice Distance" enabled.
+            """
+        )
+        var visualizeDistance: Boolean = true
+
+        @ConfigField(
+            comment = """
                 Distance if 'enable_beacon_like_distance_amplification' is set
                 to false.
             """
@@ -62,26 +70,6 @@ class AddonConfig {
 
     @ConfigField
     val distance = DistanceConfig()
-
-    @Config
-    class YouTubeConfig {
-        @ConfigField(
-            comment = """
-                You can specify an email and a password to a YouTube account.
-                This will help with age restricted content and rate limits.
-                
-                Authorization via password can fail. You need to check the
-                console and see if you've been prompted to visit a specific
-                link and enter a unique code to complete the process.
-            """
-        )
-        val email: String = ""
-        @ConfigField
-        val password: String = ""
-    }
-
-    @ConfigField
-    val youtube = YouTubeConfig()
 
     @Config
     class HttpSourceConfig {

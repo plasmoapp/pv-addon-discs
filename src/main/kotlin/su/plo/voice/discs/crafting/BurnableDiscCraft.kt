@@ -6,35 +6,17 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Tag
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.*
 import org.bukkit.persistence.PersistentDataType
 import su.plo.voice.discs.DiscsPlugin
 
-
 class BurnableDiscCraft(val plugin: DiscsPlugin) {
-
-    private val records = arrayOf(
-        Material.MUSIC_DISC_5,
-        Material.MUSIC_DISC_11,
-        Material.MUSIC_DISC_13,
-        Material.MUSIC_DISC_BLOCKS,
-        Material.MUSIC_DISC_CAT,
-        Material.MUSIC_DISC_CHIRP,
-        Material.MUSIC_DISC_FAR,
-        Material.MUSIC_DISC_MALL,
-        Material.MUSIC_DISC_MELLOHI,
-        Material.MUSIC_DISC_OTHERSIDE,
-        Material.MUSIC_DISC_PIGSTEP,
-        Material.MUSIC_DISC_STAL,
-        Material.MUSIC_DISC_STRAD,
-        Material.MUSIC_DISC_WAIT,
-        Material.MUSIC_DISC_WARD,
-    )
 
     private val groupKey = NamespacedKey(plugin, "burnable_record_craft")
 
-    fun registerRecipes() = records.forEach { record ->
+    fun registerRecipes() = Tag.ITEMS_MUSIC_DISCS.values.forEach { record ->
         createRecipe(record).let(Bukkit::addRecipe)
     }
 
@@ -62,11 +44,11 @@ class BurnableDiscCraft(val plugin: DiscsPlugin) {
     private fun createCustomRecord(record: Material): ItemStack {
         val itemStack = ItemStack(record)
 
-        if (plugin.addonConfig.addGlintToCustomDiscs) {
-            plugin.forbidGrindstone(itemStack)
-        }
-
         itemStack.editMeta {
+            if (plugin.addonConfig.addGlintToCustomDiscs) {
+                plugin.forbidGrindstone(it)
+            }
+
             if (plugin.addonConfig.addGlintToCustomDiscs) {
                 it.addEnchant(Enchantment.MENDING, 1, true)
             }

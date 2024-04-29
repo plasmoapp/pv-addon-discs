@@ -5,14 +5,14 @@ import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.ListenerPriority
 import com.google.inject.Inject
 import org.bukkit.NamespacedKey
-import org.bukkit.entity.Item
-import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.api.addon.AddonLoaderScope
 import su.plo.voice.api.addon.annotation.Addon
 import su.plo.voice.api.event.EventSubscribe
+import su.plo.voice.api.logging.DebugLogger
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.event.config.VoiceServerConfigReloadedEvent
@@ -24,11 +24,12 @@ import su.plo.voice.discs.crafting.BurnableDiscCraft
 import su.plo.voice.discs.event.ForbidGrindstoneListener
 import su.plo.voice.discs.event.JukeboxEventListener
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
+import su.plo.voice.discs.utils.extend.debug
 
 @Addon(
     id = "pv-addon-discs",
     scope = AddonLoaderScope.SERVER,
-    version = "1.0.5",
+    version = "1.0.6",
     authors = ["KPidS"]
 )
 class DiscsPlugin : JavaPlugin() {
@@ -66,7 +67,6 @@ class DiscsPlugin : JavaPlugin() {
     }
 
     @EventSubscribe
-
     override fun onEnable() {
         loadConfig()
 
@@ -104,6 +104,8 @@ class DiscsPlugin : JavaPlugin() {
 
     private fun loadConfig() {
         addonConfig = AddonConfig.loadConfig(voiceServer)
+        DEBUG_LOGGER = DebugLogger(slF4JLogger)
+        DEBUG_LOGGER.enabled(voiceServer.debug())
 
         sourceLine = voiceServer.sourceLineManager.createBuilder(
             this,
@@ -118,9 +120,17 @@ class DiscsPlugin : JavaPlugin() {
         audioPlayerManager = PlasmoAudioPlayerManager(this)
     }
 
-    fun forbidGrindstone(item: ItemStack) {
-        item.editMeta {
-            it.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
-        }
+    fun forbidGrindstone(itemMeta: ItemMeta) {
+        itemMeta.persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
+    }
+
+    fun allowGrindstone(itemMeta: ItemMeta) {
+        itemMeta.persistentDataContainer.remove(forbidGrindstoneKey)
+    }
+
+    companion object {
+
+        @JvmStatic
+        lateinit var DEBUG_LOGGER: DebugLogger
     }
 }
