@@ -30,7 +30,7 @@ repositories {
         url = uri("https://repo.codemc.io/repository/maven-snapshots/")
     }
 
-    maven(("https://repo.plo.su"))
+    maven("https://repo.plasmoverse.com/releases")
 
     maven("https://m2.dv8tion.net/releases")
 

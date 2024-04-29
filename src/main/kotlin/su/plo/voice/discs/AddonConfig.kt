@@ -64,26 +64,6 @@ class AddonConfig {
     val distance = DistanceConfig()
 
     @Config
-    class YouTubeConfig {
-        @ConfigField(
-            comment = """
-                You can specify an email and a password to a YouTube account.
-                This will help with age restricted content and rate limits.
-                
-                Authorization via password can fail. You need to check the
-                console and see if you've been prompted to visit a specific
-                link and enter a unique code to complete the process.
-            """
-        )
-        val email: String = ""
-        @ConfigField
-        val password: String = ""
-    }
-
-    @ConfigField
-    val youtube = YouTubeConfig()
-
-    @Config
     class HttpSourceConfig {
         @ConfigField(
             comment = """

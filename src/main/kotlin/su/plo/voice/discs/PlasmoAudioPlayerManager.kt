@@ -13,9 +13,9 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.http
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager
-import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.*
+import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeAudioSourceManager
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.net.URI
@@ -136,11 +136,7 @@ class PlasmoAudioPlayerManager(
     }
 
     private fun registerSources() {
-        lavaPlayerManager.registerSourceManager(YoutubeAudioSourceManager(
-            true,
-            plugin.addonConfig.youtube.email.ifBlank { null },
-            plugin.addonConfig.youtube.password.ifBlank { null }
-        ))
+        lavaPlayerManager.registerSourceManager(YoutubeAudioSourceManager(true))
         lavaPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault())
         lavaPlayerManager.registerSourceManager(BandcampAudioSourceManager())
         lavaPlayerManager.registerSourceManager(VimeoAudioSourceManager())
