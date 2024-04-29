@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import su.plo.lib.api.server.permission.PermissionDefault
+import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
@@ -48,7 +49,25 @@ class EraseCommand(handler: CommandHandler) : SubCommand(handler) {
                 meta.removeEnchant(Enchantment.MENDING)
             }
 
-            meta.lore(null)
+            when (handler.plugin.addonConfig.burnLoreMethod) {
+                AddonConfig.LoreMethod.REPLACE -> {
+                    meta.lore(null)
+                }
+
+                AddonConfig.LoreMethod.APPEND -> {
+                    val currentLore = meta.lore() ?: return@editMeta
+                    if (currentLore.isEmpty()) return@editMeta
+
+                    val newLore = currentLore.subList(0, currentLore.size - 1)
+                    if (newLore.isEmpty()) {
+                        meta.lore(null)
+                    } else {
+                        meta.lore(newLore)
+                    }
+                }
+
+                AddonConfig.LoreMethod.DISABLE -> {} // do nothing
+            }
         }
 
         voicePlayer.instance.sendTranslatable("pv.addon.discs.success.erase")

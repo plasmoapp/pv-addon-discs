@@ -14,12 +14,14 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import su.plo.lib.api.server.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
+import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.command.CommandHandler
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
+import su.plo.voice.discs.utils.extend.isCustomDisc
 import su.plo.voice.discs.utils.extend.sendTranslatable
 
 class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
@@ -124,7 +126,25 @@ class BurnCommand(handler: CommandHandler) : SubCommand(handler) {
                     .color(NamedTextColor.GRAY)
                     .build()
 
-                meta.lore(listOf(loreName))
+                when (handler.plugin.addonConfig.burnLoreMethod) {
+                    AddonConfig.LoreMethod.REPLACE -> {
+                        meta.lore(listOf(loreName))
+                    }
+
+                    AddonConfig.LoreMethod.APPEND -> {
+                        val currentLore = meta.lore()?.let {
+                            if (item.isCustomDisc(handler.plugin)) {
+                                it.subList(0, it.size - 1)
+                            } else {
+                                it
+                            }
+                        } ?: emptyList()
+
+                        meta.lore(currentLore + listOf(loreName))
+                    }
+
+                    AddonConfig.LoreMethod.DISABLE -> {} // do nothing
+                }
             }
 
             voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)
