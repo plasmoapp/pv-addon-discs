@@ -34,6 +34,14 @@ class AddonConfig {
 
         @ConfigField(
             comment = """
+                Visualizes the distance to the player who inserted a custom disc into the jukebox.
+                Visualization will be seen only by players with "Visualize Voice Distance" enabled.
+            """
+        )
+        var visualizeDistance: Boolean = true
+
+        @ConfigField(
+            comment = """
                 Distance if 'enable_beacon_like_distance_amplification' is set
                 to false.
             """

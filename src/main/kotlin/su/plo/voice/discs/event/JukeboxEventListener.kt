@@ -186,11 +186,13 @@ class JukeboxEventListener(
         )
 
         // todo: visualize distance to who?
-        voicePlayer?.visualizeDistance(
-            pos.toPosition(),
-            distance.toInt(),
-            0xf1c40f
-        )
+        if (plugin.addonConfig.distance.visualizeDistance) {
+            voicePlayer?.visualizeDistance(
+                pos.toPosition(),
+                distance.toInt(),
+                0xf1c40f
+            )
+        }
         DiscsPlugin.DEBUG_LOGGER.log("Starting track job \"$trackName\" with distance $distance at ${block.location}")
 
         suspendSync(block.location, plugin) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }

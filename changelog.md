@@ -3,3 +3,5 @@
 Changelog:
 - Hopper interactions support
 - 1.20 discs burnable craft
+- Fixed empty suggestions when using the /disc command
+- Config option to disable voice distance visualization [#10](https://github.com/plasmoapp/pv-addon-discs/issues/10)
