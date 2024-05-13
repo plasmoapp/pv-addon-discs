@@ -29,7 +29,6 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
 
     maven("https://jitpack.io/")
-
 }
 
 dependencies {
@@ -74,7 +73,7 @@ tasks {
     }
 
     java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(16)) // lavaplayer supports only java 16+
     }
 }
 

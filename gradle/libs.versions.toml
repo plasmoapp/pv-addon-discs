@@ -3,7 +3,7 @@ kotlin = "1.8.22"
 kotlinx = "1.6.4"
 
 pv = "2.1.0-SNAPSHOT"
-pv-lavaplayer = "1.0.4"
+pv-lavaplayer = "1.1.0-SNAPSHOT"
 slib = "1.0.0-SNAPSHOT"
 
 paper = "1.16.5-R0.1-SNAPSHOT"
