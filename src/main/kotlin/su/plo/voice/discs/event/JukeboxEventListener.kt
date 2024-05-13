@@ -212,7 +212,6 @@ class JukeboxEventListener(
                     jukebox.setRecord(jukebox.record)
                     try {
                         val startPlayingMethod = jukebox.javaClass.getMethod("startPlaying")
-                        println(startPlayingMethod)
                         startPlayingMethod.invoke(jukebox)
                     } catch (_: ReflectiveOperationException) {
                         // ignore on old mc versions
