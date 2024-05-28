@@ -50,7 +50,8 @@ class PlasmoAudioPlayerManager(
         }
 
         val sender = source.createAudioSender(frameProvider, distance)
-        val job = sender.start()
+            .also { it.start() }
+        val job = sender.job ?: throw IllegalStateException("AudioSender job is not started")
         sender.onStop {
             player.destroy()
             source.remove()
