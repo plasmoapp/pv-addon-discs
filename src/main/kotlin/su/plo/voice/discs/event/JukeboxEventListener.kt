@@ -2,10 +2,9 @@ package su.plo.voice.discs.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.await
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -17,7 +16,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
@@ -68,6 +66,8 @@ class JukeboxEventListener(
 
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
 
+        if (event.player.gameMode == GameMode.ADVENTURE) return
+
         val block = event.clickedBlock ?: return
 
         val jukebox = block.asJukebox() ?: return
@@ -113,7 +113,7 @@ class JukeboxEventListener(
         event.block
             .takeIf { it.isJukebox() }
             ?.also {
-                it.asJukebox()?.stopPlaying();
+                it.asJukebox()?.stopPlaying()
             }
             ?.let { jobByBlock.remove(it) }
             ?.cancel()
