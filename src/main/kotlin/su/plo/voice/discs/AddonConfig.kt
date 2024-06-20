@@ -172,6 +172,6 @@ class AddonConfig {
         )
 
         private fun getAddonFolder(): File =
-            File(Bukkit.getPluginsFolder(), "pv-addon-discs")
+            Bukkit.getPluginManager().getPlugin("pv-addon-discs")!!.getDataFolder()
     }
 }
