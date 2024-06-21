@@ -6,17 +6,17 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.Tag
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.*
 import org.bukkit.persistence.PersistentDataType
 import su.plo.voice.discs.DiscsPlugin
+import su.plo.voice.discs.utils.MaterialUtil
 
 class BurnableDiscCraft(val plugin: DiscsPlugin) {
 
     private val groupKey = NamespacedKey(plugin, "burnable_record_craft")
 
-    fun registerRecipes() = Tag.ITEMS_MUSIC_DISCS.values.forEach { record ->
+    fun registerRecipes() = MaterialUtil.itemMusicDiscs.forEach { record ->
         createRecipe(record).let(Bukkit::addRecipe)
     }
 
