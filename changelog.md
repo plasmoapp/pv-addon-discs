@@ -2,3 +2,4 @@
 
 Changelog:
 - Config option to change lore burn method
+- 1.21 support
