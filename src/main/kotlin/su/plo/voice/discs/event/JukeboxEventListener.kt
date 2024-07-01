@@ -61,9 +61,12 @@ class JukeboxEventListener(
 
     @EventHandler
     fun onChunkUnload(event: ChunkUnloadEvent) {
-        event.chunk.getTileEntities({ it.isJukebox() }, true)
+        val chunk = event.chunk
+
+        jobByBlock.keys
+            .filter { it.chunk == chunk }
             .forEach {
-                jobByBlock.remove(it.block)?.cancel()
+                jobByBlock.remove(it)?.cancel()
             }
     }
 

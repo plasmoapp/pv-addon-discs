@@ -47,6 +47,8 @@ jobs:
             1.20.2
             1.20.3
             1.20.4
+            1.20.6
+            1.21
 
       - name: Publish to GitHub
         uses: Apehum/mc-publish@v1.1
