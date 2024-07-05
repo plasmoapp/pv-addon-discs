@@ -29,7 +29,7 @@ import su.plo.voice.discs.utils.extend.debug
 @Addon(
     id = "pv-addon-discs",
     scope = AddonLoaderScope.SERVER,
-    version = "1.0.7",
+    version = "1.0.8",
     authors = ["KPidS", "Apehum"]
 )
 class DiscsPlugin : JavaPlugin() {
