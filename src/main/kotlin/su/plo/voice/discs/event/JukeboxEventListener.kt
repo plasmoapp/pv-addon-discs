@@ -1,8 +1,14 @@
 package su.plo.voice.discs.event
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.launch
 import net.kyori.adventure.text.TextComponent
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -25,7 +31,14 @@ import su.plo.lib.api.server.world.ServerPos3d
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.DiscsPlugin
 import su.plo.voice.discs.utils.SchedulerUtil.suspendSync
-import su.plo.voice.discs.utils.extend.*
+import su.plo.voice.discs.utils.extend.asJukebox
+import su.plo.voice.discs.utils.extend.asVoicePlayer
+import su.plo.voice.discs.utils.extend.customDiscIdentifier
+import su.plo.voice.discs.utils.extend.getMinecraftVersionInt
+import su.plo.voice.discs.utils.extend.isBeaconBaseBlock
+import su.plo.voice.discs.utils.extend.isCustomDisc
+import su.plo.voice.discs.utils.extend.isJukebox
+import su.plo.voice.discs.utils.extend.stopPlayingWithUpdate
 
 class JukeboxEventListener(
     private val plugin: DiscsPlugin
@@ -83,7 +96,12 @@ class JukeboxEventListener(
 
         val item = event.item?.takeIf { it.isCustomDisc(plugin) } ?: return
 
-        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
+        val player = event.player
+            .takeIf {
+                Bukkit.getServer().getMinecraftVersionInt() < 12100 || !it.isSneaking
+            } ?: return
+
+        val voicePlayer = player.asVoicePlayer(plugin.voiceServer) ?: return
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.play")) return
 
@@ -181,6 +199,7 @@ class JukeboxEventListener(
                 }
                 plugin.addonConfig.distance.beaconLikeDistanceList[beaconLevel]
             }
+
             false -> plugin.addonConfig.distance.jukeboxDistance
         }
 
