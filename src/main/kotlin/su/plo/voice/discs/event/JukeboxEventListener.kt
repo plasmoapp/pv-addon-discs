@@ -37,7 +37,7 @@ class JukeboxEventListener(
     private val scope = CoroutineScope(Dispatchers.Default)
 
     init {
-        if (Bukkit.getServer().isVersionGreaterOrEqual("1.19.4")) {
+        if (Bukkit.getServer().getMinecraftVersionInt() >= 11904) {
             Bukkit.getServer().pluginManager.registerEvents(HopperEventListener(), plugin)
         }
     }
@@ -79,7 +79,12 @@ class JukeboxEventListener(
 
         val item = event.item?.takeIf { it.isCustomDisc(plugin) } ?: return
 
-        val voicePlayer = event.player.asVoicePlayer(plugin.voiceServer) ?: return
+        val player = event.player
+            .takeIf {
+                Bukkit.getServer().getMinecraftVersionInt() < 12100 || !it.isSneaking
+            } ?: return
+
+        val voicePlayer = player.asVoicePlayer(plugin.voiceServer) ?: return
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.play")) return
 
