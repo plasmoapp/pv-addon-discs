@@ -110,6 +110,27 @@ class AddonConfig {
     val httpSource = HttpSourceConfig()
 
     @Config
+    class YouTubeSourceConfig {
+        @ConfigField(
+            comment = """
+                If you see a error like "Sign in to confirm you're not a bot",
+                you can try using YouTube oauth2 authorization.
+
+                On the first start with authorization enabled,
+                you will see "OAUTH INTEGRATION" in your console.
+                Follow the instructions in this prompt.
+                If you do everything right, you will see "Token retrieved successfully" in your console.
+                You only need to do this once;
+                the token will be stored in "pv-addon-discs/.youtube-token" on plugin shutdown.
+            """
+        )
+        val useOauth2: Boolean = false
+    }
+
+    @ConfigField
+    val youtubeSource = YouTubeSourceConfig()
+
+    @Config
     class BurnableTag {
         @ConfigField(
             comment = """

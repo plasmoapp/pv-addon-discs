@@ -66,7 +66,6 @@ class DiscsPlugin : JavaPlugin() {
         loadConfig()
     }
 
-    @EventSubscribe
     override fun onEnable() {
         loadConfig()
 
@@ -100,6 +99,10 @@ class DiscsPlugin : JavaPlugin() {
 
     override fun onDisable() {
         PlasmoVoiceServer.getAddonsLoader().unload(this)
+
+        if (::audioPlayerManager.isInitialized) {
+            audioPlayerManager.save()
+        }
     }
 
     private fun loadConfig() {
