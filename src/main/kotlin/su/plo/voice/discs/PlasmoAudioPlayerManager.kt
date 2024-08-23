@@ -16,7 +16,6 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.source.vime
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.*
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeAudioSourceManager
-import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.http.YoutubeOauth2Handler
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
 import java.io.File
@@ -158,19 +157,6 @@ class PlasmoAudioPlayerManager(
                             ?.readText()
                             ?.trim()
                         source.useOauth2(refreshToken, false)
-
-                        if (refreshToken != null) {
-                            // todo: token validation is not implemented yet,
-                            //  so for now I just forcibly set enabled to true in YoutubeOauth2Handler
-
-                            val oauth2HandlerField = YoutubeAudioSourceManager::class.java.getDeclaredField("oauth2Handler")
-                            oauth2HandlerField.isAccessible = true
-                            val oauth2Handler = oauth2HandlerField.get(source) as YoutubeOauth2Handler
-
-                            val enabledField = YoutubeOauth2Handler::class.java.getDeclaredField("enabled")
-                            enabledField.isAccessible = true
-                            enabledField.set(oauth2Handler, true)
-                        }
                     }
                 }
         )
