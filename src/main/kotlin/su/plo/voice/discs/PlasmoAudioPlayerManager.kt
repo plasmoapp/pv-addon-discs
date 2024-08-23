@@ -18,6 +18,7 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.*
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeAudioSourceManager
 import su.plo.voice.proto.packets.tcp.clientbound.SourceAudioEndPacket
 import su.plo.voice.proto.packets.udp.clientbound.SourceAudioPacket
+import java.io.File
 import java.net.URI
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
@@ -32,6 +33,17 @@ class PlasmoAudioPlayerManager(
 
     init {
         registerSources()
+    }
+
+    fun save() {
+        lavaPlayerManager.sourceManagers
+            .filterIsInstance<YoutubeAudioSourceManager>()
+            .firstOrNull()
+            ?.takeIf { it.oauth2RefreshToken != null }
+            ?.let {
+                val refreshTokenFile = File(plugin.dataFolder, ".youtube-token")
+                refreshTokenFile.writeText(it.oauth2RefreshToken!!)
+            }
     }
 
     fun startTrackJob(track: AudioTrack, source: ServerStaticSource, distance: Short) = scope.launch {
@@ -136,7 +148,18 @@ class PlasmoAudioPlayerManager(
     }
 
     private fun registerSources() {
-        lavaPlayerManager.registerSourceManager(YoutubeAudioSourceManager(true))
+        lavaPlayerManager.registerSourceManager(
+            YoutubeAudioSourceManager(true)
+                .also { source ->
+                    if (plugin.addonConfig.youtubeSource.useOauth2) {
+                        val refreshToken = File(plugin.dataFolder, ".youtube-token")
+                            .takeIf { it.isFile && it.exists() }
+                            ?.readText()
+                            ?.trim()
+                        source.useOauth2(refreshToken, false)
+                    }
+                }
+        )
         lavaPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault())
         lavaPlayerManager.registerSourceManager(BandcampAudioSourceManager())
         lavaPlayerManager.registerSourceManager(VimeoAudioSourceManager())

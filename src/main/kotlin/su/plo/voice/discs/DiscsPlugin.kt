@@ -29,7 +29,7 @@ import su.plo.voice.discs.utils.extend.debug
 @Addon(
     id = "pv-addon-discs",
     scope = AddonLoaderScope.SERVER,
-    version = "1.0.7",
+    version = "1.0.8",
     authors = ["KPidS", "Apehum"]
 )
 class DiscsPlugin : JavaPlugin() {
@@ -66,7 +66,6 @@ class DiscsPlugin : JavaPlugin() {
         loadConfig()
     }
 
-    @EventSubscribe
     override fun onEnable() {
         loadConfig()
 
@@ -100,6 +99,10 @@ class DiscsPlugin : JavaPlugin() {
 
     override fun onDisable() {
         PlasmoVoiceServer.getAddonsLoader().unload(this)
+
+        if (::audioPlayerManager.isInitialized) {
+            audioPlayerManager.save()
+        }
     }
 
     private fun loadConfig() {
