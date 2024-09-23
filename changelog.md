@@ -1,1 +1,3 @@
-- Plasmo Voice 2.1.x support. This version supports only PV 2.1+, if you're using PV 2.0.x, use 1.0.x versions of the addon.
+- Update to Plasmo Voice 2.1.0. This version is not compatible with PV 2.0.x.
+- Experimental goat horn support. Disabled by default. Set `goat_horn.enabled` to `true` to enable. For now horns are burned same as the discs using `/disc burn` command, but it'll be changed later.
+- HTTP proxy support.

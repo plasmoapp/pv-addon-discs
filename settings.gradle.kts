@@ -11,3 +11,8 @@ pluginManagement {
 }
 
 rootProject.name = "pv-addon-discs"
+
+include("core")
+include("v1_19_4")
+include("v1_20_6")
+include("plugin")

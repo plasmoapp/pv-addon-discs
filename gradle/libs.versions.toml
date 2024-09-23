@@ -1,15 +1,20 @@
 [versions]
-kotlin = "1.8.22"
-kotlinx = "1.6.4"
+kotlin = "1.9.23"
+kotlinx = "1.7.3"
+
+koin-bom = "3.5.6"
 
 pv = "2.1.0-SNAPSHOT"
 pv-lavaplayer = "1.1.0-SNAPSHOT"
 slib = "1.0.0-SNAPSHOT"
 
-paper = "1.16.5-R0.1-SNAPSHOT"
+paper11605 = "1.16.5-R0.1-SNAPSHOT"
+paper11904 = "1.19.4-R0.1-SNAPSHOT"
+paper12006 = "1.20.6-R0.1-SNAPSHOT"
+reflection-remapper = "0.1.1"
 protocol-lib = "4.7.0"
 
-crowdin = "1.0.2-SNAPSHOT"
+crowdin = "1.1.0-SNAPSHOT"
 pv-gradle-plugin = "1.0.2-SNAPSHOT"
 runpaper = "2.2.3"
 pluginyml = "0.6.0"
@@ -18,15 +23,22 @@ pluginyml = "0.6.0"
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx" }
 kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx" }
 
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-core = { module = "io.insert-koin:koin-core" }
+
 pv = { module = "su.plo.voice.server:paper", version.ref = "pv" }
 pv-lavaplayer = { module = "su.plo:pv-addon-lavaplayer-lib", version.ref = "pv-lavaplayer" }
 slib = { module = "su.plo.slib:spigot", version.ref = "slib" }
 
-paper = { module = "com.destroystokyo.paper:paper-api", version.ref = "paper" }
+paper-v11605 = { module = "com.destroystokyo.paper:paper-api", version.ref = "paper11605" }
+paper-v11904 = { module = "io.papermc.paper:paper-api", version.ref = "paper11904" }
+paper-v12006 = { module = "io.papermc.paper:paper-api", version.ref = "paper12006" }
+reflectionremapper = { module = "xyz.jpenilla:reflection-remapper", version.ref = "reflection-remapper" }
 protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "protocol-lib" }
 
 [plugins]
 crowdin = { id = "su.plo.crowdin.plugin", version.ref = "crowdin" }
+pv = { id = "su.plo.voice.plugin.entrypoints", version.ref = "pv-gradle-plugin" }
 pv-java-templates = { id = "su.plo.voice.plugin.java-templates", version.ref = "pv-gradle-plugin" }
 pv-kotlin-relocate = { id = "su.plo.voice.plugin.relocate-kotlin", version.ref = "pv-gradle-plugin" }
 runpaper = { id = "xyz.jpenilla.run-paper" , version.ref = "runpaper" }

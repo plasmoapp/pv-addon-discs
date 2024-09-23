@@ -36,3 +36,7 @@ jobs:
         github-generate-changelog: false
         github-prerelease: true
         changelog-file: changelog.md
+
+        files: |
+          plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
+          plugin/build/libs/*-@(dev|sources|javadoc).jar

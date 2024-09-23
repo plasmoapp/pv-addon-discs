@@ -37,6 +37,10 @@ jobs:
 
           changelog-file: changelog.md
 
+          files: |
+            plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
+            plugin/build/libs/*-@(dev|sources|javadoc).jar
+
           loaders: |
             paper
           game-versions: |
@@ -58,3 +62,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           github-generate-changelog: false
           changelog-file: changelog.md
+
+          files: |
+            plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
+            plugin/build/libs/*-@(dev|sources|javadoc).jar
