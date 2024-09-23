@@ -26,9 +26,15 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.Audio
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeAudioSourceManager
+import su.plo.voice.lavaplayer.libs.org.apache.http.HttpHost
+import su.plo.voice.lavaplayer.libs.org.apache.http.auth.AuthScope
+import su.plo.voice.lavaplayer.libs.org.apache.http.auth.UsernamePasswordCredentials
+import su.plo.voice.lavaplayer.libs.org.apache.http.impl.client.BasicCredentialsProvider
+import su.plo.voice.lavaplayer.libs.org.apache.http.impl.client.HttpClientBuilder
 import java.io.File
 import java.net.URI
 import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
 
 class PlasmoAudioPlayerManager : PluginKoinComponent {
 
@@ -145,10 +151,57 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
         return future
     }
 
+    private fun httpProxy(): Pair<HttpHost, BasicCredentialsProvider?>? {
+        val proxyString = config.httpProxy ?: return null
+
+        val regex =
+            Regex("^(?:(https?)://)?(?:(\\w+):(\\w*)@)?([a-zA-Z0-9][a-zA-Z0-9-_.]{0,61}|(\\d{1,3}(?:\\.\\d{1,3}){3})):(\\d{1,5})\$")
+        val match = regex.find(proxyString) ?: run {
+            plugin.slF4JLogger.error("Failed to parse proxy: {}", proxyString)
+            return null
+        }
+
+        val scheme = match.groupValues[1].takeIf { it.isNotBlank() }
+        val username = match.groupValues[2]
+        val password = match.groupValues[3]
+        val hostname = match.groupValues[4]
+        val port = match.groupValues[6].toInt()
+
+        val credentials =
+            if (username.isNotBlank() && password.isNotBlank()) {
+                BasicCredentialsProvider().apply {
+                    setCredentials(
+                        AuthScope.ANY,
+                        UsernamePasswordCredentials(username, password)
+                    )
+                }
+            } else null
+
+        val host = HttpHost(hostname, port, scheme)
+
+        return host to credentials
+    }
+
+    private fun proxyHttpBuilder(): Consumer<HttpClientBuilder>? {
+        val (host, credentials) = httpProxy() ?: return null
+
+        return Consumer { builder ->
+            builder.setProxy(host)
+            credentials?.let {
+                builder.setDefaultCredentialsProvider(it)
+            }
+        }
+    }
+
     private fun registerSources() {
+        val proxyHttpBuilder = proxyHttpBuilder()
+        proxyHttpBuilder?.let { lavaPlayerManager.setHttpBuilderConfigurator(it) }
+
         lavaPlayerManager.registerSourceManager(
             YoutubeAudioSourceManager(true)
                 .also { source ->
+                    proxyHttpBuilder?.let { source.httpInterfaceManager.configureBuilder(it) }
+
                     if (config.youtubeSource.useOauth2) {
                         val refreshToken = File(plugin.dataFolder, ".youtube-token")
                             .takeIf { it.isFile && it.exists() }

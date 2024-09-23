@@ -31,6 +31,16 @@ class AddonConfig {
     )
     var addGlintToCustomDiscs = false
 
+    @ConfigField(
+        comment = """
+            HTTP/HTTPS proxy. Valid formats:
+            http://user:password@ip:port
+            https://user:password@ip:port
+        """,
+        nullComment = "http_proxy = \"http://user:password@ip:port\""
+    )
+    val httpProxy: String? = null
+
     @Config class GoatHornConfig {
 
         @ConfigField(
