@@ -1,0 +1,73 @@
+name: Publish Alpha
+
+on:
+  push:
+    branches:
+      - alpha
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            16
+            17
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+
+      - name: Publish to Modrinth
+        uses: Apehum/mc-publish@v1.1
+        with:
+          modrinth-id: WXJRlyZ9
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          changelog-file: changelog.md
+
+          files: |
+            plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
+            plugin/build/libs/*-@(dev|sources|javadoc).jar
+
+          version-type: alpha
+          loaders: |
+            paper
+          game-versions: |
+            1.16.5
+            1.17.1
+            1.18.2
+            1.19.2
+            1.19.3
+            1.19.4
+            1.20
+            1.20.1
+            1.20.2
+            1.20.3
+            1.20.4
+            1.20.5
+            1.20.6
+            1.21
+            1.21.1
+
+      - name: Publish to GitHub
+        uses: Apehum/mc-publish@v1.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-generate-changelog: false
+          changelog-file: changelog.md
+
+          files: |
+            plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
+            plugin/build/libs/*-@(dev|sources|javadoc).jar
