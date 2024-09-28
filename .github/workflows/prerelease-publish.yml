@@ -14,15 +14,21 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: |
           8
           16
           17
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Build with Gradle
+      run: ./gradlew build
 
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
@@ -37,6 +43,4 @@ jobs:
         github-prerelease: true
         changelog-file: changelog.md
 
-        files: |
-          plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
-          plugin/build/libs/*-@(dev|sources|javadoc).jar
+        files: plugin/build/libs/*.jar

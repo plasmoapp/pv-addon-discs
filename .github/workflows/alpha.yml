@@ -14,9 +14,9 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: |
@@ -24,10 +24,11 @@ jobs:
             16
             17
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - name: Publish to Modrinth
         uses: Apehum/mc-publish@v1.1
@@ -37,9 +38,7 @@ jobs:
 
           changelog-file: changelog.md
 
-          files: |
-            plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
-            plugin/build/libs/*-@(dev|sources|javadoc).jar
+          files: plugin/build/libs/*.jar
 
           version-type: alpha
           loaders: |
@@ -68,6 +67,4 @@ jobs:
           github-generate-changelog: false
           changelog-file: changelog.md
 
-          files: |
-            plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
-            plugin/build/libs/*-@(dev|sources|javadoc).jar
+          files: plugin/build/libs/*.jar
