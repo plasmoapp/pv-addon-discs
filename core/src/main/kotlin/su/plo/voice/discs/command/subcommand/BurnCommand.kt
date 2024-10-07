@@ -15,6 +15,7 @@ import org.koin.core.component.inject
 import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
+import su.plo.voice.discs.GoatHornManager
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.item.GoatHornHelper
 import su.plo.voice.discs.utils.extend.asPlayer
@@ -28,7 +29,8 @@ import su.plo.voice.discs.utils.extend.toPlainText
 class BurnCommand : SubCommand() {
 
     private val plugin: JavaPlugin by inject()
-    private val goatHornHelper: GoatHornHelper by inject()
+    private val hornHelper: GoatHornHelper by inject()
+    private val hornManager: GoatHornManager by inject()
 
     override val name = "burn"
 
@@ -113,6 +115,13 @@ class BurnCommand : SubCommand() {
 
         val isGoatHorn = item.type.name == "GOAT_HORN"
 
+        if (isGoatHorn && !hornManager.canPlay(track)) {
+            voicePlayer.instance.sendTranslatable(
+                "pv.addon.discs.error.horn_too_long", config.goatHorn.maxDurationSeconds
+            )
+            return@launch
+        }
+
         plugin.suspendSync(player.location) {
             item.editMeta { meta ->
                 meta.addItemFlags(*ItemFlag.values())
@@ -129,7 +138,7 @@ class BurnCommand : SubCommand() {
                 }
 
                 if (isGoatHorn) {
-                    goatHornHelper.getInstrument(item)
+                    hornHelper.getInstrument(item)
                         .takeIf { it.isNotEmpty() }
                         ?.let {
                             meta.persistentDataContainer.set(
@@ -150,7 +159,7 @@ class BurnCommand : SubCommand() {
             }
 
             if (isGoatHorn) {
-                goatHornHelper.setEmptyInstrument(item)
+                hornHelper.setEmptyInstrument(item)
             }
 
             voicePlayer.instance.sendTranslatable("pv.addon.discs.success.burn", name)

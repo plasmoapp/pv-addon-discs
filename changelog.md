@@ -1,1 +1,2 @@
 - Fix `/disc burn` produces broken goat horns in 1.20.1. This fix will not repair broken horns, so you need to do it manually by using command: `/item replace entity @p weapon.mainhand with minecraft:goat_horn{instrument:"empty"}`.
+- Disallow burning custom goat horn with tracks exceeding the maximum duration defined in the config.
