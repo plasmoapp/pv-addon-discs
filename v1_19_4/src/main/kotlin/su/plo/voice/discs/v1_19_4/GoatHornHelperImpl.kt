@@ -17,7 +17,7 @@ class GoatHornHelperImpl : GoatHornHelper {
 
         val compoundTag = ReflectionProxies.itemStack.getOrCreateTag(mcItem)
 
-        ReflectionProxies.compoundTag.putString(compoundTag, "instrument", "")
+        ReflectionProxies.compoundTag.putString(compoundTag, "instrument", "empty")
     }
 
     override fun getInstrument(item: ItemStack): String {

@@ -1,3 +1,2 @@
-- Update to Plasmo Voice 2.1.0. This version is not compatible with PV 2.0.x.
-- Experimental goat horn support. Disabled by default. Set `goat_horn.enabled` to `true` to enable. For now horns are burned same as the discs using `/disc burn` command, but it'll be changed later.
-- HTTP proxy support.
+- Fix `/disc burn` produces broken goat horns in 1.20.1. This fix will not repair broken horns, so you need to do it manually by using command: `/item replace entity @p weapon.mainhand with minecraft:goat_horn{instrument:"empty"}`.
+- Disallow burning custom goat horn with tracks exceeding the maximum duration defined in the config.
