@@ -9,6 +9,7 @@ import su.plo.voice.api.server.audio.provider.AudioFrameProvider
 import su.plo.voice.api.server.audio.provider.AudioFrameResult
 import su.plo.voice.api.server.audio.source.ServerProximitySource
 import su.plo.voice.discs.utils.PluginKoinComponent
+import su.plo.voice.discs.config.YoutubeClient
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
@@ -197,8 +198,26 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
         val proxyHttpBuilder = proxyHttpBuilder()
         proxyHttpBuilder?.let { lavaPlayerManager.setHttpBuilderConfigurator(it) }
 
+        val youtubeClients = config.youtubeSource.clients
+            ?.mapNotNull {
+                try {
+                    // todo: config resolver don't support list of enums for some reason
+                    YoutubeClient.valueOf(it)
+                } catch (e: IllegalArgumentException) {
+                    null
+                }
+            }
+            ?.takeIf { it.isNotEmpty() }
+            ?: listOf(
+                YoutubeClient.WEB,
+                YoutubeClient.ANDROID,
+                YoutubeClient.TVHTML5EMBEDDED,
+                YoutubeClient.MUSIC
+            )
+        plugin.slF4JLogger.info("YouTube clients: {}", youtubeClients)
+
         lavaPlayerManager.registerSourceManager(
-            YoutubeAudioSourceManager(true)
+            YoutubeAudioSourceManager(true, *youtubeClients.map { it.client }.toTypedArray())
                 .also { source ->
                     proxyHttpBuilder?.let { source.httpInterfaceManager.configureBuilder(it) }
 
