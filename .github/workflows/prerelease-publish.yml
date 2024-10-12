@@ -30,11 +30,6 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: build
-
     - name: Publish to GitHub
       uses: Apehum/mc-publish@v1.1
       with:
