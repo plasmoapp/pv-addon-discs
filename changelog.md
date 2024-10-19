@@ -1,2 +1,1 @@
-- Fix `/disc burn` produces broken goat horns in 1.20.1. This fix will not repair broken horns, so you need to do it manually by using command: `/item replace entity @p weapon.mainhand with minecraft:goat_horn{instrument:"empty"}`.
-- Disallow burning custom goat horn with tracks exceeding the maximum duration defined in the config.
+- Default YouTube clients changed to fix 403 errors. They're also now configurable, see `youtube_source.clients` config option.
