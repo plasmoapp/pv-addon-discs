@@ -1,7 +1,6 @@
 package su.plo.voice.discs.config
 
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Android
-import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.AndroidLite
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.AndroidMusic
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.AndroidTestsuite
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Ios
@@ -20,7 +19,6 @@ enum class YoutubeClient(
     WEBEMBEDDED(WebEmbedded()),
     ANDROID(Android()),
     ANDROID_TESTSUITE(AndroidTestsuite()),
-    ANDROID_LITE(AndroidLite()),
     ANDROID_MUSIC(AndroidMusic()),
     MEDIA_CONNECT(MediaConnect()),
     IOS(Ios()),
