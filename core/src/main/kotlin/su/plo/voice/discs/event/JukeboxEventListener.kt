@@ -252,7 +252,8 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
                 plugin.suspendSync(block.location) {
                     val jukebox = block.asJukebox() ?: return@suspendSync
-                    job.takeIf { !it.isCancelled } ?: return@suspendSync
+                    val currentJob = jobByBlock[block] ?: return@suspendSync
+                    if (currentJob != this@launch) return@suspendSync
                     jukebox.stopPlayingWithUpdate()
                     jobByBlock.remove(block)
                 }
