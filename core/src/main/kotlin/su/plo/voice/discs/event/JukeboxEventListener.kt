@@ -117,11 +117,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
         val block = event.clickedBlock ?: return
 
-        val jukebox = block.asJukebox()?: return
-
-        jukebox.takeIf { it.isPlaying } ?: return
-
-        jukebox.stopPlaying()
+        block.asJukebox()?.takeIf { it.isPlaying } ?: return
 
         jobByBlock.remove(block)?.cancel()
     }
