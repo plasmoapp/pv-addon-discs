@@ -22,7 +22,6 @@ import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.chat.style.McTextStyle
@@ -118,7 +117,11 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
         val block = event.clickedBlock ?: return
 
-        block.asJukebox()?.takeIf { it.isPlaying } ?: return
+        val jukebox = block.asJukebox()?: return
+
+        jukebox.takeIf { it.isPlaying } ?: return
+
+        jukebox.stopPlaying()
 
         jobByBlock.remove(block)?.cancel()
     }
@@ -249,6 +252,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
                 plugin.suspendSync(block.location) {
                     val jukebox = block.asJukebox() ?: return@suspendSync
+                    job.takeIf { !it.isCancelled } ?: return@suspendSync
                     jukebox.stopPlayingWithUpdate()
                     jobByBlock.remove(block)
                 }
