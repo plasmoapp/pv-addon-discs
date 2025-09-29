@@ -202,6 +202,18 @@ class AddonConfig {
 
         @ConfigField(
             comment = """
+                https://github.com/lavalink-devs/youtube-source?tab=readme-ov-file#using-a-remote-cipher-server
+            """,
+            nullComment = """
+                [youtube_source.remote_cipher]
+                url = "http://localhost:8001"
+                password = "your_secret_password"
+            """
+        )
+        val remoteCipher: RemoteCipher? = null
+
+        @ConfigField(
+            comment = """
                 You can check available clients here: https://github.com/lavalink-devs/youtube-source?tab=readme-ov-file#available-clients
             """,
             nullComment = """
@@ -217,6 +229,15 @@ class AddonConfig {
 
             @ConfigField
             val visitorData: String = ""
+        }
+
+        @Config
+        class RemoteCipher {
+            @ConfigField
+            val url: String = ""
+
+            @ConfigField
+            val password: String = ""
         }
     }
 

@@ -261,6 +261,11 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
                         source.useOauth2(refreshToken, false)
                         if (refreshToken == null) listenForTokenChange(source)
                     }
+
+                    config.youtubeSource.remoteCipher?.let { remoteCipher ->
+                        plugin.slF4JLogger.info("YouTube remote cipher url: {}", remoteCipher.url)
+                        source.setRemoteCipherManagerUrlPass(remoteCipher.url, remoteCipher.password)
+                    }
                 }
         }
 
