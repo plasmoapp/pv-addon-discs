@@ -1,2 +1,0 @@
-- Fixed an issue where a vanilla disc would start playing after a custom disc ended.
-- Added opt-in local source for loading tracks from files. See `local_source` block in addon's config for more info on how to use it.
