@@ -35,6 +35,7 @@ import su.plo.voice.discs.utils.extend.toPlainText
 class BurnCommand : SubCommand() {
 
     private val plugin: JavaPlugin by inject()
+    private val discHelper: DiscHelper by inject()
     private val hornHelper: GoatHornHelper by inject()
     private val hornManager: GoatHornManager by inject()
 
@@ -65,7 +66,7 @@ class BurnCommand : SubCommand() {
 
     private fun checkBurnable(voicePlayer: VoicePlayer, item: ItemStack): Boolean {
 
-        if (!item.type.isRecord && !(config.goatHorn.enabled && item.type.name == "GOAT_HORN")) {
+        if (discHelper.isRecord(item) && !(config.goatHorn.enabled && item.type.name == "GOAT_HORN")) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.not_a_record")
             return false
         }
@@ -130,7 +131,6 @@ class BurnCommand : SubCommand() {
 
         plugin.suspendSync(player.location) {
             if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {
-                val discHelper by inject<DiscHelper>()
                 discHelper.showSongTooltip(item, false)
             }
 

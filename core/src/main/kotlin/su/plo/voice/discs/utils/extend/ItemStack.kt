@@ -4,6 +4,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import su.plo.voice.discs.AddonKeys
+import su.plo.voice.discs.item.DiscHelper
 
 context(AddonKeys)
 fun ItemMeta.forbidGrindstone() {
@@ -29,8 +30,8 @@ fun ItemStack.hasIdentifier() = this
     ?: false
 
 context(AddonKeys)
-fun ItemStack.customDiscIdentifier(): String? =
-    this.takeIf { this.type.isRecord }
+fun ItemStack.customDiscIdentifier(discHelper: DiscHelper): String? =
+    this.takeIf { discHelper.isRecord(this) }
         ?.identifier()
 
 context(AddonKeys)

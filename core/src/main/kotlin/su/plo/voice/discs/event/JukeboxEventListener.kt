@@ -33,6 +33,7 @@ import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.PlasmoAudioPlayerManager
+import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.utils.PluginKoinComponent
 import su.plo.voice.discs.utils.extend.*
 import java.util.concurrent.ConcurrentHashMap
@@ -46,6 +47,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
     private val audioPlayerManager: PlasmoAudioPlayerManager by getter()
     private val debugLogger: DebugLogger by getter()
     private val sourceLine: ServerSourceLine by getter()
+    private val discHelper: DiscHelper by inject()
 
     private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
 
@@ -95,7 +97,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.play")) return
 
-        val identifier = item.customDiscIdentifier() ?: return
+        val identifier = item.customDiscIdentifier(discHelper) ?: return
 
         voicePlayer.instance.sendActionBar(
             McTextComponent.translatable("pv.addon.discs.actionbar.loading")
@@ -302,7 +304,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
             val block = event.destination.location?.block ?: return
 
             val item = event.item
-            val identifier = item.customDiscIdentifier() ?: return
+            val identifier = item.customDiscIdentifier(discHelper) ?: return
 
             jobByBlock.remove(block)?.cancel()
             jobByBlock[block] = playTrack(identifier, block, item.itemMeta)
