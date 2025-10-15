@@ -19,6 +19,7 @@ import su.plo.voice.discs.utils.extend.sendTranslatable
 
 class EraseCommand : SubCommand() {
 
+    private val discHelper: DiscHelper by inject()
     private val goatHornHelper: GoatHornHelper by inject()
 
     override val name = "erase"
@@ -42,7 +43,7 @@ class EraseCommand : SubCommand() {
         }
 
         val item = player.inventory.itemInMainHand
-            .takeIf { (it.type.isRecord || (config.goatHorn.enabled && it.type.name == "GOAT_HORN")) && it.hasItemMeta() }
+            .takeIf { (discHelper.isRecord(it) || (config.goatHorn.enabled && it.type.name == "GOAT_HORN")) && it.hasItemMeta() }
             ?: run {
                 voicePlayer.instance.sendTranslatable("pv.addon.discs.error.erase_wrong_item")
                 return
