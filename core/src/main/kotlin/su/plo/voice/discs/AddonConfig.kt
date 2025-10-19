@@ -18,6 +18,14 @@ class AddonConfig {
 
     @ConfigField(
         comment = """
+            Enables debug logging (such as track start/end location and cause).
+            Also enabled automatically if Plasmo Voice debug is enabled.
+        """
+    )
+    var debug = false
+
+    @ConfigField(
+        comment = """
             The default volume. Volume is configured on the client side
             and can be adjusted via the mod settings.
         """
