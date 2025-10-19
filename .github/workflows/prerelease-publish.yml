@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         distribution: temurin
         java-version: |
@@ -26,7 +26,7 @@ jobs:
           21
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Get version from gradle.properties
       run: |
@@ -38,6 +38,31 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew chiseledBuild -Pversion="${VERSION}+${GIT_HASH}"
+
+    - name: Upload to Registry
+      run: |
+        for file in plugin/build/libs/*; do
+          echo "Uploading $(basename $file)..."
+        
+          if curl -X POST "${{ secrets.REGISTRY_URL }}/upload" \
+            -H "Authorization: Bearer ${{ secrets.REGISTRY_UPLOAD_TOKEN }}" \
+            -F "repoUrl=${{ github.server_url }}/${{ github.repository }}" \
+            -F "project=${{ github.event.repository.name  }}" \
+            -F "branch=${{ github.ref_name }}" \
+            -F "commit=${{ github.sha }}" \
+            -F "message=${{ github.event.head_commit.message }}" \
+            -F "file=@$file" \
+            --retry 5 \
+            --retry-delay 2 \
+            --retry-all-errors \
+            --fail-with-body \
+            --show-error; then
+            echo "✓ Uploaded $(basename $file)"
+          else
+            echo "✗ Failed to upload $(basename $file) after retries"
+            exit 1
+          fi
+        done
 
     - uses: actions/upload-artifact@v4
       with:
