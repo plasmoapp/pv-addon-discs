@@ -7,6 +7,7 @@ import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.GoatHornManager
 import su.plo.voice.discs.command.SubCommand
+import su.plo.voice.discs.utils.HornCancelCommandCause
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.launchAndForget
@@ -44,7 +45,7 @@ class CancelCommand : SubCommand() {
             }
             ?: player
 
-        if (hornManager.cancelTrack(target) != null) {
+        if (hornManager.cancelTrack(target, HornCancelCommandCause()) != null) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.success.canceled")
         } else {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.nothing_to_cancel")

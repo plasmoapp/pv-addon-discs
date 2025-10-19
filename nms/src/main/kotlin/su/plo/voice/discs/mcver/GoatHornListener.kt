@@ -10,6 +10,7 @@ import org.koin.core.component.inject
 import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.GoatHornManager
+import su.plo.voice.discs.utils.HornPlayerQuitCause
 import su.plo.voice.discs.utils.PluginKoinComponent
 import su.plo.voice.discs.utils.extend.getValue
 import su.plo.voice.discs.utils.extend.getter
@@ -43,6 +44,6 @@ class GoatHornListener : Listener, PluginKoinComponent {
 
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        hornManager.cancelTrack(event.player)
+        hornManager.cancelTrack(event.player, HornPlayerQuitCause())
     }
 }

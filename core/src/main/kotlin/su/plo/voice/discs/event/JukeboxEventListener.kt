@@ -33,6 +33,10 @@ import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.PlasmoAudioPlayerManager
+import su.plo.voice.discs.utils.DiscChunkUnloadCause
+import su.plo.voice.discs.utils.DiscEjectCause
+import su.plo.voice.discs.utils.DiscPullCause
+import su.plo.voice.discs.utils.DiscReplaceCause
 import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.utils.PluginKoinComponent
 import su.plo.voice.discs.utils.extend.*
@@ -69,7 +73,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
         jobByBlock.keys
             .filter { it.inChunk(chunk) }
             .forEach {
-                jobByBlock.remove(it)?.cancel()
+                jobByBlock.remove(it)?.cancel(DiscChunkUnloadCause())
             }
     }
 
@@ -104,7 +108,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
                 .withStyle(McTextStyle.YELLOW)
         )
 
-        jobByBlock[block]?.cancel()
+        jobByBlock[block]?.cancel(DiscReplaceCause())
         jobByBlock[block] = playTrack(identifier, block, item.itemMeta, voicePlayer)
     }
 
@@ -122,7 +126,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
         block.asJukebox()?.takeIf { it.isPlaying } ?: return
 
-        jobByBlock.remove(block)?.cancel()
+        jobByBlock.remove(block)?.cancel(DiscEjectCause())
     }
 
     @EventHandler
@@ -133,14 +137,14 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
                 it.asJukebox()?.stopPlaying()
             }
             ?.let { jobByBlock.remove(it) }
-            ?.cancel()
+            ?.cancel(DiscEjectCause())
     }
 
     @EventHandler
     fun onJukeboxExplode(event: EntityExplodeEvent) {
         event.blockList()
             .filter { it.isJukebox() }
-            .forEach { jobByBlock.remove(it)?.cancel() }
+            .forEach { jobByBlock.remove(it)?.cancel(DiscEjectCause()) }
     }
 
     fun isPlaying(block: Block): Boolean =
@@ -245,9 +249,12 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
                 lastTick = System.currentTimeMillis()
 
             }
+        } catch (e: CancellationException) {
+            debugLogger.log("Track \"${source.sourceInfo.name}\" at ${block.location} cancelled: ${e.message}")
+            throw e
         } finally {
             withContext(NonCancellable) {
-                debugLogger.log("Track \"${source.sourceInfo.name}\" on $source was ended or cancelled")
+                debugLogger.log("Track \"${source.sourceInfo.name}\" at ${block.location} ended")
 
                 job.cancelAndJoin()
                 source.remove()
@@ -294,7 +301,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
             val item = event.item
             if (!item.isCustomDisc(discHelper)) return@with
 
-            jobByBlock.remove(block)?.cancel()
+            jobByBlock.remove(block)?.cancel(DiscPullCause())
         }
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -306,7 +313,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
             val item = event.item
             val identifier = item.customDiscIdentifier(discHelper) ?: return
 
-            jobByBlock.remove(block)?.cancel()
+            jobByBlock.remove(block)?.cancel(DiscReplaceCause())
             jobByBlock[block] = playTrack(identifier, block, item.itemMeta)
         }
     }

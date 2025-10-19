@@ -18,6 +18,8 @@ import su.plo.slib.api.chat.style.McTextStyle
 import su.plo.voice.api.logging.DebugLogger
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
+import su.plo.voice.discs.utils.HornCancellationCause
+import su.plo.voice.discs.utils.HornReplaceCause
 import su.plo.voice.discs.utils.PluginKoinComponent
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.getValue
@@ -52,15 +54,15 @@ class GoatHornManager : PluginKoinComponent {
         val identifier = item.identifier() ?: return
 
         CoroutineScope(Dispatchers.Default).launch {
-            cancelTrack(player)?.join()
+            cancelTrack(player, HornReplaceCause())?.join()
             jobByPlayer[player] = startJob(player, identifier, item)
         }
         Unit
     }
 
-    fun cancelTrack(player: Player): Job? =
+    fun cancelTrack(player: Player, cause: HornCancellationCause): Job? =
         jobByPlayer.remove(player)
-            ?.also { it.cancel() }
+            ?.also { it.cancel(cause) }
 
     private fun startJob(
         player: Player,
@@ -132,9 +134,12 @@ class GoatHornManager : PluginKoinComponent {
         val job = audioPlayerManager.startTrackJob(track, source, distance)
         try {
             job.join()
+        } catch (e: HornCancellationCause) {
+            debugLogger.log("Track \"${source.sourceInfo.name}\" on $player cancelled: ${e.message}")
+            throw e
         } finally {
             withContext(NonCancellable) {
-                debugLogger.log("Track \"$trackName\" on $source was ended or cancelled")
+                debugLogger.log("Track \"$trackName\" on $player ended")
 
                 job.cancelAndJoin()
                 source.remove()
