@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.event.PacketListener
 import com.github.retrooper.packetevents.event.PacketSendEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.util.Vector3i
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEffect
 import org.bukkit.Bukkit
 import org.bukkit.World
 import su.plo.voice.discs.event.JukeboxEventListener
@@ -18,7 +19,7 @@ class CancelJukeboxPlayEvent(
 
         // https://minecraft.wiki/w/Java_Edition_protocol#World_Event
         // 1010: Play record
-        if (packet.event != 1010) return
+        if (packet.type != 1010) return
 
         val player = Bukkit.getPlayer(event.user.uuid) ?: return
 

@@ -4,7 +4,7 @@ kotlinx = "1.7.3"
 
 koin-bom = "3.5.6"
 
-pv = "2.1.3-SNAPSHOT"
+pv = "2.1.6"
 pv-lavaplayer = "1.1.10-SNAPSHOT"
 slib = "1.0.0-SNAPSHOT"
 
@@ -12,7 +12,7 @@ paper11605 = "1.16.5-R0.1-SNAPSHOT"
 paper11904 = "1.19.4-R0.1-SNAPSHOT"
 paper12006 = "1.20.6-R0.1-SNAPSHOT"
 reflection-remapper = "0.1.1"
-packet-events = "2.7.0"
+packet-events = "2.10.0"
 
 crowdin = "1.1.0-SNAPSHOT"
 pv-gradle-plugin = "1.0.3-SNAPSHOT"
