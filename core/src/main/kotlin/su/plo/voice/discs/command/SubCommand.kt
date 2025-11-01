@@ -9,7 +9,6 @@ import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.api.logging.DebugLogger
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.discs.AddonConfig
-import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.PlasmoAudioPlayerManager
 import su.plo.voice.discs.utils.PluginKoinComponent
 import su.plo.voice.discs.utils.extend.getValue
@@ -18,7 +17,6 @@ import su.plo.voice.discs.utils.extend.getter
 abstract class SubCommand : PluginKoinComponent {
 
     protected val voiceServer: PlasmoVoiceServer by inject()
-    protected val keys: AddonKeys by inject()
     protected val config: AddonConfig by getter()
     protected val audioPlayerManager: PlasmoAudioPlayerManager by getter()
     protected val debugLogger: DebugLogger by getter()

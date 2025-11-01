@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap
 class GoatHornManager : PluginKoinComponent {
 
     private val plugin: JavaPlugin by inject()
-    private val keys: AddonKeys by inject()
     private val config: AddonConfig by getter()
     private val voiceServer: PlasmoVoiceServer by inject()
     private val audioPlayerManager: PlasmoAudioPlayerManager by getter()
@@ -50,7 +49,7 @@ class GoatHornManager : PluginKoinComponent {
     fun playTrack(
         player: Player,
         item: ItemStack
-    ) = with(keys) {
+    ) {
         val identifier = item.identifier() ?: return
 
         CoroutineScope(Dispatchers.Default).launch {

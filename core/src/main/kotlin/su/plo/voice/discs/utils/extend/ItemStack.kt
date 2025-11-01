@@ -6,40 +6,37 @@ import org.bukkit.persistence.PersistentDataType
 import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.item.DiscHelper
 
-context(AddonKeys)
 fun ItemMeta.forbidGrindstone() {
-    persistentDataContainer.set(forbidGrindstoneKey, PersistentDataType.BYTE, 1)
+    persistentDataContainer.set(AddonKeys.forbidGrindstoneKey, PersistentDataType.BYTE, 1)
 }
 
-context(AddonKeys)
 fun ItemMeta.allowGrindstone() {
-    persistentDataContainer.remove(forbidGrindstoneKey)
+    persistentDataContainer.remove(AddonKeys.forbidGrindstoneKey)
 }
 
-context(AddonKeys)
 fun ItemStack.isCustomDisc(discHelper: DiscHelper) = this
     .takeIf { discHelper.isRecord(this) }
     ?.hasIdentifier()
     ?: false
 
-context(AddonKeys)
 fun ItemStack.hasIdentifier() = this
     .itemMeta
     ?.persistentDataContainer
-    ?.let { it.has(identifierKey, PersistentDataType.STRING) || it.has(oldIdentifierKey, PersistentDataType.STRING) }
+    ?.let {
+        it.has(AddonKeys.identifierKey, PersistentDataType.STRING) ||
+                it.has(AddonKeys.oldIdentifierKey, PersistentDataType.STRING)
+    }
     ?: false
 
-context(AddonKeys)
 fun ItemStack.customDiscIdentifier(discHelper: DiscHelper): String? =
     this.takeIf { discHelper.isRecord(this) }
         ?.identifier()
 
-context(AddonKeys)
 fun ItemStack.identifier(): String? =
     this.takeIf { hasIdentifier() }
         ?.itemMeta
         ?.persistentDataContainer
         ?.let {
-            it.get(identifierKey, PersistentDataType.STRING) ?:
-            it.get(oldIdentifierKey, PersistentDataType.STRING)
+            it.get(AddonKeys.identifierKey, PersistentDataType.STRING) ?:
+            it.get(AddonKeys.oldIdentifierKey, PersistentDataType.STRING)
         }

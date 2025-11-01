@@ -40,10 +40,4 @@ allprojects {
         compileOnly(rootProject.libs.pv.lavaplayer)
         compileOnly(rootProject.libs.slib)
     }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xcontext-receivers"
-        }
-    }
 }

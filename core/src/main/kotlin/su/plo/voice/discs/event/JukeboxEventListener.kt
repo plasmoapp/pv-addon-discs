@@ -31,20 +31,18 @@ import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.AddonConfig
-import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.PlasmoAudioPlayerManager
+import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.utils.DiscChunkUnloadCause
 import su.plo.voice.discs.utils.DiscEjectCause
 import su.plo.voice.discs.utils.DiscPullCause
 import su.plo.voice.discs.utils.DiscReplaceCause
-import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.utils.PluginKoinComponent
 import su.plo.voice.discs.utils.extend.*
 import java.util.concurrent.ConcurrentHashMap
 
 class JukeboxEventListener : Listener, PluginKoinComponent {
 
-    private val keys: AddonKeys by inject()
     private val plugin: JavaPlugin by inject()
     private val config: AddonConfig by getter()
     private val voiceServer: PlasmoVoiceServer by inject()
@@ -56,7 +54,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
     private val jobByBlock: MutableMap<Block, Job> = ConcurrentHashMap()
 
     @EventHandler
-    fun onChunkLoad(event: ChunkLoadEvent): Unit = with(keys) {
+    fun onChunkLoad(event: ChunkLoadEvent): Unit {
         event.chunk.getTileEntities({ it.isJukebox() }, true)
             .forEach {
                 val jukebox = it as? Jukebox ?: return@forEach
@@ -78,7 +76,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    fun onDiscInsert(event: PlayerInteractEvent) = with(keys) {
+    fun onDiscInsert(event: PlayerInteractEvent) {
 
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
 
@@ -292,20 +290,20 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
     inner class HopperEventListener : Listener {
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-        fun onMinecartHopperPull(event: InventoryMoveItemEvent) = with(keys) {
-            if (event.source.type.name != "JUKEBOX") return@with
-            if (event.destination.holder !is HopperMinecart) return@with
+        fun onMinecartHopperPull(event: InventoryMoveItemEvent) {
+            if (event.source.type.name != "JUKEBOX") return
+            if (event.destination.holder !is HopperMinecart) return
 
-            val block = event.source.location?.block ?: return@with
+            val block = event.source.location?.block ?: return
 
             val item = event.item
-            if (!item.isCustomDisc(discHelper)) return@with
+            if (!item.isCustomDisc(discHelper)) return
 
             jobByBlock.remove(block)?.cancel(DiscPullCause())
         }
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-        fun onHopperInsertToJukebox(event: InventoryMoveItemEvent) = with(keys) {
+        fun onHopperInsertToJukebox(event: InventoryMoveItemEvent) {
             if (event.destination.type.name != "JUKEBOX") return
 
             val block = event.destination.location?.block ?: return

@@ -25,7 +25,6 @@ class BurnableDiscCraft : PluginKoinComponent {
 
     private val plugin: JavaPlugin by inject()
     private val config: AddonConfig by getter()
-    private val keys: AddonKeys by inject()
 
     private val groupKey = NamespacedKey(plugin, "burnable_record_craft")
 
@@ -54,7 +53,7 @@ class BurnableDiscCraft : PluginKoinComponent {
     }
 
 
-    private fun createCustomRecord(record: Material): ItemStack = with(keys) {
+    private fun createCustomRecord(record: Material): ItemStack {
         val itemStack = ItemStack(record)
 
         itemStack.editMeta {
@@ -65,7 +64,7 @@ class BurnableDiscCraft : PluginKoinComponent {
 
             it.addItemFlags(*ItemFlag.values())
             it.persistentDataContainer.set(
-                keys.burnableKey,
+                AddonKeys.burnableKey,
                 PersistentDataType.BYTE,
                 1
             )

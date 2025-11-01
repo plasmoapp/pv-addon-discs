@@ -50,8 +50,6 @@ class DiscsPlugin : JavaPlugin() {
     private val voiceServer: PlasmoVoiceServer by injectPlasmoVoice()
     private lateinit var sourceLine: ServerSourceLine
 
-    private val keys = AddonKeys.of(this@DiscsPlugin)
-
     private val discHelper: DiscHelper by lazy {
         val mcVersion = Bukkit.getServer().getMinecraftVersionInt()
 
@@ -109,7 +107,6 @@ class DiscsPlugin : JavaPlugin() {
                         single<GoatHornHelper> { goatHornHelper }
                         single<GoatHornManager> { goatHornManager }
                         single<JavaPlugin> { this@DiscsPlugin }
-                        single<AddonKeys> { keys }
                         factory<DebugLogger> { debugLogger }
                         single<DiscHelper> { discHelper }
                     }
@@ -156,7 +153,7 @@ class DiscsPlugin : JavaPlugin() {
         permissions.registerBukkit("pv.addon.discs.play", PermissionDefault.TRUE)
 
         PacketEvents.getAPI().eventManager.registerListener(
-            CancelJukeboxPlayEvent(keys, jukeboxEventListener),
+            CancelJukeboxPlayEvent(jukeboxEventListener),
             PacketListenerPriority.NORMAL
         )
 

@@ -25,7 +25,6 @@ class BurnableHornCraft : PluginKoinComponent {
 
     private val plugin: JavaPlugin by inject()
     private val config: AddonConfig by getter()
-    private val keys: AddonKeys by inject()
     private val goatHornHelper: GoatHornHelper by inject()
 
     fun registerRecipes() {
@@ -54,7 +53,7 @@ class BurnableHornCraft : PluginKoinComponent {
         }
     }
 
-    private fun createCustomGoatHorn(goatHorn: ItemStack): ItemStack = with(keys) {
+    private fun createCustomGoatHorn(goatHorn: ItemStack): ItemStack {
         val itemStack = goatHorn.clone()
 
         itemStack.editMeta {
@@ -65,7 +64,7 @@ class BurnableHornCraft : PluginKoinComponent {
 
             it.addItemFlags(*ItemFlag.values())
             it.persistentDataContainer.set(
-                keys.burnableKey,
+                AddonKeys.burnableKey,
                 PersistentDataType.BYTE,
                 1
             )

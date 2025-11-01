@@ -8,6 +8,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.koin.core.component.inject
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.AddonConfig
+import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.item.GoatHornHelper
@@ -56,10 +57,10 @@ class EraseCommand : SubCommand() {
 
         item.editMeta { meta ->
             meta.removeItemFlags(*ItemFlag.values())
-            meta.persistentDataContainer.remove(keys.identifierKey)
+            meta.persistentDataContainer.remove(AddonKeys.identifierKey)
 
             if (config.addGlintToCustomDiscs) {
-                with(keys) { meta.allowGrindstone() }
+                meta.allowGrindstone()
                 meta.removeEnchant(Enchantment.MENDING)
             }
 
@@ -85,11 +86,11 @@ class EraseCommand : SubCommand() {
 
         if (item.type.name == "GOAT_HORN") {
             val pdc = item.itemMeta.persistentDataContainer
-            pdc.get(keys.instrumentKey, PersistentDataType.STRING)
+            pdc.get(AddonKeys.instrumentKey, PersistentDataType.STRING)
                 ?.let { instrument ->
                     goatHornHelper.setInstrument(item, instrument)
                 }
-            pdc.remove(keys.instrumentKey)
+            pdc.remove(AddonKeys.instrumentKey)
         }
 
         voicePlayer.instance.sendTranslatable("pv.addon.discs.success.erase")

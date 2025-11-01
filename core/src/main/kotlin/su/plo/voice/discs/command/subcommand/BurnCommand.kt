@@ -17,6 +17,7 @@ import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.AddonConfig
+import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.GoatHornManager
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.item.DiscHelper
@@ -74,7 +75,7 @@ class BurnCommand : SubCommand() {
         if (
             config.burnableTag.requireBurnableTag &&
             (
-                !item.itemMeta.persistentDataContainer.has(keys.burnableKey, PersistentDataType.BYTE) &&
+                !item.itemMeta.persistentDataContainer.has(AddonKeys.burnableKey, PersistentDataType.BYTE) &&
                 !voicePlayer.instance.hasPermission("pv.addon.discs.burn.burnable_check_bypass")
             )
         ) {
@@ -134,19 +135,19 @@ class BurnCommand : SubCommand() {
                 discHelper.showSongTooltip(item, false)
             }
 
-            val hasIdentifier = with(keys) { item.hasIdentifier() }
+            val hasIdentifier = item.hasIdentifier()
 
             item.editMeta { meta ->
                 meta.addItemFlags(*ItemFlag.values())
 
                 meta.persistentDataContainer.set(
-                    keys.identifierKey,
+                    AddonKeys.identifierKey,
                     PersistentDataType.STRING,
                     identifier
                 )
 
                 if (config.addGlintToCustomDiscs) {
-                    with(keys) { meta.forbidGrindstone() }
+                    meta.forbidGrindstone()
                     meta.addEnchant(Enchantment.MENDING, 1, false)
                 }
 
@@ -155,7 +156,7 @@ class BurnCommand : SubCommand() {
                         .takeIf { it.isNotEmpty() }
                         ?.let {
                             meta.persistentDataContainer.set(
-                                keys.instrumentKey,
+                                AddonKeys.instrumentKey,
                                 PersistentDataType.STRING,
                                 it
                             )
@@ -175,7 +176,7 @@ class BurnCommand : SubCommand() {
 
                     AddonConfig.LoreMethod.APPEND -> {
                         val currentLore = meta.lore()?.let {
-                            if (with(keys) { item.isCustomDisc(discHelper) }) {
+                            if (item.isCustomDisc(discHelper)) {
                                 it.subList(0, it.size - 1)
                             } else {
                                 it
