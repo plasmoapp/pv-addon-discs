@@ -32,6 +32,7 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.Audio
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeAudioSourceManager
+import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.YoutubeSourceOptions
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Web
 import su.plo.voice.lavaplayer.libs.org.apache.http.HttpHost
 import su.plo.voice.lavaplayer.libs.org.apache.http.auth.AuthScope
@@ -246,7 +247,13 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
                 )
             plugin.slF4JLogger.info("YouTube clients: {}", youtubeClients)
 
-            YoutubeAudioSourceManager(true, *youtubeClients.map { it.client.get() }.toTypedArray())
+            val options = YoutubeSourceOptions()
+            config.youtubeSource.remoteCipher?.let { remoteCipher ->
+                plugin.slF4JLogger.info("YouTube remote cipher url: {}", remoteCipher.url)
+                options.setRemoteCipher(remoteCipher.url, remoteCipher.password, "yt-source")
+            }
+
+            YoutubeAudioSourceManager(options, *youtubeClients.map { it.client.get() }.toTypedArray())
                 .also { source ->
                     proxyHttpBuilder?.let { source.httpInterfaceManager.configureBuilder(it) }
 
@@ -260,11 +267,6 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
                             ?.trim()
                         source.useOauth2(refreshToken, false)
                         if (refreshToken == null) listenForTokenChange(source)
-                    }
-
-                    config.youtubeSource.remoteCipher?.let { remoteCipher ->
-                        plugin.slF4JLogger.info("YouTube remote cipher url: {}", remoteCipher.url)
-                        source.setRemoteCipherManagerUrlPass(remoteCipher.url, remoteCipher.password)
                     }
                 }
         }
