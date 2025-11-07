@@ -1,0 +1,3 @@
+- Added support for YouTube remote cipher to resolve "Problematic YouTube player script". See [Common issues](https://github.com/plasmoapp/pv-addon-discs#problematic-youtube-player-script).
+- Added ability to use any item with `JUKEBOX_SONG` data component as a custom disc (1.20.5+). ([#122](https://github.com/plasmoapp/pv-addon-discs/pull/122))
+- Fixed an issue where custom discs could stop playing randomly.
