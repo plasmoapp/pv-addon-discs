@@ -58,7 +58,7 @@ Available to everyone by default:
 
 Addon can load audio from:
 
-- YouTube videos and live streams
+- YouTube videos and live streams (could require additional setup, see [Common issues](#common-issues))
 - SoundCloud
 - Bandcamp
 - Vimeo
@@ -80,10 +80,22 @@ If you want to stream audio from direct URLs
 
 # Common issues
 
+## Problematic YouTube player script
+1) Make sure you're using the latest versions of `pv-addon-discs` and `pv-addon-lavaplayer-lib`.
+2) Open `plugins/pv-addon-discs/discs.toml`, uncomment and configure `youtube_source.remote_cipher`:
+    ```toml
+    [youtube_source.remote_cipher]
+    url = "https://cipher.kikkia.dev/"
+    password = ""
+    ```
+   *This uses a public instance of [yt-cipher](https://github.com/kikkia/yt-cipher). To host your own, follow their tutorial.*
+3) Restart the server and see if it works.
+4) If this doesn't work, [try oauth2](#sign-in-to-confirm-youre-not-a-bot--please-sign-in-using-youtube).
+
 ## "Sign in to confirm you're not a bot" / "Please sign in" using YouTube
 1) Make sure you're using the latest versions of `pv-addon-discs` and `pv-addon-lavaplayer-lib`.
 2) Set `youtube_source.use_oauth2` to `true` in `plugins/pv-addon-discs/discs.toml`.
-3) Restart your server (`/vreload` will not work).
+3) Restart the server (`/vreload` will not work).
 4) When `pv-addon-discs` initializes, you'll see a message in your console like this (code will be different): https://i.imgur.com/r1o5v8v.png. Follow the instructions in the console message.
 5) After successful authorization, you'll see a message in your console: https://i.imgur.com/BD9jCRe.png. You don't need to save token manually, it will be saved when the server is stopped.
 6) Done! YouTube tracks should now work as expected.
