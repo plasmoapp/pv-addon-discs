@@ -64,8 +64,8 @@ tasks {
     }
 
     java {
-        // todo: set to 16, 21 is for runServer
-        toolchain.languageVersion.set(JavaLanguageVersion.of(16)) // lavaplayer supports only java 16+
+        // 2.1.6 Plasmo Voice requires 17+ java
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
