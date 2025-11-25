@@ -58,7 +58,7 @@ class DiscsPlugin : JavaPlugin() {
         } else if (mcVersion >= 12103) {
             su.plo.voice.discs.v1_21_3.DiscHelperImpl()
         } else {
-            throw IllegalArgumentException("Disc helper in $mcVersion is not supported!")
+            su.plo.voice.discs.v1_19_4.DiscHelperImpl()
         } as DiscHelper
     }
 
