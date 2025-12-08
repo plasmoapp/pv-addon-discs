@@ -59,7 +59,7 @@ tasks {
         systemProperty("plasmovoice.alpha.disableversioncheck", "true")
     }
 
-    create("chiseledBuild") {
+    build {
         dependsOn(shadowJar)
     }
 
