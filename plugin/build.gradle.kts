@@ -55,8 +55,17 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.1")
+        javaLauncher = project.javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+        minecraftVersion("1.21.10")
         systemProperty("plasmovoice.alpha.disableversioncheck", "true")
+
+        downloadPlugins {
+            modrinth("plasmo-voice", "spigot-2.1.6")
+            modrinth("pv-addon-lavaplayer-lib", "1.1.10")
+            modrinth("packetevents", "2.10.1")
+        }
     }
 
     build {
