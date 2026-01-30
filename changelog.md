@@ -1,1 +1,1 @@
-- Fixed plugin not working on versions below 1.21.3: "java.lang.IllegalArgumentException: Disc helper in 12101 is not supported!".
+- Removed `TVHTML5EMBEDDED` (replaced with `TV`) from default youtube clients as it's no longer works.
