@@ -37,7 +37,7 @@ jobs:
       run: echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
     - name: Build with Gradle
-      run: ./gradlew chiseledBuild -Pversion="${VERSION}+${GIT_HASH}"
+      run: ./gradlew build -Pversion="${VERSION}+${GIT_HASH}"
 
     - name: Upload to Registry
       run: |
