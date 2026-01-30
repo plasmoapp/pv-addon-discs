@@ -243,7 +243,6 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
                     YoutubeClient.ANDROID_VR,
                     YoutubeClient.WEB,
                     YoutubeClient.WEBEMBEDDED,
-                    YoutubeClient.TVHTML5EMBEDDED,
                 )
             plugin.slF4JLogger.info("YouTube clients: {}", youtubeClients)
 

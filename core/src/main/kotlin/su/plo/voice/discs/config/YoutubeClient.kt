@@ -23,5 +23,4 @@ enum class YoutubeClient(
     ANDROID_VR({ AndroidVr() }),
     ANDROID_MUSIC({ AndroidMusic() }),
     IOS({ Ios() }),
-    TVHTML5EMBEDDED({ TvHtml5Embedded() })
 }
