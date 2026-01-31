@@ -1,1 +1,1 @@
-- Removed `TVHTML5EMBEDDED` (replaced with `TV`) from default youtube clients as it's no longer works.
+- Removed `TVHTML5EMBEDDED` (replaced with `TV`) from default youtube clients as it's no longer works (fixes "YouTube is no longer supported in this application or device").
