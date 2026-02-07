@@ -226,8 +226,25 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
             var lastTick = System.currentTimeMillis()
 
             while (job.isActive) {
+                val currentTime = System.currentTimeMillis()
+                val timeSinceLastTick = currentTime - lastTick
+
+                if (timeSinceLastTick >= 3_000L) {
+                    val stillExists = plugin.suspendSync(block.location) {
+                        block.type == Material.JUKEBOX
+                    }
+
+                    if (!stillExists) {
+                        debugLogger.log("Jukebox at ${block.location} no longer exists, stopping playback")
+                        cancel(DiscEjectCause())
+                        return@launch
+                    }
+
+                    lastTick = System.currentTimeMillis()
+                }
+
                 // every 30 seconds we need to reset record state
-                if (System.currentTimeMillis() - lastTick < 30_000L) {
+                if (timeSinceLastTick < 30_000L) {
                     delay(100L)
                     continue
                 }
