@@ -223,29 +223,47 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
         val job = audioPlayerManager.startTrackJob(track, source, distance)
         try {
-            var lastTick = System.currentTimeMillis()
+            var lastExistenceCheck = System.currentTimeMillis()
+            var lastRecordReset = System.currentTimeMillis()
 
             while (job.isActive) {
-                // every 30 seconds we need to reset record state
-                if (System.currentTimeMillis() - lastTick < 30_000L) {
-                    delay(100L)
-                    continue
-                }
+                val currentTime = System.currentTimeMillis()
+                val timeSinceExistenceCheck = currentTime - lastExistenceCheck
+                val timeSinceRecordReset = currentTime - lastRecordReset
 
-                plugin.suspendSync(block.location) {
-                    val jukebox = block.asJukebox() ?: return@suspendSync
-
-                    jukebox.setRecord(jukebox.record)
-                    try {
-                        val startPlayingMethod = jukebox.javaClass.getMethod("startPlaying")
-                        startPlayingMethod.invoke(jukebox)
-                    } catch (_: ReflectiveOperationException) {
-                        // ignore on old mc versions
+                // Check if jukebox still exists every 3 seconds
+                if (timeSinceExistenceCheck >= 3_000L) {
+                    val stillExists = plugin.suspendSync(block.location) {
+                        block.type == Material.JUKEBOX
                     }
-                    jukebox.update()
-                }
-                lastTick = System.currentTimeMillis()
 
+                    if (!stillExists) {
+                        debugLogger.log("Jukebox at ${block.location} no longer exists, stopping playback")
+                        cancel(DiscEjectCause())
+                        return@launch
+                    }
+
+                    lastExistenceCheck = System.currentTimeMillis()
+                }
+
+                // Reset record state every 30 seconds
+                if (timeSinceRecordReset >= 30_000L) {
+                    plugin.suspendSync(block.location) {
+                        val jukebox = block.asJukebox() ?: return@suspendSync
+
+                        jukebox.setRecord(jukebox.record)
+                        try {
+                            val startPlayingMethod = jukebox.javaClass.getMethod("startPlaying")
+                            startPlayingMethod.invoke(jukebox)
+                        } catch (_: ReflectiveOperationException) {
+                            // ignore on old mc versions
+                        }
+                        jukebox.update()
+                    }
+                    lastRecordReset = System.currentTimeMillis()
+                }
+
+                delay(100L)
             }
         } catch (e: CancellationException) {
             debugLogger.log("Track \"${source.sourceInfo.name}\" at ${block.location} cancelled: ${e.message}")
