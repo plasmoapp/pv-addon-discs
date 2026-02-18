@@ -7,6 +7,7 @@ import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Ios
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.MWeb
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Music
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Tv
+import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.TvHtml5Simply
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.Web
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.WebEmbedded
 import su.plo.voice.lavaplayer.libs.dev.lavalink.youtube.clients.skeleton.Client
@@ -24,4 +25,5 @@ enum class YoutubeClient(
     ANDROID_MUSIC({ AndroidMusic() }),
     IOS({ Ios() }),
     TV({ Tv() }),
+    TVHTML5_SIMPLY({ TvHtml5Simply() }),
 }
