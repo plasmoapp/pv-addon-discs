@@ -6,7 +6,7 @@ koin-bom = "3.5.6"
 
 pv = "2.1.6"
 pv-lavaplayer = "1.1.10-SNAPSHOT"
-slib = "1.0.0-SNAPSHOT"
+slib = "1.1.5"
 
 paper11605 = "1.16.5-R0.1-SNAPSHOT"
 paper11904 = "1.19.4-R0.1-SNAPSHOT"

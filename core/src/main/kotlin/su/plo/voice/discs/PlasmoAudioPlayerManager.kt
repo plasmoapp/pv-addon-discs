@@ -244,6 +244,7 @@ class PlasmoAudioPlayerManager : PluginKoinComponent {
                     YoutubeClient.WEB,
                     YoutubeClient.WEBEMBEDDED,
                     YoutubeClient.TV,
+                    YoutubeClient.TVHTML5_SIMPLY,
                 )
             plugin.slF4JLogger.info("YouTube clients: {}", youtubeClients)
 
