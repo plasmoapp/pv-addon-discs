@@ -7,6 +7,7 @@ import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.chat.style.McTextClickEvent
 import su.plo.slib.api.chat.style.McTextHoverEvent
 import su.plo.slib.api.permission.PermissionDefault
+import su.plo.voice.discs.api.PlayerSearchEvent
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
@@ -45,6 +46,8 @@ class SearchCommand : SubCommand() {
         }
 
         val query = arguments.drop(1).joinToString(" ")
+
+        if(!PlayerSearchEvent(voicePlayer, query).callEvent()) return@launch
 
         val tracks = try {
             audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks

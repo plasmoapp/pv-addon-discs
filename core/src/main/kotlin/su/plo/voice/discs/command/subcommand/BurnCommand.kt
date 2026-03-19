@@ -19,6 +19,8 @@ import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.AddonKeys
 import su.plo.voice.discs.GoatHornManager
+import su.plo.voice.discs.api.PlayerBurnEvent
+import su.plo.voice.discs.api.PrePlayerBurnEvent
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.item.GoatHornHelper
@@ -100,6 +102,8 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
+        if(!PrePlayerBurnEvent(voicePlayer).callEvent()) return@launch
+
         val track = try {
             audioPlayerManager.getTrack(identifier).await()
         } catch (e: Exception) {
@@ -129,6 +133,8 @@ class BurnCommand : SubCommand() {
             )
             return@launch
         }
+
+        PlayerBurnEvent(voicePlayer, track, isGoatHorn).callEvent()
 
         plugin.suspendSync(player.location) {
             if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {
