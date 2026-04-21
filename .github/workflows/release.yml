@@ -1,9 +1,16 @@
 name: Publish Release
 
 on:
-  push:
-    branches:
-      - release
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - release
+          - beta
+          - alpha
 
 jobs:
   build:
@@ -32,10 +39,16 @@ jobs:
         run: ./gradlew build
 
       - name: Publish to Modrinth
-        uses: apehum/mc-publish@v1.2
+        uses: apehum/mc-publish@master
         with:
           modrinth-id: WXJRlyZ9
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          modrinth-dependencies: |
+            plasmo-voice
+            pv-addon-lavaplayer-lib
+            packetevents
+
+          version-type: ${{ inputs.release-type }}
 
           changelog-file: changelog.md
 
@@ -43,6 +56,8 @@ jobs:
 
           loaders: |
             paper
+            purpur
+            folia
           game-versions: |
             1.16.5
             1.17.1
@@ -50,10 +65,11 @@ jobs:
             >=1.19.2
 
       - name: Publish to GitHub
-        uses: Apehum/mc-publish@v1.1
+        uses: Apehum/mc-publish@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           github-generate-changelog: false
+          github-prerelease: ${{ inputs.release-type != 'release' }}
           changelog-file: changelog.md
 
           files: plugin/build/libs/*.jar
