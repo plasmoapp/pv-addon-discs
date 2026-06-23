@@ -163,11 +163,8 @@ class BurnCommand : SubCommand() {
                         }
                 }
 
-                val loreName = Component.text()
-                    .content(name)
+                val loreName = Component.text(name, NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.GRAY)
-                    .build()
 
                 when (config.burnLoreMethod) {
                     AddonConfig.LoreMethod.REPLACE -> {

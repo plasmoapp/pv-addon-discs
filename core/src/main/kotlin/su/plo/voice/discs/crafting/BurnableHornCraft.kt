@@ -68,11 +68,8 @@ class BurnableHornCraft : PluginKoinComponent {
                 PersistentDataType.BYTE,
                 1
             )
-            val loreName = Component.text()
-                .content(config.burnableTag.defaultRecipeLore)
+            val loreName = Component.text(config.burnableTag.defaultRecipeLore, NamedTextColor.BLUE)
                 .decoration(TextDecoration.ITALIC, false)
-                .color(NamedTextColor.BLUE)
-                .build()
             it.lore(listOf(loreName))
         }
 
