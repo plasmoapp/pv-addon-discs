@@ -1,1 +1,1 @@
-- Fixed compatibility with 5.x adventure. [#133](https://github.com/plasmoapp/pv-addon-discs/issues/133)
+- Added Bukkit events API ([#131](https://github.com/plasmoapp/pv-addon-discs/pull/131)). See [README API section](https://github.com/plasmoapp/pv-addon-discs#api) for dependency setup.
