@@ -1,11 +1,10 @@
 package su.plo.voice.discs.api
 
 import org.bukkit.event.HandlerList
-import org.bukkit.inventory.ItemStack
-import su.plo.voice.api.server.player.VoiceServerPlayer
+import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrack
 
-class PlayerBurnEvent(player: VoiceServerPlayer, audioTrack: AudioTrack, item: ItemStack) : VoicePlayerEvent(player) {
+class PlayTrackFromGoatHornEvent(player: VoicePlayer, track: AudioTrack) : PlayTrackEvent(player, track) {
 
     companion object {
         private val handlerList = HandlerList()

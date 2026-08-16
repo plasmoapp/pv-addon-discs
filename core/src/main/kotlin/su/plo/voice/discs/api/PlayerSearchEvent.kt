@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
 import su.plo.voice.api.server.player.VoiceServerPlayer
 
-class PlayerSearchEvent(player: VoiceServerPlayer, val query: String) : VoicePlayerEvent(player), Cancellable {
+class PlayerSearchEvent(player: VoiceServerPlayer, query: String) : VoicePlayerEvent(player), Cancellable {
 
     companion object {
         private val handlerList = HandlerList()

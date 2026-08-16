@@ -18,6 +18,7 @@ import su.plo.slib.api.chat.style.McTextStyle
 import su.plo.voice.api.logging.DebugLogger
 import su.plo.voice.api.server.PlasmoVoiceServer
 import su.plo.voice.api.server.audio.line.ServerSourceLine
+import su.plo.voice.discs.api.PlayTrackFromGoatHornEvent
 import su.plo.voice.discs.utils.HornCancellationCause
 import su.plo.voice.discs.utils.HornReplaceCause
 import su.plo.voice.discs.utils.PluginKoinComponent
@@ -96,6 +97,8 @@ class GoatHornManager : PluginKoinComponent {
             )
             return@launch
         }
+
+        if(!PlayTrackFromGoatHornEvent(voicePlayer, track).callEvent()) return@launch
 
         val trackName = item.itemMeta
             ?.lore()

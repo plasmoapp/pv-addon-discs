@@ -32,7 +32,7 @@ import su.plo.voice.api.server.audio.line.ServerSourceLine
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.PlasmoAudioPlayerManager
-import su.plo.voice.discs.api.PlayTrackEvent
+import su.plo.voice.discs.api.PlayTrackFromDiscEvent
 import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.utils.DiscChunkUnloadCause
 import su.plo.voice.discs.utils.DiscEjectCause
@@ -174,7 +174,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
             return@launch
         }
 
-        if(!PlayTrackEvent(voicePlayer, block, track).callEvent()) return@launch
+        if(!PlayTrackFromDiscEvent(voicePlayer, track, block).callEvent()) return@launch
 
         val trackName = itemMeta
             ?.lore()

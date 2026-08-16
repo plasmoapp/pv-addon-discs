@@ -102,7 +102,7 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
-        if(!PrePlayerBurnEvent(voicePlayer).callEvent()) return@launch
+        if(!PrePlayerBurnEvent(voicePlayer, identifier).callEvent()) return@launch
 
         val track = try {
             audioPlayerManager.getTrack(identifier).await()
@@ -134,7 +134,7 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
-        PlayerBurnEvent(voicePlayer, track, isGoatHorn).callEvent()
+        PlayerBurnEvent(voicePlayer, track, item).callEvent()
 
         plugin.suspendSync(player.location) {
             if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {

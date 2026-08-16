@@ -56,7 +56,7 @@ class EraseCommand : SubCommand() {
             discHelper.showSongTooltip(item, true)
         }
 
-        PlayerEraseEvent(voicePlayer).callEvent()
+        PlayerEraseEvent(voicePlayer, item).callEvent()
 
         item.editMeta { meta ->
             meta.removeItemFlags(*ItemFlag.values())
