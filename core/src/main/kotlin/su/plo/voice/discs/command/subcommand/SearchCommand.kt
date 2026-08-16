@@ -47,7 +47,7 @@ class SearchCommand : SubCommand() {
 
         val query = arguments.drop(1).joinToString(" ")
 
-        if(!PlayerSearchEvent(voicePlayer, query).callEvent()) return@launch
+        if (!PlayerSearchEvent(voicePlayer, query).callEvent()) return@launch
 
         val tracks = try {
             audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks

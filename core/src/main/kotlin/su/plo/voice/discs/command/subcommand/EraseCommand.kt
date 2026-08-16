@@ -51,12 +51,12 @@ class EraseCommand : SubCommand() {
                 return
             }
 
+        if (!PlayerEraseEvent(voicePlayer, item).callEvent()) return
+
         if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {
             val discHelper by inject<DiscHelper>()
             discHelper.showSongTooltip(item, true)
         }
-
-        PlayerEraseEvent(voicePlayer, item).callEvent()
 
         item.editMeta { meta ->
             meta.removeItemFlags(*ItemFlag.values())
