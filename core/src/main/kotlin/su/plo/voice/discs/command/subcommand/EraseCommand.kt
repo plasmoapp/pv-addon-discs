@@ -9,6 +9,7 @@ import org.koin.core.component.inject
 import su.plo.slib.api.permission.PermissionDefault
 import su.plo.voice.discs.AddonConfig
 import su.plo.voice.discs.AddonKeys
+import su.plo.voice.discs.api.PlayerEraseEvent
 import su.plo.voice.discs.command.SubCommand
 import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.item.GoatHornHelper
@@ -29,16 +30,16 @@ class EraseCommand : SubCommand() {
         "erase" to PermissionDefault.OP
     )
 
-    override fun execute(source: CommandSender, arguments: Array<out String>) {
+    override fun execute(sender: CommandSender, arguments: Array<out String>) {
 
-        val voicePlayer = source.asPlayer()?.asVoicePlayer(voiceServer) ?: return
+        val voicePlayer = sender.asPlayer()?.asVoicePlayer(voiceServer) ?: return
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.erase")) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.no_permission")
             return
         }
 
-        val player = source.asPlayer() ?: run {
+        val player = sender.asPlayer() ?: run {
             voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
             return
         }
@@ -54,6 +55,8 @@ class EraseCommand : SubCommand() {
             val discHelper by inject<DiscHelper>()
             discHelper.showSongTooltip(item, true)
         }
+
+        PlayerEraseEvent(voicePlayer, item).callEvent()
 
         item.editMeta { meta ->
             meta.removeItemFlags(*ItemFlag.values())
