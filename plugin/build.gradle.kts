@@ -70,9 +70,9 @@ tasks {
         systemProperty("plasmovoice.alpha.disableversioncheck", "true")
 
         downloadPlugins {
-            modrinth("plasmo-voice", "spigot-2.1.6")
-            modrinth("pv-addon-lavaplayer-lib", "1.1.10")
-            modrinth("packetevents", "2.11.2+spigot")
+            modrinth("plasmo-voice", "spigot-2.1.13")
+            modrinth("pv-addon-lavaplayer-lib", "1.2.2")
+            modrinth("packetevents", "2.13.0+spigot")
         }
     }
 
