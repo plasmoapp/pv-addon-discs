@@ -78,6 +78,23 @@ If you want to stream audio from direct URLs
 - AAC streams
 - Stream playlists (M3U and PLS)
 
+# API
+![Version](https://img.shields.io/badge/dynamic/xml?color=186EF0&label=release&query=/metadata/versioning/versions/version[not(contains(text(),'%2B'))][last()]&url=https://repo.plasmoverse.com/releases/su/plo/voice/addon/discs-paper/maven-metadata.xml)
+![Version](https://img.shields.io/badge/dynamic/xml?color=186EF0&label=snapshot&query=/metadata/versioning/versions/version[not(contains(text(),'%2B'))][last()]&url=https://repo.plasmoverse.com/snapshots/su/plo/voice/addon/discs-paper/maven-metadata.xml)
+
+Bukkit events list: https://github.com/plasmoapp/pv-addon-discs/tree/v1/core/src/main/kotlin/su/plo/voice/discs/api.
+
+### Kotlin DSL
+```kotlin
+repositories {
+    maven("https://repo.plasmoverse.com/releases")
+}
+
+dependencies {
+    compileOnly("su.plo.voice.addon:discs-paper:$VERSION")
+}
+```
+
 # Common issues
 
 ## Problematic YouTube player script
