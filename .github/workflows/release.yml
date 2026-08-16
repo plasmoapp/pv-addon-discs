@@ -38,6 +38,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Publish to maven repository
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew publish
+
       - name: Publish to Modrinth
         uses: apehum/mc-publish@master
         with:
@@ -52,7 +58,7 @@ jobs:
 
           changelog-file: changelog.md
 
-          files: plugin/build/libs/*.jar
+          files: plugin/build/libs/!(*-@(dev|sources|javadoc)).jar
 
           loaders: |
             paper
@@ -72,4 +78,4 @@ jobs:
           github-prerelease: ${{ inputs.release-type != 'release' }}
           changelog-file: changelog.md
 
-          files: plugin/build/libs/*.jar
+          files: plugin/build/libs/!(*-@(dev|sources|javadoc)).jar

@@ -36,12 +36,20 @@ jobs:
     - name: Get git hash
       run: echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+    - name: Publish to maven repository
+      env:
+        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+      run: ./gradlew publish -Pversion="${VERSION}-SNAPSHOT"
+
     - name: Build with Gradle
-      run: ./gradlew build -Pversion="${VERSION}+${GIT_HASH}"
+      run: ./gradlew clean build -Pversion="${VERSION}+${GIT_HASH}"
 
     - name: Upload to Registry
       run: |
-        for file in plugin/build/libs/*; do
+        shopt -s extglob
+
+        for file in plugin/build/libs/!(*-@(dev|sources|javadoc)).jar; do
           echo "Uploading $(basename $file)..."
         
           if curl -X POST "${{ secrets.REGISTRY_URL }}/upload" \

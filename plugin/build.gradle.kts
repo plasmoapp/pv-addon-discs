@@ -6,25 +6,29 @@ plugins {
     alias(libs.plugins.crowdin)
     id("su.plo.voice.plugin.relocate-kotlin")
     id("su.plo.voice.plugin.java-templates")
+    `maven-publish`
 }
 
 base.archivesName = rootProject.name
 
 dependencies {
-    implementation(project(":core")) { isTransitive = false }
-    implementation(project(":nms:1.19.4", "shadow")) { isTransitive = false }
-    implementation(project(":nms:1.20.6", "shadow")) { isTransitive = false }
-    implementation(project(":nms:1.21.3", "shadow")) { isTransitive = false }
-    implementation(project(":nms:1.21.5", "shadow")) { isTransitive = false }
+    api(libs.pv)
+    api(libs.pv.lavaplayer)
+
+    shadow(project(":core")) { isTransitive = false }
+    shadow(project(":nms:1.19.4", "shadow")) { isTransitive = false }
+    shadow(project(":nms:1.20.6", "shadow")) { isTransitive = false }
+    shadow(project(":nms:1.21.3", "shadow")) { isTransitive = false }
+    shadow(project(":nms:1.21.5", "shadow")) { isTransitive = false }
     compileOnly(libs.paper.v11605)
 
-    implementation(platform(libs.koin.bom)) {
+    shadow(platform(libs.koin.bom)) {
         exclude("org.jetbrains.kotlin")
     }
-    implementation(libs.koin.core) {
+    shadow(libs.koin.core) {
         exclude("org.jetbrains.kotlin")
     }
-    implementation(libs.reflectionremapper)
+    shadow(libs.reflectionremapper)
 }
 
 crowdin {
@@ -40,6 +44,10 @@ tasks {
     }
 
     shadowJar {
+        configurations = listOf(project.configurations.shadow.get())
+
+        mustRunAfter(jar)
+
         archiveBaseName.set(rootProject.name)
         archiveClassifier.set("")
         archiveAppendix.set("")
@@ -75,6 +83,51 @@ tasks {
     java {
         // 2.1.6 Plasmo Voice requires 17+ java
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        withSourcesJar()
+    }
+
+    named<Jar>("sourcesJar") {
+        from(project(":core").layout.projectDirectory.dir("src/main/kotlin"))
+    }
+}
+
+(components["java"] as AdhocComponentWithVariants)
+    .withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) { skip() }
+
+listOf("apiElements", "runtimeElements").forEach { configurationName ->
+    configurations[configurationName].outgoing {
+        artifacts.clear()
+        artifact(tasks.shadowJar)
+    }
+}
+
+configure<PublishingExtension> {
+    publications.create<MavenPublication>("paper") {
+        artifactId = "paper"
+
+        from(components["java"])
+    }
+
+    repositories {
+        if (version.toString().contains("SNAPSHOT")) {
+            maven("https://repo.plasmoverse.com/snapshots") {
+                name = "PlasmoVerseSnapshots"
+
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        } else {
+            maven("https://repo.plasmoverse.com/releases") {
+                name = "PlasmoVerseReleases"
+
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        }
     }
 }
 
