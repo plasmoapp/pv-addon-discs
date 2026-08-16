@@ -103,7 +103,8 @@ listOf("apiElements", "runtimeElements").forEach { configurationName ->
 
 configure<PublishingExtension> {
     publications.create<MavenPublication>("paper") {
-        artifactId = "paper"
+        groupId = "su.plo.voice.addon"
+        artifactId = "discs-paper"
 
         from(components["java"])
     }
