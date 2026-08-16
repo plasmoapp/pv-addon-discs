@@ -98,7 +98,9 @@ class GoatHornManager : PluginKoinComponent {
             return@launch
         }
 
-        if (!PlayTrackFromGoatHornEvent(voicePlayer, track).callEvent()) return@launch
+        if (!plugin.suspendSync(player) {
+            PlayTrackFromGoatHornEvent(voicePlayer, track).callEvent()
+        }) return@launch
 
         val trackName = item.itemMeta
             ?.lore()

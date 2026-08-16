@@ -7,7 +7,7 @@ import su.plo.voice.api.server.player.VoiceServerPlayer
 class PlayerEraseEvent(
     player: VoiceServerPlayer,
     val item: ItemStack,
-) : VoicePlayerEvent(player, isAsync = false) {
+) : VoicePlayerEvent(player) {
     override fun getHandlers(): HandlerList = handlerList
 
     companion object {

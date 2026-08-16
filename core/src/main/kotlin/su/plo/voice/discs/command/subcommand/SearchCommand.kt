@@ -3,6 +3,8 @@ package su.plo.voice.discs.command.subcommand
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.bukkit.command.CommandSender
+import org.bukkit.plugin.java.JavaPlugin
+import org.koin.core.component.inject
 import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.chat.style.McTextClickEvent
 import su.plo.slib.api.chat.style.McTextHoverEvent
@@ -13,9 +15,12 @@ import su.plo.voice.discs.utils.extend.asPlayer
 import su.plo.voice.discs.utils.extend.asVoicePlayer
 import su.plo.voice.discs.utils.extend.render
 import su.plo.voice.discs.utils.extend.sendTranslatable
+import su.plo.voice.discs.utils.extend.suspendSync
 import su.plo.voice.discs.utils.extend.toPlainText
 
 class SearchCommand : SubCommand() {
+
+    private val plugin: JavaPlugin by inject()
 
     override val name = "search"
 
@@ -38,7 +43,9 @@ class SearchCommand : SubCommand() {
 
     override fun execute(sender: CommandSender, arguments: Array<out String>) { scope.launch {
 
-        val voicePlayer = sender.asPlayer()?.asVoicePlayer(voiceServer) ?: return@launch
+        val player = sender.asPlayer() ?: return@launch
+
+        val voicePlayer = player.asVoicePlayer(voiceServer) ?: return@launch
 
         if (!voicePlayer.instance.hasPermission("pv.addon.discs.search")) {
             voicePlayer.instance.sendTranslatable("pv.addon.discs.error.no_permission")
@@ -47,7 +54,9 @@ class SearchCommand : SubCommand() {
 
         val query = arguments.drop(1).joinToString(" ")
 
-        if (!PlayerSearchEvent(voicePlayer, query).callEvent()) return@launch
+        if (!plugin.suspendSync(player) {
+            PlayerSearchEvent(voicePlayer, query).callEvent()
+        }) return@launch
 
         val tracks = try {
             audioPlayerManager.getPlaylist("ytsearch:$query").await().tracks

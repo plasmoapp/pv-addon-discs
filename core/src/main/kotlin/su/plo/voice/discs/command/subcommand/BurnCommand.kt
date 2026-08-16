@@ -102,7 +102,14 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
-        if (!PrePlayerBurnEvent(voicePlayer, identifier).callEvent()) return@launch
+        val player = sender.asPlayer() ?: run {
+            voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
+            return@launch
+        }
+
+        if (!plugin.suspendSync(player) {
+            PrePlayerBurnEvent(voicePlayer, identifier).callEvent()
+        }) return@launch
 
         val track = try {
             audioPlayerManager.getTrack(identifier).await()
@@ -115,11 +122,6 @@ class BurnCommand : SubCommand() {
         val name = arguments.drop(2)
             .joinToString(" ")
             .ifEmpty { track.info.title }
-
-        val player = sender.asPlayer() ?: run {
-            voicePlayer.instance.sendTranslatable("pv.error.player_only_command")
-            return@launch
-        }
 
         val item = plugin.suspendSync(player) { player.inventory.itemInMainHand }
 
@@ -134,7 +136,9 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
-        if (!PlayerBurnEvent(voicePlayer, track, item).callEvent()) return@launch
+        if (!plugin.suspendSync(player) {
+                PlayerBurnEvent(voicePlayer, track, item).callEvent()
+            }) return@launch
 
         plugin.suspendSync(player.location) {
             if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {

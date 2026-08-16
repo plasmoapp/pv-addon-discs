@@ -8,7 +8,7 @@ import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.Audio
 abstract class PlayTrackEvent(
     val player: VoicePlayer? = null,
     val track: AudioTrack,
-) : Event(true), Cancellable {
+) : Event(), Cancellable {
     private var cancelled = false
 
     override fun isCancelled(): Boolean = cancelled
