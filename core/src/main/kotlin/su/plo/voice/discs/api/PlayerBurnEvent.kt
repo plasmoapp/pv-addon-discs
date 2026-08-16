@@ -5,7 +5,12 @@ import org.bukkit.inventory.ItemStack
 import su.plo.voice.api.server.player.VoiceServerPlayer
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrack
 
-class PlayerBurnEvent(player: VoiceServerPlayer, audioTrack: AudioTrack, item: ItemStack) : VoicePlayerEvent(player) {
+class PlayerBurnEvent(
+    player: VoiceServerPlayer,
+    val track: AudioTrack,
+    val item: ItemStack,
+) : VoicePlayerEvent(player) {
+    override fun getHandlers(): HandlerList = handlerList
 
     companion object {
         private val handlerList = HandlerList()
@@ -13,7 +18,4 @@ class PlayerBurnEvent(player: VoiceServerPlayer, audioTrack: AudioTrack, item: I
         @JvmStatic
         fun getHandlerList(): HandlerList = handlerList
     }
-
-    override fun getHandlers(): HandlerList = handlerList
-
 }

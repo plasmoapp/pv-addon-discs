@@ -4,7 +4,11 @@ import org.bukkit.event.HandlerList
 import su.plo.voice.api.server.player.VoicePlayer
 import su.plo.voice.lavaplayer.libs.com.sedmelluq.discord.lavaplayer.track.AudioTrack
 
-class PlayTrackFromGoatHornEvent(player: VoicePlayer, track: AudioTrack) : PlayTrackEvent(player, track) {
+class PlayTrackFromGoatHornEvent(
+    player: VoicePlayer,
+    track: AudioTrack,
+) : PlayTrackEvent(player, track) {
+    override fun getHandlers(): HandlerList = handlerList
 
     companion object {
         private val handlerList = HandlerList()
@@ -12,7 +16,4 @@ class PlayTrackFromGoatHornEvent(player: VoicePlayer, track: AudioTrack) : PlayT
         @JvmStatic
         fun getHandlerList(): HandlerList = handlerList
     }
-
-    override fun getHandlers(): HandlerList = handlerList
-
 }

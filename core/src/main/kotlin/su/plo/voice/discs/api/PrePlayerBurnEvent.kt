@@ -4,15 +4,10 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
 import su.plo.voice.api.server.player.VoiceServerPlayer
 
-class PrePlayerBurnEvent(player: VoiceServerPlayer, identifier: String) : VoicePlayerEvent(player), Cancellable {
-
-    companion object {
-        private val handlerList = HandlerList()
-
-        @JvmStatic
-        fun getHandlerList(): HandlerList = handlerList
-    }
-
+class PrePlayerBurnEvent(
+    player: VoiceServerPlayer,
+    val identifier: String,
+) : VoicePlayerEvent(player), Cancellable {
     private var cancelled = false
 
     override fun getHandlers(): HandlerList = handlerList
@@ -23,4 +18,10 @@ class PrePlayerBurnEvent(player: VoiceServerPlayer, identifier: String) : VoiceP
         cancelled = cancel
     }
 
+    companion object {
+        private val handlerList = HandlerList()
+
+        @JvmStatic
+        fun getHandlerList(): HandlerList = handlerList
+    }
 }
