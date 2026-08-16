@@ -6,7 +6,8 @@ import su.plo.voice.api.server.player.VoiceServerPlayer
 
 abstract class VoicePlayerEvent(
     val player: VoiceServerPlayer,
-) : Event(true), Cancellable {
+    isAsync: Boolean = true,
+) : Event(isAsync), Cancellable {
     private var cancelled = false
 
     override fun isCancelled(): Boolean = cancelled
