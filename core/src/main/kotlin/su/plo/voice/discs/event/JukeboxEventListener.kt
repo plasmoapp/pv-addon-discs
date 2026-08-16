@@ -174,7 +174,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
             return@launch
         }
 
-        if(!PlayTrackFromDiscEvent(voicePlayer, track, block).callEvent()) return@launch
+        if (!PlayTrackFromDiscEvent(voicePlayer, track, block).callEvent()) return@launch
 
         val trackName = itemMeta
             ?.lore()
