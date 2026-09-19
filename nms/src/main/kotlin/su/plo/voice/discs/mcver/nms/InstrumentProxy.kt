@@ -19,6 +19,8 @@ interface InstrumentProxy {
         duration: Int,
         //?}
         range: Float,
+        //? if >=26.3
+        /^durabilityDamage: Int,^/
         //? if >=1.21.3
         /^@Type(className = "net.minecraft.network.chat.Component") component: Any^/
     ): Any

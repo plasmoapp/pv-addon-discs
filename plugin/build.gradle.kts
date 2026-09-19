@@ -20,6 +20,7 @@ dependencies {
     shadow(project(":nms:1.20.6", "shadow")) { isTransitive = false }
     shadow(project(":nms:1.21.3", "shadow")) { isTransitive = false }
     shadow(project(":nms:1.21.5", "shadow")) { isTransitive = false }
+    shadow(project(":nms:26.3", "shadow")) { isTransitive = false }
     compileOnly(libs.paper.v11605)
 
     shadow(platform(libs.koin.bom)) {

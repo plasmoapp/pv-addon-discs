@@ -19,6 +19,8 @@ class GoatHornHelperImpl : GoatHornHelper {
                     ReflectionProxies.holder.direct(ReflectionProxies.soundEvents.empty()),
                     140.0f,
                     256f,
+                    //? if >=26.3
+                    /^durabilityDamage = 0,^/
                     ReflectionProxies.component.empty()
                 )
             )
