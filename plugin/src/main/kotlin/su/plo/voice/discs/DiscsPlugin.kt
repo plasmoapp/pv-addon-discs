@@ -32,6 +32,7 @@ import su.plo.voice.discs.item.DiscHelper
 import su.plo.voice.discs.item.GoatHornHelper
 import su.plo.voice.discs.packet.CancelJukeboxPlayEvent
 import su.plo.voice.discs.utils.KOIN_INSTANCE
+import su.plo.voice.discs.utils.LavaplayerDebugLogging
 import su.plo.voice.discs.utils.extend.debug
 import su.plo.voice.discs.utils.extend.getMinecraftVersionInt
 import su.plo.voice.discs.utils.extend.registerBukkit
@@ -178,12 +179,16 @@ class DiscsPlugin : JavaPlugin() {
         if (::audioPlayerManager.isInitialized) {
             audioPlayerManager.shutdown()
         }
+
+        LavaplayerDebugLogging.setEnabled(false)
     }
 
     private fun loadConfig() {
         addonConfig = AddonConfig.loadConfig(voiceServer)
         debugLogger = DebugLogger(McLoggerFactory.createLogger(slF4JLogger.name))
-        debugLogger.enabled(addonConfig.debug || voiceServer.debug())
+        val debug = addonConfig.debug || voiceServer.debug()
+        debugLogger.enabled(debug)
+        LavaplayerDebugLogging.setEnabled(debug)
 
         voiceServer.sourceLineManager.unregister(addonName)
         sourceLine = voiceServer.sourceLineManager.createBuilder(

@@ -13,6 +13,7 @@ paper11904 = "1.19.4-R0.1-SNAPSHOT"
 paper12006 = "1.20.6-R0.1-SNAPSHOT"
 reflection-remapper = "0.1.1"
 packet-events = "2.10.0"
+log4j = "2.17.1"
 
 crowdin = "1.1.0-SNAPSHOT"
 pv-gradle-plugin = "1.0.9"
