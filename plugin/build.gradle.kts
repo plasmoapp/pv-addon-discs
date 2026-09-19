@@ -92,8 +92,9 @@ tasks {
     }
 }
 
-(components["java"] as AdhocComponentWithVariants)
-    .withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) { skip() }
+shadow {
+    addShadowVariantIntoJavaComponent = false
+}
 
 listOf("apiElements", "runtimeElements").forEach { configurationName ->
     configurations[configurationName].outgoing {
