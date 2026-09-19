@@ -58,4 +58,4 @@ jobs:
         name: pv-addon-discs
         path: |
           plugin/build/libs/*.jar
-          !plugin/build/libs/*-@(sources).jar
+          !plugin/build/libs/*-sources.jar
