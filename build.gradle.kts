@@ -38,6 +38,5 @@ allprojects {
         compileOnly(rootProject.libs.packetevents)
         compileOnly(rootProject.libs.pv)
         compileOnly(rootProject.libs.pv.lavaplayer)
-        compileOnly(rootProject.libs.slib)
     }
 }

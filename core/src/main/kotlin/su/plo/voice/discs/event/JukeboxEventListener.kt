@@ -21,7 +21,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.inject
 import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.chat.style.McTextStyle
@@ -44,7 +43,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 class JukeboxEventListener : Listener, PluginKoinComponent {
 
-    private val plugin: JavaPlugin by inject()
     private val config: AddonConfig by getter()
     private val voiceServer: PlasmoVoiceServer by inject()
     private val audioPlayerManager: PlasmoAudioPlayerManager by getter()
@@ -170,11 +168,11 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
             debugLogger.log("Failed to load track", e)
 
-            plugin.suspendSync(block.location) { block.asJukebox()?.eject() }
+            voiceServer.minecraftServer.suspendSync(block.location) { block.asJukebox()?.eject() }
             return@launch
         }
 
-        if (!plugin.suspendSync(block.location) {
+        if (!voiceServer.minecraftServer.suspendSync(block.location) {
             PlayTrackFromDiscEvent(voicePlayer, track, block).callEvent()
         }) return@launch
 
@@ -199,7 +197,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
         val distance = when (config.distance.enableBeaconLikeDistance) {
             true -> {
-                val beaconLevel = plugin.suspendSync(block.location) {
+                val beaconLevel = voiceServer.minecraftServer.suspendSync(block.location) {
                     getBeaconLevel(block)
                 }
                 config.distance.beaconLikeDistanceList[beaconLevel]
@@ -222,7 +220,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
         }
         debugLogger.log("Starting track job \"$trackName\" with distance $distance at ${block.location}")
 
-        plugin.suspendSync(block.location) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
+        voiceServer.minecraftServer.suspendSync(block.location) { block.world.getNearbyPlayers(block.location, distance.toDouble()) }
             .map { it.asVoicePlayer(voiceServer) }
             .forEach { it?.sendAnimatedActionBar(actionbarMessage) }
 
@@ -238,7 +236,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
                 // Check if jukebox still exists every 3 seconds
                 if (timeSinceExistenceCheck >= 3_000L) {
-                    val stillExists = plugin.suspendSync(block.location) {
+                    val stillExists = voiceServer.minecraftServer.suspendSync(block.location) {
                         block.type == Material.JUKEBOX
                     }
 
@@ -253,7 +251,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
                 // Reset record state every 30 seconds
                 if (timeSinceRecordReset >= 30_000L) {
-                    plugin.suspendSync(block.location) {
+                    voiceServer.minecraftServer.suspendSync(block.location) {
                         val jukebox = block.asJukebox() ?: return@suspendSync
 
                         jukebox.setRecord(jukebox.record)
@@ -280,14 +278,14 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
                 job.cancelAndJoin()
                 source.remove()
 
-                plugin.suspendSync(block.location) {
+                voiceServer.minecraftServer.suspendSync(block.location) {
                     val jukebox = block.asJukebox() ?: return@suspendSync
                     val currentJob = jobByBlock[block] ?: return@suspendSync
                     if (currentJob != this@launch) return@suspendSync
                     jukebox.stopPlayingWithUpdate()
                 }
 
-                plugin.suspendSync(block.location) {
+                voiceServer.minecraftServer.suspendSync(block.location) {
                     val currentJob = jobByBlock[block] ?: return@suspendSync
                     if (currentJob != this@launch) return@suspendSync
                     jobByBlock.remove(block)

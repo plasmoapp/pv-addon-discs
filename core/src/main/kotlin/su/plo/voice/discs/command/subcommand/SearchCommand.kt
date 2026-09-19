@@ -3,8 +3,6 @@ package su.plo.voice.discs.command.subcommand
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.bukkit.command.CommandSender
-import org.bukkit.plugin.java.JavaPlugin
-import org.koin.core.component.inject
 import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.chat.style.McTextClickEvent
 import su.plo.slib.api.chat.style.McTextHoverEvent
@@ -19,8 +17,6 @@ import su.plo.voice.discs.utils.extend.suspendSync
 import su.plo.voice.discs.utils.extend.toPlainText
 
 class SearchCommand : SubCommand() {
-
-    private val plugin: JavaPlugin by inject()
 
     override val name = "search"
 
@@ -54,7 +50,7 @@ class SearchCommand : SubCommand() {
 
         val query = arguments.drop(1).joinToString(" ")
 
-        if (!plugin.suspendSync(player) {
+        if (!voiceServer.minecraftServer.suspendSync(player) {
             PlayerSearchEvent(voicePlayer, query).callEvent()
         }) return@launch
 

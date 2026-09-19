@@ -6,7 +6,6 @@ koin-bom = "3.5.6"
 
 pv = "2.1.17"
 pv-lavaplayer = "1.2.0"
-slib = "1.1.5"
 
 paper11605 = "1.16.5-R0.1-SNAPSHOT"
 paper11904 = "1.19.4-R0.1-SNAPSHOT"
@@ -29,7 +28,6 @@ koin-core = { module = "io.insert-koin:koin-core" }
 
 pv = { module = "su.plo.voice.server:paper", version.ref = "pv" }
 pv-lavaplayer = { module = "su.plo:pv-addon-lavaplayer-lib", version.ref = "pv-lavaplayer" }
-slib = { module = "su.plo.slib:spigot", version.ref = "slib" }
 
 paper-v11605 = { module = "com.destroystokyo.paper:paper-api", version.ref = "paper11605" }
 paper-v11904 = { module = "io.papermc.paper:paper-api", version.ref = "paper11904" }

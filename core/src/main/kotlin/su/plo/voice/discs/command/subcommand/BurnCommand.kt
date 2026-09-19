@@ -11,7 +11,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.inject
 import su.plo.slib.api.chat.component.McTextComponent
 import su.plo.slib.api.permission.PermissionDefault
@@ -37,7 +36,6 @@ import su.plo.voice.discs.utils.extend.toPlainText
 
 class BurnCommand : SubCommand() {
 
-    private val plugin: JavaPlugin by inject()
     private val discHelper: DiscHelper by inject()
     private val hornHelper: GoatHornHelper by inject()
     private val hornManager: GoatHornManager by inject()
@@ -107,7 +105,7 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
-        if (!plugin.suspendSync(player) {
+        if (!voiceServer.minecraftServer.suspendSync(player) {
             PrePlayerBurnEvent(voicePlayer, identifier).callEvent()
         }) return@launch
 
@@ -123,7 +121,7 @@ class BurnCommand : SubCommand() {
             .joinToString(" ")
             .ifEmpty { track.info.title }
 
-        val item = plugin.suspendSync(player) { player.inventory.itemInMainHand }
+        val item = voiceServer.minecraftServer.suspendSync(player) { player.inventory.itemInMainHand }
 
         if (!checkBurnable(voicePlayer, item)) return@launch
 
@@ -136,11 +134,11 @@ class BurnCommand : SubCommand() {
             return@launch
         }
 
-        if (!plugin.suspendSync(player) {
+        if (!voiceServer.minecraftServer.suspendSync(player) {
                 PlayerBurnEvent(voicePlayer, track, item).callEvent()
             }) return@launch
 
-        plugin.suspendSync(player.location) {
+        voiceServer.minecraftServer.suspendSync(player.location) {
             if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {
                 discHelper.showSongTooltip(item, false)
             }
