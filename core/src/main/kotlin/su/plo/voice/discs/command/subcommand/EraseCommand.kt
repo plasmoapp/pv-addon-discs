@@ -53,11 +53,6 @@ class EraseCommand : SubCommand() {
 
         if (!PlayerEraseEvent(voicePlayer, item).callEvent()) return
 
-        if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {
-            val discHelper by inject<DiscHelper>()
-            discHelper.showSongTooltip(item, true)
-        }
-
         item.editMeta { meta ->
             meta.removeItemFlags(*ItemFlag.values())
             meta.persistentDataContainer.remove(AddonKeys.identifierKey)
@@ -85,6 +80,10 @@ class EraseCommand : SubCommand() {
 
                 AddonConfig.LoreMethod.DISABLE -> {} // do nothing
             }
+        }
+
+        if (Bukkit.getServer().getMinecraftVersionInt() >= 12103) {
+            discHelper.showSongTooltip(item, true)
         }
 
         if (item.type.name == "GOAT_HORN") {
