@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.withType
+import xyz.jpenilla.runpaper.task.RunServer
 import java.net.URI
 
 plugins {
@@ -63,7 +65,7 @@ tasks {
         }
     }
 
-    runServer {
+    withType<RunServer>().configureEach {
         javaLauncher = project.javaToolchains.launcherFor {
             languageVersion = JavaLanguageVersion.of(25)
         }
@@ -73,7 +75,7 @@ tasks {
         downloadPlugins {
             modrinth("plasmo-voice", "spigot-2.1.17")
             modrinth("pv-addon-lavaplayer-lib", "1.2.3")
-//            modrinth("packetevents", "2.13.0+spigot")
+            modrinth("packetevents", "2.14.0+spigot")
         }
     }
 
@@ -148,4 +150,9 @@ bukkit {
     commands {
         register("disc") {}
     }
+}
+
+runPaper.folia.registerTask {
+    minecraftVersion("26.2")
+    runDirectory = project.layout.projectDirectory.dir("run-folia")
 }
