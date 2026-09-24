@@ -14,9 +14,9 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.1
     - name: Set up JDK
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6.0.1
       with:
         distribution: temurin
         java-version: |
@@ -26,7 +26,7 @@ jobs:
           21
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v5
+      uses: gradle/actions/setup-gradle@v6.3.0
 
     - name: Get version from gradle.properties
       run: |
@@ -45,17 +45,21 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew clean build -Pversion="${VERSION}+${GIT_HASH}"
 
-    - name: Upload to Registry
-      uses: plasmoapp/actions/.github/actions/upload-to-registry@main
+    - uses: actions/upload-artifact@v7.0.1
       with:
-        registry_url: ${{ secrets.REGISTRY_URL }}
-        upload_token: ${{ secrets.REGISTRY_UPLOAD_TOKEN }}
-        files_glob: plugin/build/libs/*${{ env.GIT_HASH }}.jar
-        message: ${{ github.event.head_commit.message }}
+        name: pv-addon-discs
+        archive: false
+        path: |
+          build/libs/*.jar
+          !build/libs/*-dev.jar
+          !build/libs/*-sources.jar
+          !build/libs/*-javadoc.jar
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7.0.1
       with:
         name: pv-addon-discs
         path: |
-          plugin/build/libs/*.jar
-          !plugin/build/libs/*-sources.jar
+          build/libs/*.jar
+          !build/libs/*-dev.jar
+          !build/libs/*-sources.jar
+          !build/libs/*-javadoc.jar
