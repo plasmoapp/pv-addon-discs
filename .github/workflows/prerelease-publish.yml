@@ -50,16 +50,16 @@ jobs:
         name: pv-addon-discs
         archive: false
         path: |
-          build/libs/*.jar
-          !build/libs/*-dev.jar
-          !build/libs/*-sources.jar
-          !build/libs/*-javadoc.jar
+          plugin/build/libs/*.jar
+          !plugin/build/libs/*-dev.jar
+          !plugin/build/libs/*-sources.jar
+          !plugin/build/libs/*-javadoc.jar
 
     - uses: actions/upload-artifact@v7.0.1
       with:
         name: pv-addon-discs
         path: |
-          build/libs/*.jar
-          !build/libs/*-dev.jar
-          !build/libs/*-sources.jar
-          !build/libs/*-javadoc.jar
+          plugin/build/libs/*.jar
+          !plugin/build/libs/*-dev.jar
+          !plugin/build/libs/*-sources.jar
+          !plugin/build/libs/*-javadoc.jar
