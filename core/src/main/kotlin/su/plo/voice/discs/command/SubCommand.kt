@@ -1,8 +1,6 @@
 package su.plo.voice.discs.command
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.bukkit.command.CommandSender
 import org.koin.core.component.inject
 import su.plo.slib.api.permission.PermissionDefault
@@ -21,7 +19,7 @@ abstract class SubCommand : PluginKoinComponent {
     protected val audioPlayerManager: PlasmoAudioPlayerManager by getter()
     protected val debugLogger: DebugLogger by getter()
 
-    protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    protected val scope: CoroutineScope by inject()
 
     abstract val name: String
 

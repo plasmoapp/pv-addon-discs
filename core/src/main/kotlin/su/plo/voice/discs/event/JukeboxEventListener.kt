@@ -45,6 +45,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
     private val config: AddonConfig by getter()
     private val voiceServer: PlasmoVoiceServer by inject()
+    private val scope: CoroutineScope by inject()
     private val audioPlayerManager: PlasmoAudioPlayerManager by getter()
     private val debugLogger: DebugLogger by getter()
     private val sourceLine: ServerSourceLine by getter()
@@ -152,7 +153,7 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
         block: Block,
         itemMeta: ItemMeta?,
         voicePlayer: VoicePlayer? = null,
-    ): Job = CoroutineScope(Dispatchers.Default).launch {
+    ): Job = scope.launch {
 
         val track = try {
             audioPlayerManager.getTrack(identifier).await()
@@ -277,6 +278,8 @@ class JukeboxEventListener : Listener, PluginKoinComponent {
 
                 job.cancelAndJoin()
                 source.remove()
+
+                if (!scope.isActive) return@withContext
 
                 voiceServer.minecraftServer.suspendSync(block.location) {
                     val jukebox = block.asJukebox() ?: return@suspendSync

@@ -1,7 +1,6 @@
 package su.plo.voice.discs
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.cancelAndJoin
@@ -34,6 +33,7 @@ class GoatHornManager : PluginKoinComponent {
 
     private val config: AddonConfig by getter()
     private val voiceServer: PlasmoVoiceServer by inject()
+    private val scope: CoroutineScope by inject()
     private val audioPlayerManager: PlasmoAudioPlayerManager by getter()
     private val debugLogger: DebugLogger by getter()
     private val sourceLine: ServerSourceLine by getter()
@@ -51,7 +51,7 @@ class GoatHornManager : PluginKoinComponent {
     ) {
         val identifier = item.identifier() ?: return
 
-        CoroutineScope(Dispatchers.Default).launch {
+        scope.launch {
             cancelTrack(player, HornReplaceCause())?.join()
             jobByPlayer[player] = startJob(player, identifier, item)
         }
@@ -66,7 +66,7 @@ class GoatHornManager : PluginKoinComponent {
         player: Player,
         identifier: String,
         item: ItemStack
-    ): Job = CoroutineScope(Dispatchers.Default).launch {
+    ): Job = scope.launch {
         val voicePlayer = player.asVoicePlayer(voiceServer) ?: return@launch
 
         voicePlayer.instance.sendActionBar(

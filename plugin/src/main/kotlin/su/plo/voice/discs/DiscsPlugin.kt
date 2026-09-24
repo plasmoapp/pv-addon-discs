@@ -4,7 +4,12 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.dsl.koinApplication
@@ -49,6 +54,7 @@ class DiscsPlugin : JavaPlugin() {
     private val addonName = "discs"
 
     private val voiceServer: PlasmoVoiceServer by injectPlasmoVoice()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private lateinit var sourceLine: ServerSourceLine
 
     private val discHelper: DiscHelper by lazy {
@@ -106,6 +112,7 @@ class DiscsPlugin : JavaPlugin() {
                 modules(
                     module {
                         single<PlasmoVoiceServer> { voiceServer }
+                        single<CoroutineScope> { scope }
                         factory<ServerSourceLine> { sourceLine }
                         factory<AddonConfig> { addonConfig }
                         factory<PlasmoAudioPlayerManager> { audioPlayerManager }
@@ -174,6 +181,10 @@ class DiscsPlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
+        runBlocking {
+            withTimeoutOrNull(5_000L) { scope.coroutineContext.job.cancelAndJoin() }
+        }
+
         PlasmoVoiceServer.getAddonsLoader().unload(this)
 
         if (::audioPlayerManager.isInitialized) {
@@ -206,7 +217,7 @@ class DiscsPlugin : JavaPlugin() {
         }
 
         audioPlayerManager = PlasmoAudioPlayerManager()
-        CoroutineScope(Dispatchers.Default).launch {
+        scope.launch {
             audioPlayerManager.registerSources()
         }
     }
