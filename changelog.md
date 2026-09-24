@@ -1,1 +1,4 @@
-- Added Bukkit events API ([#131](https://github.com/plasmoapp/pv-addon-discs/pull/131)). See [README API section](https://github.com/plasmoapp/pv-addon-discs#api) for dependency setup.
+- Added support for `26.3`.
+- LavaPlayer debug logs are now logged into server log file when `debug` is enabled in the config.
+- Fixed `/disc erase` with goat horns not restoring vanilla tooltips on `1.21.5+`.
+- Fixed "zip file closed" errors on server shutdown while disc or goat horn is playing.
